@@ -3,4 +3,8 @@ project(path_tracer)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(path_tracer main.cpp)
+file(GLOB_RECURSE SRC src/*.cpp)
+
+add_executable(path_tracer ${SRC})
+
+#add_executable(test test/main.cpp)
