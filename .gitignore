@@ -1,4 +1,7 @@
+/.idea/
+
 # Project exclude paths
 /cmake-build-*/
+path_tracer
 
-/.idea/
+*.exr
