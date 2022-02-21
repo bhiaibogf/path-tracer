@@ -8,7 +8,7 @@ Scene::Scene() {
     // TODO
 }
 
-global::Color Scene::Trace(const Ray &ray) const {
+global::Color Scene::Trace(Ray *ray) const {
     Intersection intersection;
     if (Intersect(ray, &intersection)) {
         return Shade(intersection);
@@ -16,10 +16,15 @@ global::Color Scene::Trace(const Ray &ray) const {
     return kBackgroundColor;
 }
 
-bool Scene::Intersect(const Ray &ray, Intersection *intersection) const {
-    intersection->direction = -ray.direction();
-    // TODO
-    return false;
+bool Scene::Intersect(Ray *ray, Intersection *intersection) const {
+    intersection->direction = -ray->direction();
+    bool has_intersection = false;
+    for (auto &object: objects_) {
+        if (object->Intersect(ray, intersection)) {
+            has_intersection = true;
+        }
+    }
+    return has_intersection;
 }
 
 global::Color Scene::Shade(const Intersection &intersection) const {
@@ -46,10 +51,10 @@ global::Color Scene::Shade(const Intersection &intersection) const {
 
     // check if the light is visible
     Intersection intersection_to_light;
-    if (Intersect(Ray(position, direction_to_light), &intersection_to_light)
+    Ray ray_to_light(position, direction_to_light);
+    if (Intersect(&ray_to_light, &intersection_to_light)
         && (position_light - intersection_to_light.position).squaredNorm() < kEpsilon) {
-        radiance_direct = emission_light
-                          * material->Eval(direction, direction_to_light, normal)
+        radiance_direct = global::Product(emission_light, material->Eval(direction, direction_to_light, normal))
                           * normal.dot(direction_to_light)
                           // TODO
                           * normal_light.dot(-direction_to_light)
@@ -64,12 +69,12 @@ global::Color Scene::Shade(const Intersection &intersection) const {
         auto direction_to_next = material->Sample(direction, normal);
         Ray ray_to_next = Ray(position, direction_to_next);
         Intersection intersection_next;
-        if (Intersect(ray_to_next, &intersection_next)) {
-            radiance_indirect = Shade(intersection_next)
-                                * material->Eval(direction, direction_to_next, normal)
-                                * normal.dot(direction_to_next)
-                                / material->Pdf(direction, direction_to_next, normal)
-                                / kRussianRoulette;
+        if (Intersect(&ray_to_next, &intersection_next)) {
+            radiance_indirect =
+                    global::Product(Shade(intersection_next), material->Eval(direction, direction_to_next, normal))
+                    * normal.dot(direction_to_next)
+                    / material->Pdf(direction, direction_to_next, normal)
+                    / kRussianRoulette;
         }
     }
 
@@ -84,7 +89,7 @@ void Scene::SampleLight(Intersection *intersection, float *pdf) const {
     float area_sum = 0;
     for (auto object: objects_) {
         if (object->material()->IsEmitter()) {
-            area_sum += object->area();
+            area_sum += object->Area();
         }
     }
 
@@ -92,7 +97,7 @@ void Scene::SampleLight(Intersection *intersection, float *pdf) const {
     area_sum = 0;
     for (auto object: objects_) {
         if (object->material()->IsEmitter()) {
-            area_sum += object->area();
+            area_sum += object->Area();
             if (random_area <= area_sum) {
                 object->Sample(intersection, pdf);
                 break;

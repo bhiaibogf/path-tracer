@@ -16,7 +16,8 @@ void PathTracer::Render(int spp) {
         for (int j = 0; j < camera_.width(); j++) {
             for (int k = 0; k < spp; k++) {
                 futures[j][k] = pool.enqueue([&]() {
-                    return scene_.Trace(camera_.GenerateRay(i, j), 0);
+                    Ray ray = camera_.GenerateRay(i, j);
+                    return scene_.Trace(&ray);
                 });
             }
         }

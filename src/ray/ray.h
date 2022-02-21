@@ -14,7 +14,11 @@ public:
 
     ~Ray() = default;
 
+    auto origin() const { return origin_; }
+
     auto direction() const { return direction_; }
+
+    bool Update(float t);
 
     Eigen::Vector3f operator()(float t) const;
 

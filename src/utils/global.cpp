@@ -30,3 +30,7 @@ float global::RandomFloat() {
 global::Vector global::Reflect(const global::Vector &wi, const global::Vector &normal) {
     return 2 * normal.dot(wi) * normal - wi;
 }
+
+global::Vector global::Product(const global::Vector &a, const global::Vector &b) {
+    return {a.x() * b.x(), a.y() * b.y(), a.z() * b.z()};
+}

@@ -21,7 +21,7 @@ public:
 
     ~Scene() = default;
 
-    global::Color Trace(const Ray &ray) const;
+    global::Color Trace(Ray *ray) const;
 
     void AddObject(Object *object) {
         objects_.push_back(object);
@@ -34,7 +34,7 @@ private:
 
     std::vector<Object *> objects_;
 
-    bool Intersect(const Ray &ray, Intersection *intersection) const;
+    bool Intersect(Ray *ray, Intersection *intersection) const;
 
     global::Color Shade(const Intersection &intersection) const;
 

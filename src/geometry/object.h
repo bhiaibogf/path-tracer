@@ -8,7 +8,9 @@
 
 #include "../utils/global.h"
 #include "../material/material.h"
+#include "../ray/ray.h"
 #include "intersection.h"
+#include "mesh.h"
 
 class Object {
 public:
@@ -18,13 +20,22 @@ public:
 
     auto material() const { return material_; }
 
-    auto area() const { return area_; }
+    auto Area() const {
+        return mesh_->area();
+    }
 
-    void Sample(Intersection *intersection, float *pdf);
+    bool Intersect(Ray *ray, Intersection *intersection) const {
+        intersection->material = material_;
+        return mesh_->Intersect(ray, intersection);
+    }
+
+    void Sample(Intersection *intersection, float *pdf) const {
+        return mesh_->Sample(intersection, pdf);
+    }
 
 private:
+    Mesh *mesh_;
     Material *material_;
-    float area_;
 
 };
 

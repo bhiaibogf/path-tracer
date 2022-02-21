@@ -34,6 +34,8 @@ namespace global {
 
     Vector Reflect(const Vector &wi, const Vector &normal);
 
+    Vector Product(const Vector &a, const Vector &b);
+
 }
 
 

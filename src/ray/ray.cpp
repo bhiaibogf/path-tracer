@@ -17,3 +17,11 @@ std::ostream &operator<<(std::ostream &os, const Ray &ray) {
     os << "(" << ray.origin_ << ")->(" << ray.direction_ << "): " << ray.t_ << "\n";
     return os;
 }
+
+bool Ray::Update(float t) {
+    if (t > t_min_ && t < t_max_) {
+        t_max_ = t;
+        return true;
+    }
+    return false;
+}
