@@ -4,6 +4,10 @@
 
 #include "light.h"
 
+Light::Light(const global::Color &radiance) : radiance_(radiance) {
+    // TODO calculate area
+}
+
 bool Light::IsEmitter() const {
     return true;
 }
@@ -13,14 +17,13 @@ global::Color Light::emission() const {
 }
 
 global::Color Light::Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const {
-    return global::kBlack;
+    assert(false);
 }
 
 global::Vector Light::Sample(const global::Vector &wo, const global::Vector &normal) const {
-    // TODO
+    assert(false);
 }
 
 float Light::Pdf(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const {
-    // TODO
-    return 0;
+    assert(false);
 }

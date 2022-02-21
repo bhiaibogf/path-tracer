@@ -10,7 +10,7 @@
 
 class Light : public Material {
 public:
-    Light(const global::Color &radiance) : radiance_(radiance) {}
+    Light(const global::Color &radiance);
 
     ~Light() = default;
 

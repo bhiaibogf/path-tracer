@@ -7,11 +7,10 @@
 
 
 #include "intersection.h"
+#include "object.h"
 #include "../material/material.h"
 #include "../ray/ray.h"
 #include "../utils/global.h"
-
-#include <eigen3/Eigen/Eigen>
 
 #include <iostream>
 #include <random>
@@ -22,16 +21,22 @@ public:
 
     ~Scene() = default;
 
-    Eigen::Vector3f Trace(const Ray &ray) const;
+    global::Color Trace(const Ray &ray) const;
+
+    void AddObject(Object *object) {
+        objects_.push_back(object);
+    }
 
 private:
     const Eigen::Vector3f kBackgroundColor = global::kBlack;
     const float kEpsilon = 1e-6;
     const float kRussianRoulette = 0.8f;
 
+    std::vector<Object *> objects_;
+
     bool Intersect(const Ray &ray, Intersection *intersection) const;
 
-    Eigen::Vector3f Shade(const Intersection &intersection) const;
+    global::Color Shade(const Intersection &intersection) const;
 
     void SampleLight(Intersection *intersection, float *pdf) const;
 
