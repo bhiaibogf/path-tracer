@@ -13,6 +13,8 @@
 
 namespace global {
     const float kPi = M_PI;
+    const float kPi2 = M_PI_2;
+    const float k1PI = M_1_PI;
     const Eigen::Vector3f kBlack = Eigen::Vector3f(0.f, 0.f, 0.f);
 
     typedef Eigen::Vector3f Color;
@@ -29,6 +31,8 @@ namespace global {
     }
 
     float RandomFloat();
+
+    Vector Reflect(const Vector &wi, const Vector &normal);
 
 }
 

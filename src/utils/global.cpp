@@ -26,3 +26,7 @@ void global::UpdateProgress(float progress) {
 float global::RandomFloat() {
     return uniform_(random_engine_);
 }
+
+global::Vector global::Reflect(const global::Vector &wi, const global::Vector &normal) {
+    return 2 * normal.dot(wi) * normal - wi;
+}
