@@ -12,6 +12,10 @@ class Ray {
 public:
     Ray(const Eigen::Vector3f &origin, const Eigen::Vector3f &direction);
 
+    ~Ray() = default;
+
+    auto direction() const { return direction_; }
+
     Eigen::Vector3f operator()(float t) const;
 
     friend std::ostream &operator<<(std::ostream &os, const Ray &ray);

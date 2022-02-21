@@ -22,3 +22,7 @@ void funcs::UpdateProgress(float progress) {
     std::cout << "] " << int(progress * 100.0) << " %";
     std::cout.flush();
 }
+
+float funcs::RandomFloat() {
+    return uniform_(random_engine_);
+}
