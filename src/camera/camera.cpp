@@ -23,7 +23,7 @@ Ray Camera::GenerateRay(int x, int y) const {
     Eigen::Vector3f up = right.cross(direction);
     up.normalize();
 
-    float tangent = std::tan(funcs::Radius(fov_) / 2.0f);
+    float tangent = std::tan(global::Radius(fov_) / 2.0f);
     auto width = float(width_), height = float(height_), aspect = width / height;
 
     float x_factor = tangent * aspect * (float(x) + 0.5 - width / 2.f) / (width / 2.0f);

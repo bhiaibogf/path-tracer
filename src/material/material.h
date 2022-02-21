@@ -6,22 +6,20 @@
 #define PATH_TRACER_MATERIAL_H
 
 
-#include <eigen3/Eigen/Eigen>
+#include "../utils/global.h"
 
 class Material {
 public:
-    virtual bool IsEmitter() const { return false; }
+    virtual bool IsEmitter() const = 0;
 
-    virtual Eigen::Vector3f emission() const { assert(false); }
+    virtual global::Color emission() const = 0;
 
-    virtual Eigen::Vector3f
-    Eval(const Eigen::Vector3f &wo, const Eigen::Vector3f &wi, const Eigen::Vector3f &normal) const = 0;
+    virtual global::Color
+    Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const = 0;
 
-    virtual Eigen::Vector3f Sample(const Eigen::Vector3f &wo, const Eigen::Vector3f &normal) const = 0;
+    virtual global::Vector Sample(const global::Vector &wo, const global::Vector &normal) const = 0;
 
-    virtual float Pdf(const Eigen::Vector3f &wo, const Eigen::Vector3f &wi, const Eigen::Vector3f &normal) const = 0;
-
-private:
+    virtual float Pdf(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const = 0;
 
 };
 

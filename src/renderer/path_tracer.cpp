@@ -25,9 +25,9 @@ void PathTracer::Render(int spp) {
                 fragment_buffer_[camera_.GetIndex(i, j)] += futures[j][k].get() / spp;
             }
         }
-        funcs::UpdateProgress(i / camera_.height());
+        global::UpdateProgress(i / camera_.height());
     }
-    funcs::UpdateProgress(1.f);
+    global::UpdateProgress(1.f);
 
     for (auto &pixel: fragment_buffer_) {
         pixel /= float(spp);

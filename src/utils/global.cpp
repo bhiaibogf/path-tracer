@@ -2,13 +2,13 @@
 // Created by bhiaibogf on 2022/2/18.
 //
 
-#include "funcs.h"
+#include "global.h"
 
-float funcs::Radius(float alpha) {
+float global::Radius(float alpha) {
     return alpha / 180.f * kPi;
 }
 
-void funcs::UpdateProgress(float progress) {
+void global::UpdateProgress(float progress) {
     std::cout << "\r[";
 
     int bar_width = 70;
@@ -23,6 +23,6 @@ void funcs::UpdateProgress(float progress) {
     std::cout.flush();
 }
 
-float funcs::RandomFloat() {
+float global::RandomFloat() {
     return uniform_(random_engine_);
 }

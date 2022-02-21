@@ -27,13 +27,13 @@ Eigen::Vector3f Scene::Shade(const Intersection &intersection) const {
     auto &position = intersection.position, &normal = intersection.normal, &direction = intersection.direction;
 
     // light
-    Eigen::Vector3f radiance_light = kBlack;
+    Eigen::Vector3f radiance_light = global::kBlack;
     if (intersection.material->IsEmitter()) {
         radiance_light = material->emission();
     }
 
     // direct light
-    Eigen::Vector3f radiance_direct = kBlack;
+    Eigen::Vector3f radiance_direct = global::kBlack;
     // sample from light
     Intersection intersection_light;
     float pdf_light;
@@ -58,7 +58,7 @@ Eigen::Vector3f Scene::Shade(const Intersection &intersection) const {
     }
 
     // indirect light
-    Eigen::Vector3f radiance_indirect = kBlack;
+    Eigen::Vector3f radiance_indirect = global::kBlack;
     if (RussianRoulette()) {
         // wi (inter to next)
         auto direction_to_next = material->Sample(direction, normal);
@@ -77,7 +77,7 @@ Eigen::Vector3f Scene::Shade(const Intersection &intersection) const {
 }
 
 bool Scene::RussianRoulette() const {
-    return funcs::RandomFloat() < kRussianRoulette;
+    return global::RandomFloat() < kRussianRoulette;
 }
 
 void Scene::SampleLight(Intersection *intersection, float *pdf) const {

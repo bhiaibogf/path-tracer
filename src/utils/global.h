@@ -2,15 +2,21 @@
 // Created by bhiaibogf on 2022/2/18.
 //
 
-#ifndef PATH_TRACER_FUNCS_H
-#define PATH_TRACER_FUNCS_H
+#ifndef PATH_TRACER_GLOBAL_H
+#define PATH_TRACER_GLOBAL_H
+
+#include <eigen3/Eigen/Eigen>
 
 #include <iostream>
 #include <cmath>
 #include <random>
 
-namespace funcs {
+namespace global {
     const float kPi = M_PI;
+    const Eigen::Vector3f kBlack = Eigen::Vector3f(0.f, 0.f, 0.f);
+
+    typedef Eigen::Vector3f Color;
+    typedef Eigen::Vector3f Vector;
 
     float Radius(float alpha);
 
@@ -27,4 +33,4 @@ namespace funcs {
 }
 
 
-#endif //PATH_TRACER_FUNCS_H
+#endif //PATH_TRACER_GLOBAL_H

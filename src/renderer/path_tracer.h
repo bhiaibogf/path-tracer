@@ -9,7 +9,7 @@
 #include "../camera/camera.h"
 #include "../geometry/scene.h"
 #include "../ray/ray.h"
-#include "../utils/funcs.h"
+#include "../utils/global.h"
 
 #include "ThreadPool/ThreadPool.h"
 
