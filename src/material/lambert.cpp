@@ -15,7 +15,11 @@ global::Color Lambert::emission() const {
 }
 
 global::Color Lambert::Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const {
-    return albedo_ * global::k1PI;
+    if (normal.dot(wi) > 0) {
+        return albedo_ * global::k1PI;
+    } else {
+        return global::kBlack;
+    }
 }
 
 global::Vector Lambert::Sample(const global::Vector &wo, const global::Vector &normal) const {
@@ -29,7 +33,7 @@ global::Vector Lambert::Sample(const global::Vector &wo, const global::Vector &n
 
 float Lambert::Pdf(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const {
     // uniform sample probability 1 / (2 * PI)
-    if (normal.dot(wi) < 0) {
+    if (normal.dot(wi) > 0) {
         return 1.f / global::kPi2;
     } else {
         return 0.f;
