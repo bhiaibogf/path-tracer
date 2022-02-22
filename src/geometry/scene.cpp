@@ -45,7 +45,7 @@ global::Color Scene::Shade(const Intersection &intersection) const {
     SampleLight(&intersection_light, &pdf_light);
 
     auto &position_light = intersection_light.position, &normal_light = intersection_light.normal;
-    auto emission_light = intersection.material->emission();
+    auto emission_light = intersection_light.material->emission();
     // wi (inter to light)
     auto direction_to_light = (position_light - position).normalized();
 
@@ -99,6 +99,7 @@ void Scene::SampleLight(Intersection *intersection, float *pdf) const {
         if (object.material()->IsEmitter()) {
             area_sum += object.Area();
             if (random_area <= area_sum) {
+                intersection->material = object.material();
                 object.Sample(intersection, pdf);
                 break;
             }
