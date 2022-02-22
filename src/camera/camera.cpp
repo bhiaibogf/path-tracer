@@ -26,11 +26,11 @@ Ray Camera::GenerateRay(int x, int y) const {
     float tangent = std::tan(global::Radius(fov_) / 2.0f);
     auto width = float(width_), height = float(height_), aspect = width / height;
 
-    float x_factor = tangent * aspect * (float(x) + 0.5 - width / 2.f) / (width / 2.0f);
+    float x_factor = tangent * aspect * (float(x) + 0.5 - width / 2.f) / (width / 2.f);
     float y_factor = tangent * (float(y) + 0.5 - height / 2.f) / (height / 2.f);
     Eigen::Vector3f direction_x = x_factor * right;
     Eigen::Vector3f direction_y = y_factor * up;
-    Eigen::Vector3f direction_z = Eigen::Vector3f(0, 0, -1);
+    Eigen::Vector3f direction_z = direction;
 
     Eigen::Vector3f direction_final = direction_x + direction_y + direction_z;
     direction_final.normalize();
