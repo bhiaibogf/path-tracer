@@ -27,8 +27,11 @@ public:
     }
 
     bool Intersect(Ray *ray, Intersection *intersection) const {
-        intersection->material = material_;
-        return mesh_->Intersect(ray, intersection);
+        if (mesh_->Intersect(ray, intersection)) {
+            intersection->material = material_;
+            return true;
+        }
+        return false;
     }
 
     void Sample(Intersection *intersection, float *pdf) const {

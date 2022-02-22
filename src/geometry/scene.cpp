@@ -33,7 +33,7 @@ global::Color Scene::Shade(const Intersection &intersection) const {
 
     // light
     global::Color radiance_light = global::kBlack;
-    if (intersection.material->IsEmitter()) {
+    if (material->IsEmitter()) {
         radiance_light = material->emission();
     }
 
