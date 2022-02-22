@@ -4,6 +4,22 @@
 
 #include "triangle.h"
 
+Triangle::Triangle(std::array<global::Vector, 3> vertices,
+                   std::array<global::Vector, 3> normals,
+                   std::array<global::TexCoord, 3> tex_coords) :
+        vertices_(std::move(vertices)), normals_(std::move(normals)), tex_coords_(std::move(tex_coords)) {
+    normal_ = (vertices_[1] - vertices_[0]).cross(vertices_[2] - vertices_[0]);
+    area_ = normal_.norm() / 2;
+    normal_.normalize();
+    for (auto &normal: normals_) {
+        normal = normal_;
+    }
+
+    // for (auto &vertex: vertices_) {
+    //     std::cout << vertex << std::endl;
+    // }
+}
+
 bool Triangle::Intersect(Ray *ray, Intersection *intersection) const {
     auto &v0 = vertices_[0], &v1 = vertices_[1], &v2 = vertices_[2];
     global::Vector edge1 = v1 - v0;

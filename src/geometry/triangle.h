@@ -12,9 +12,9 @@
 
 class Triangle : public Primitive {
 public:
-    Triangle(std::array<global::Vector, 3> vertices, std::array<global::Vector, 3> normals,
-             std::array<global::TexCoord, 3> tex_coords) :
-            vertices_(std::move(vertices)), normals_(std::move(normals)), tex_coords_(std::move(tex_coords)) {}
+    Triangle(std::array<global::Vector, 3> vertices,
+             std::array<global::Vector, 3> normals,
+             std::array<global::TexCoord, 3> tex_coords);
 
     ~Triangle() override = default;
 
@@ -25,6 +25,7 @@ public:
 private:
     std::array<global::Vector, 3> vertices_, normals_;
     std::array<global::TexCoord, 3> tex_coords_;
+    global::Vector normal_;
 
 };
 
