@@ -27,3 +27,8 @@ global::Vector Light::Sample(const global::Vector &wo, const global::Vector &nor
 float Light::Pdf(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const {
     assert(false);
 }
+
+std::ostream &operator<<(std::ostream &os, const Light &light) {
+    os << "Light: " << light.radiance_;
+    return os;
+}

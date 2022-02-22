@@ -30,3 +30,8 @@ void Mesh::Add(Triangle *triangle) {
     triangles_.push_back(triangle);
     area_ += triangle->area();
 }
+
+std::ostream &operator<<(std::ostream &os, const Mesh &mesh) {
+    os << "Mesh: " << mesh.triangles_.size() << " triangles";
+    return os;
+}

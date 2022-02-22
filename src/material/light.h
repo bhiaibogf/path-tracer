@@ -25,6 +25,8 @@ public:
 
     float Pdf(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const override;
 
+    friend std::ostream &operator<<(std::ostream &os, const Light &light);
+
 private:
     Eigen::Vector3f radiance_;
 

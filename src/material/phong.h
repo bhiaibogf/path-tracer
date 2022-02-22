@@ -24,6 +24,8 @@ public:
 
     float Pdf(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const override;
 
+    friend std::ostream &operator<<(std::ostream &os, const Phong &phong);
+
 private:
     global::Color k_d_, k_s_;
     float n_s_, n_i_;

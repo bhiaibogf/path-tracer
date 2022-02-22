@@ -8,7 +8,7 @@ Phong::Phong(const global::Color &k_d, const global::Color &k_s, float n_s, floa
         : k_d_(k_d), k_s_(k_s), n_s_(n_s), n_i_(n_i) {}
 
 bool Phong::IsEmitter() const {
-    return true;
+    return false;
 }
 
 global::Color Phong::emission() const {
@@ -55,4 +55,9 @@ float Phong::Pdf(const global::Vector &wo, const global::Vector &wi, const globa
         return (n_s_ + 1) / global::kPi2 * std::pow(alpha, n_s_);
     }
     return 0;
+}
+
+std::ostream &operator<<(std::ostream &os, const Phong &phong) {
+    os << "Phong: " << phong.k_d_ << " " << phong.k_s_ << " " << phong.n_s_ << " " << phong.n_i_;
+    return os;
 }

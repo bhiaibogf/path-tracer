@@ -21,6 +21,8 @@ public:
 
     void Sample(Intersection *intersection, float *pdf) const override;
 
+    friend std::ostream &operator<<(std::ostream &os, const Mesh &mesh);
+
 private:
     std::vector<Triangle *> triangles_;
 

@@ -29,41 +29,50 @@ std::vector<Object> obj_loader::Load(const std::string &model_path, const std::s
     std::vector<Object> objects;
     // Loop over shapes
     for (auto &shape: shapes) {
+        std::cout << "Loading " << shape.name << "..." << std::endl;
+
         Mesh *mesh = new Mesh();
         // Loop over faces(polygon)
         size_t index_offset = 0;
-        for (auto face: shape.mesh.num_face_vertices) {
+        for (auto verteices_count: shape.mesh.num_face_vertices) {
             std::array<global::Vector, 3> vertices;
             std::array<global::Vector, 3> normals;
             std::array<global::TexCoord, 3> tex_coords;
 
-            assert(face == 3);
+            assert(verteices_count == 3);
             // Loop over vertices in the face
-            for (size_t v = 0; v < face; v++) {
-                tinyobj::index_t idx = shape.mesh.indices[index_offset + v];
-                vertices[v] = global::Vector(attrib.vertices[3 * idx.vertex_index + 0],
-                                             attrib.vertices[3 * idx.vertex_index + 1],
-                                             attrib.vertices[3 * idx.vertex_index + 2]);
+            for (size_t idx_in_face = 0; idx_in_face < verteices_count; idx_in_face++) {
+                tinyobj::index_t idx = shape.mesh.indices[index_offset + idx_in_face];
+                vertices[idx_in_face] = global::Vector(attrib.vertices[3 * idx.vertex_index + 0],
+                                                       attrib.vertices[3 * idx.vertex_index + 1],
+                                                       attrib.vertices[3 * idx.vertex_index + 2]);
 
                 if (idx.normal_index >= 0) {
-                    normals[v] = global::Vector(attrib.normals[3 * idx.normal_index + 0],
-                                                attrib.normals[3 * idx.normal_index + 1],
-                                                attrib.normals[3 * idx.normal_index + 2]);
+                    normals[idx_in_face] = global::Vector(attrib.normals[3 * idx.normal_index + 0],
+                                                          attrib.normals[3 * idx.normal_index + 1],
+                                                          attrib.normals[3 * idx.normal_index + 2]);
                 }
 
                 if (idx.texcoord_index >= 0) {
-                    tex_coords[v] = global::TexCoord(attrib.texcoords[2 * idx.texcoord_index + 0],
-                                                     attrib.texcoords[2 * idx.texcoord_index + 1]);
+                    tex_coords[idx_in_face] = global::TexCoord(attrib.texcoords[2 * idx.texcoord_index + 0],
+                                                               attrib.texcoords[2 * idx.texcoord_index + 1]);
                 }
             }
 
             auto *triangle = new Triangle(vertices, normals, tex_coords);
             mesh->Add(triangle);
-            index_offset += face;
+            index_offset += verteices_count;
         }
 
-        shape.mesh.material_ids[0];
-        Material *material = new Phong({}, {}, {}, {});
+        Material *material;
+        auto material_t = materials[shape.mesh.material_ids[0]];
+        if (shape.name.find("light") != std::string::npos) {
+            material = new Light({47.8348, 38.5664, 31.0808});
+        } else {
+            material = new Phong({material_t.diffuse[0], material_t.diffuse[1], material_t.diffuse[2]},
+                                 {},
+                                 {}, {});
+        }
 
         objects.emplace_back(mesh, material);
     }
