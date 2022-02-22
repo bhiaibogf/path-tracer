@@ -4,7 +4,7 @@
 
 #include "scene.h"
 
-Scene::Scene() {
+Scene::Scene(std::vector<Object> objects) : objects_(objects) {
     // TODO
 }
 
@@ -20,7 +20,7 @@ bool Scene::Intersect(Ray *ray, Intersection *intersection) const {
     intersection->direction = -ray->direction();
     bool has_intersection = false;
     for (auto &object: objects_) {
-        if (object->Intersect(ray, intersection)) {
+        if (object.Intersect(ray, intersection)) {
             has_intersection = true;
         }
     }
@@ -87,19 +87,19 @@ bool Scene::RussianRoulette() const {
 
 void Scene::SampleLight(Intersection *intersection, float *pdf) const {
     float area_sum = 0;
-    for (auto object: objects_) {
-        if (object->material()->IsEmitter()) {
-            area_sum += object->Area();
+    for (const auto &object: objects_) {
+        if (object.material()->IsEmitter()) {
+            area_sum += object.Area();
         }
     }
 
     float random_area = global::RandomFloat() * area_sum;
     area_sum = 0;
-    for (auto object: objects_) {
-        if (object->material()->IsEmitter()) {
-            area_sum += object->Area();
+    for (const auto &object: objects_) {
+        if (object.material()->IsEmitter()) {
+            area_sum += object.Area();
             if (random_area <= area_sum) {
-                object->Sample(intersection, pdf);
+                object.Sample(intersection, pdf);
                 break;
             }
         }

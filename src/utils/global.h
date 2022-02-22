@@ -19,6 +19,7 @@ namespace global {
 
     typedef Eigen::Vector3f Color;
     typedef Eigen::Vector3f Vector;
+    typedef Eigen::Vector2f TexCoord;
 
     float Radius(float alpha);
 

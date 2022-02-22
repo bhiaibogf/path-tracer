@@ -17,13 +17,13 @@
 
 class Scene {
 public:
-    Scene();
+    Scene(std::vector<Object> objects);
 
     ~Scene() = default;
 
     global::Color Trace(Ray *ray) const;
 
-    void AddObject(Object *object) {
+    void AddObject(const Object &object) {
         objects_.push_back(object);
     }
 
@@ -32,7 +32,7 @@ private:
     const float kEpsilon = 1e-6;
     const float kRussianRoulette = 0.8f;
 
-    std::vector<Object *> objects_;
+    std::vector<Object> objects_;
 
     bool Intersect(Ray *ray, Intersection *intersection) const;
 

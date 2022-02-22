@@ -11,9 +11,11 @@
 
 class Mesh : public Primitive {
 public:
-    Mesh();
+    Mesh() = default;
 
-    ~Mesh() override;
+    ~Mesh() override = default;
+
+    void Add(Triangle *triangle);
 
     bool Intersect(Ray *ray, Intersection *intersection) const override;
 

@@ -11,22 +11,22 @@ PathTracer::PathTracer(const Camera &camera, const Scene &scene) : camera_(camer
 
 void PathTracer::Render(int spp) {
     ThreadPool pool(std::thread::hardware_concurrency());
-    for (int i = 0; i < camera_.height(); i++) {
+    for (int y = 0; y < camera_.height(); y++) {
         std::future<Eigen::Vector3f> futures[camera_.width()][spp];
-        for (int j = 0; j < camera_.width(); j++) {
+        for (int x = 0; x < camera_.width(); x++) {
             for (int k = 0; k < spp; k++) {
-                futures[j][k] = pool.enqueue([&]() {
-                    Ray ray = camera_.GenerateRay(i, j);
+                futures[x][k] = pool.enqueue([&]() {
+                    Ray ray = camera_.GenerateRay(x, y);
                     return scene_.Trace(&ray);
                 });
             }
         }
-        for (int j = 0; j < camera_.width(); j++) {
+        for (int x = 0; x < camera_.width(); x++) {
             for (int k = 0; k < spp; k++) {
-                fragment_buffer_[camera_.GetIndex(i, j)] += futures[j][k].get() / spp;
+                fragment_buffer_[camera_.GetIndex(x, y)] += futures[x][k].get() / spp;
             }
         }
-        global::UpdateProgress(i / camera_.height());
+        global::UpdateProgress(y / camera_.height());
     }
     global::UpdateProgress(1.f);
 

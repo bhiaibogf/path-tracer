@@ -14,7 +14,7 @@
 
 class Object {
 public:
-    Object() = default;
+    Object(Mesh *mesh, Material *material);
 
     virtual ~Object() = default;
 
