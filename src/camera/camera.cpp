@@ -12,7 +12,7 @@ Camera::Camera(const Eigen::Vector3f &eye, const Eigen::Vector3f &look_at, const
 int Camera::GetIndex(int x, int y) const {
     assert(x >= 0 && x < width_);
     assert(y >= 0 && y < height_);
-    return y * width_ + x;
+    return (height_ - y - 1) * width_ + x;
 }
 
 Ray Camera::GenerateRay(int x, int y) const {
