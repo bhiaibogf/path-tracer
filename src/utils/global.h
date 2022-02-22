@@ -27,8 +27,8 @@ namespace global {
 
     namespace {
         std::random_device rd_;
-        std::default_random_engine random_engine_;
-        std::uniform_real_distribution<float> uniform_;
+        std::default_random_engine random_engine_(rd_());
+        std::uniform_real_distribution<float> uniform_(0.f, 1.f);
     }
 
     float RandomFloat();
