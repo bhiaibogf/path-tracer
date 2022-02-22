@@ -10,7 +10,7 @@ int main() {
     Scene scene(obj_loader::Load(model_path, model_name));
 
     PathTracer renderer(camera, scene);
-    renderer.Render(1);
+    renderer.Render(16);
     renderer.Save("test.exr");
 
     return 0;

@@ -10,13 +10,14 @@ PathTracer::PathTracer(const Camera &camera, const Scene &scene) : camera_(camer
 }
 
 void PathTracer::Render(int spp) {
-    ThreadPool pool(std::thread::hardware_concurrency());
+    // ThreadPool pool(std::thread::hardware_concurrency());
     for (int y = 0; y < camera_.height(); y++) {
         // std::future<Eigen::Vector3f> futures[camera_.width()][spp];
+#pragma omp parallel for default(none) shared(y, camera_, spp, fragment_buffer_)
         for (int x = 0; x < camera_.width(); x++) {
             for (int k = 0; k < spp; k++) {
                 Ray ray = camera_.GenerateRay(x, y);
-                fragment_buffer_[camera_.GetIndex(x, y)] += scene_.Trace(&ray) / spp;
+                fragment_buffer_[camera_.GetIndex(x, y)] += scene_.Trace(&ray);
                 // futures[x][k] = pool.enqueue([&]() {
                 //     return scene_.Trace(&ray);
                 // });
