@@ -9,6 +9,7 @@
 #include "tinyobjloader/tiny_obj_loader.h"
 #include "../material/phong.h"
 #include "../material/light.h"
+#include "../material/lambert.h"
 #include "../geometry/object.h"
 
 #include "global.h"

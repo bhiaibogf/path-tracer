@@ -21,6 +21,9 @@ public:
 
     virtual float Pdf(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const = 0;
 
+protected:
+    static global::Vector ToWorld(const global::Vector &local, const global::Vector &normal);
+
 };
 
 

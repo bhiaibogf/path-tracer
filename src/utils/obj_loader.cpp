@@ -69,9 +69,7 @@ std::vector<Object> obj_loader::Load(const std::string &model_path, const std::s
         if (shape.name.find("light") != std::string::npos) {
             material = new Light({47.8348, 38.5664, 31.0808});
         } else {
-            material = new Phong({material_t.diffuse[0], material_t.diffuse[1], material_t.diffuse[2]},
-                                 {},
-                                 {}, {});
+            material = new Lambert({material_t.diffuse[0], material_t.diffuse[1], material_t.diffuse[2]});
         }
 
         objects.emplace_back(mesh, material);
