@@ -20,14 +20,15 @@ Triangle::Triangle(std::array<global::Vector, 3> vertices,
     // }
 }
 
+// Moller Trumbore
 bool Triangle::Intersect(Ray *ray, Intersection *intersection) const {
     auto &v0 = vertices_[0], &v1 = vertices_[1], &v2 = vertices_[2];
     global::Vector edge1 = v1 - v0;
     global::Vector edge2 = v2 - v0;
 
-    global::Vector pvec = edge2.cross(ray->direction());
+    global::Vector pvec = ray->direction().cross(edge2);
     float det = edge1.dot(pvec);
-    if (det == 0 || det < 0) {
+    if (det <= 0) {
         return false;
     }
 
@@ -38,7 +39,7 @@ bool Triangle::Intersect(Ray *ray, Intersection *intersection) const {
     }
 
     global::Vector qvec = tvec.cross(edge1);
-    float v = qvec.dot(ray->origin());
+    float v = qvec.dot(ray->direction());
     if (v < 0 || u + v > det) {
         return false;
     }
@@ -50,8 +51,7 @@ bool Triangle::Intersect(Ray *ray, Intersection *intersection) const {
         u *= inv_det;
         v *= inv_det;
         intersection->position = (*ray)(t);
-        // TODO
-        intersection->normal = u * normals_[2] + v * normals_[1] + (1 - u - v) * normals_[0];
+        intersection->normal = (1 - u - v) * normals_[0] + u * normals_[1] + v * normals_[2];
         return true;
     }
     return false;
