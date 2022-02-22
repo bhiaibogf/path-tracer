@@ -12,21 +12,22 @@ PathTracer::PathTracer(const Camera &camera, const Scene &scene) : camera_(camer
 void PathTracer::Render(int spp) {
     ThreadPool pool(std::thread::hardware_concurrency());
     for (int y = 0; y < camera_.height(); y++) {
-        std::future<Eigen::Vector3f> futures[camera_.width()][spp];
+        // std::future<Eigen::Vector3f> futures[camera_.width()][spp];
         for (int x = 0; x < camera_.width(); x++) {
             for (int k = 0; k < spp; k++) {
-                futures[x][k] = pool.enqueue([&]() {
-                    Ray ray = camera_.GenerateRay(x, y);
-                    return scene_.Trace(&ray);
-                });
+                Ray ray = camera_.GenerateRay(x, y);
+                fragment_buffer_[camera_.GetIndex(x, y)] += scene_.Trace(&ray) / spp;
+                // futures[x][k] = pool.enqueue([&]() {
+                //     return scene_.Trace(&ray);
+                // });
             }
         }
-        for (int x = 0; x < camera_.width(); x++) {
-            for (int k = 0; k < spp; k++) {
-                fragment_buffer_[camera_.GetIndex(x, y)] += futures[x][k].get() / spp;
-            }
-        }
-        global::UpdateProgress(y / camera_.height());
+        // for (int x = 0; x < camera_.width(); x++) {
+        //     for (int k = 0; k < spp; k++) {
+        //         fragment_buffer_[camera_.GetIndex(x, y)] += futures[x][k].get() / spp;
+        //     }
+        // }
+        global::UpdateProgress(float(y) / camera_.height());
     }
     global::UpdateProgress(1.f);
 
