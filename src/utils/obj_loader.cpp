@@ -4,45 +4,84 @@
 
 #include "obj_loader.h"
 
-std::vector<Object> obj_loader::Load(const std::string &model_path, const std::string &model_name) {
-    std::string filename = model_path + model_name + "/" + model_name + ".obj";
+ObjLoader::ObjLoader(const std::string &model_path, const std::string &model_name) {
+    model_path_ = model_path + model_name + "/";
+    filename_ = model_path_ + model_name + ".obj";
 
     tinyobj::ObjReaderConfig reader_config;
-    // Path to material files
-    reader_config.mtl_search_path = model_path + model_name + "/";
-    tinyobj::ObjReader reader;
+    reader_config.mtl_search_path = model_path_;
 
-    if (!reader.ParseFromFile(filename, reader_config)) {
-        if (!reader.Error().empty()) {
-            std::cerr << "TinyObjReader: " << reader.Error();
+    if (!reader_.ParseFromFile(filename_, reader_config)) {
+        if (!reader_.Error().empty()) {
+            std::cerr << "TinyObjReader: " << reader_.Error();
         }
         exit(1);
     }
-    if (!reader.Warning().empty()) {
-        std::cout << "TinyObjReader: " << reader.Warning();
+    if (!reader_.Warning().empty()) {
+        std::cout << "TinyObjReader: " << reader_.Warning();
     }
+}
 
-    auto &attrib = reader.GetAttrib();
-    auto &shapes = reader.GetShapes();
-    auto &materials = reader.GetMaterials();
+std::vector<Object> ObjLoader::Load() {
+    LoadMaterials();
+    LoadMeshes();
+    return objects_;
+}
 
-    std::cout << "Loading " << filename << " (" << shapes.size() << " objects)" << std::endl;
-    std::vector<Object> objects;
+void ObjLoader::LoadMaterials() {
+    auto &materials = reader_.GetMaterials();
+    for (const auto &material: materials) {
+        // diffuse
+        global::Color k_d(material.diffuse[0], material.diffuse[1], material.diffuse[2]);
+        std::string diffuse_texture = material.diffuse_texname;
+        // specular
+        global::Color k_s(material.specular[0], material.specular[1], material.specular[2]);
+        std::string specular_texture = material.specular_texname;
+        float n_s = material.shininess;
+        float n_i = material.ior;
+
+        Material *material_;
+        if (k_d != global::kBlack) {
+            if (!diffuse_texture.empty()) {
+                // materials_.push_back(new Lambert(diffuse_texture));
+            } else {
+                material_ = new Lambert(k_d);
+            }
+        } else {
+            if (!specular_texture.empty()) {
+                // materials_.push_back(new Phong(specular_texture, n_s, n_i));
+            } else {
+                material_ = new Phong(k_s, n_s, n_i);
+            }
+        }
+        if (material.name.find("Light") != std::string::npos) {
+            material_->SetEmission({47.8348, 38.5664, 31.0808});
+        }
+        materials_.push_back(material_);
+    }
+}
+
+void ObjLoader::LoadMeshes() {
+    auto &attrib = reader_.GetAttrib();
+    auto &shapes = reader_.GetShapes();
+
+    std::cout << "Loading ./" << filename_ << " (" << shapes.size() << " objects)" << std::endl;
+
     // Loop over shapes
     for (auto &shape: shapes) {
         std::cout << "Loading " << shape.name << "..." << std::endl;
-
         Mesh *mesh = new Mesh();
+
         // Loop over faces(polygon)
         size_t index_offset = 0;
-        for (auto verteices_count: shape.mesh.num_face_vertices) {
+        for (auto vertices_count: shape.mesh.num_face_vertices) {
             std::array<global::Vector, 3> vertices;
             std::array<global::Vector, 3> normals;
             std::array<global::TexCoord, 3> tex_coords;
 
-            assert(verteices_count == 3);
+            assert(vertices_count == 3);
             // Loop over vertices in the face
-            for (size_t idx_in_face = 0; idx_in_face < verteices_count; idx_in_face++) {
+            for (size_t idx_in_face = 0; idx_in_face < vertices_count; idx_in_face++) {
                 tinyobj::index_t idx = shape.mesh.indices[index_offset + idx_in_face];
                 vertices[idx_in_face] = global::Vector(attrib.vertices[3 * idx.vertex_index + 0],
                                                        attrib.vertices[3 * idx.vertex_index + 1],
@@ -62,18 +101,9 @@ std::vector<Object> obj_loader::Load(const std::string &model_path, const std::s
 
             auto *triangle = new Triangle(vertices, normals, tex_coords);
             mesh->Add(triangle);
-            index_offset += verteices_count;
+            index_offset += vertices_count;
         }
 
-        Material *material;
-        auto material_t = materials[shape.mesh.material_ids[0]];
-        material = new Lambert({material_t.diffuse[0], material_t.diffuse[1], material_t.diffuse[2]});
-
-        if (shape.name.find("light") != std::string::npos) {
-            material->SetEmission({47.8348, 38.5664, 31.0808});
-        }
-
-        objects.emplace_back(mesh, material);
+        objects_.emplace_back(mesh, materials_[shape.mesh.material_ids[0]]);
     }
-    return objects;
 }

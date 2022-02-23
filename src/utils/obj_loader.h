@@ -13,9 +13,26 @@
 
 #include "global.h"
 
-namespace obj_loader {
-    std::vector<Object> Load(const std::string &model_path, const std::string &model_name);
-}
+class ObjLoader {
+public:
+    ObjLoader(const std::string &model_path, const std::string &model_name);
+
+    ~ObjLoader() = default;
+
+    std::vector<Object> Load();
+
+private:
+    std::string model_path_, filename_;
+    tinyobj::ObjReader reader_;
+
+    std::vector<Material *> materials_;
+    std::vector<Object> objects_;
+
+    void LoadMaterials();
+
+    void LoadMeshes();
+
+};
 
 
 #endif //PATH_TRACER_OBJ_LOADER_H
