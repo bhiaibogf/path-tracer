@@ -4,14 +4,15 @@
 
 #include "scene.h"
 
-Scene::Scene(std::vector<Object> objects) : objects_(objects) {
-    // TODO
-}
+const Eigen::Vector3f Scene::kBackgroundColor = global::kBlack;
+const float Scene::kEpsilon = 1e-6f;
+const float Scene::kRussianRoulette = 0.8f;
+const int Scene::kMaxBounce = 10;
 
 global::Color Scene::Trace(Ray *ray) const {
     Intersection intersection;
     if (Intersect(ray, &intersection)) {
-        return Shade(intersection);
+        return Shade(intersection, 1);
     }
     return kBackgroundColor;
 }
@@ -27,7 +28,11 @@ bool Scene::Intersect(Ray *ray, Intersection *intersection) const {
     return has_intersection;
 }
 
-global::Color Scene::Shade(const Intersection &intersection) const {
+global::Color Scene::Shade(const Intersection &intersection, int bounce) const {
+    if (bounce > kMaxBounce) {
+        return global::kBlack;
+    }
+
     Material *material = intersection.material;
     auto &position = intersection.position, &normal = intersection.normal, &direction = intersection.direction;
 
@@ -64,14 +69,15 @@ global::Color Scene::Shade(const Intersection &intersection) const {
 
     // indirect light
     global::Color radiance_indirect = global::kBlack;
-    if (RussianRoulette()) {
+    if (RussianRoulette(bounce)) {
         // wi (inter to next)
         auto direction_to_next = material->Sample(direction, normal);
         Ray ray_to_next = Ray(position, direction_to_next);
         Intersection intersection_next;
         if (Intersect(&ray_to_next, &intersection_next)) {
             radiance_indirect =
-                    global::Product(Shade(intersection_next), material->Eval(direction, direction_to_next, normal))
+                    global::Product(Shade(intersection_next, bounce + 1),
+                                    material->Eval(direction, direction_to_next, normal))
                     * normal.dot(direction_to_next)
                     / material->Pdf(direction, direction_to_next, normal)
                     / kRussianRoulette;
@@ -81,7 +87,7 @@ global::Color Scene::Shade(const Intersection &intersection) const {
     return radiance_light + radiance_direct + radiance_indirect;
 }
 
-bool Scene::RussianRoulette() const {
+bool Scene::RussianRoulette(int bounce) {
     return global::Rand() < kRussianRoulette;
 }
 

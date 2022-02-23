@@ -17,30 +17,31 @@
 
 class Scene {
 public:
-    Scene(std::vector<Object> objects);
+    Scene() = default;
 
     ~Scene() = default;
 
     global::Color Trace(Ray *ray) const;
 
-    void AddObject(const Object &object) {
-        objects_.push_back(object);
+    void AddObject(Mesh *mesh, Material *material) {
+        objects_.emplace_back(mesh, material);
     }
 
 private:
-    const Eigen::Vector3f kBackgroundColor = global::kBlack;
-    const float kEpsilon = 1e-6;
-    const float kRussianRoulette = 0.8f;
+    static const Eigen::Vector3f kBackgroundColor;
+    static const float kEpsilon;
+    static const float kRussianRoulette;
+    static const int kMaxBounce;
 
     std::vector<Object> objects_;
 
     bool Intersect(Ray *ray, Intersection *intersection) const;
 
-    global::Color Shade(const Intersection &intersection) const;
+    global::Color Shade(const Intersection &intersection, int bounce) const;
 
     void SampleLight(Intersection *intersection, float *pdf) const;
 
-    bool RussianRoulette() const;
+    static bool RussianRoulette(int bounce);
 
 };
 

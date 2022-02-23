@@ -22,10 +22,9 @@ ObjLoader::ObjLoader(const std::string &model_path, const std::string &model_nam
     }
 }
 
-std::vector<Object> ObjLoader::Load() {
+void ObjLoader::Load(Scene *scene) {
     LoadMaterials();
-    LoadMeshes();
-    return objects_;
+    LoadMeshes(scene);
 }
 
 void ObjLoader::LoadMaterials() {
@@ -63,7 +62,7 @@ void ObjLoader::LoadMaterials() {
     }
 }
 
-void ObjLoader::LoadMeshes() {
+void ObjLoader::LoadMeshes(Scene *scene) {
     auto &attrib = reader_.GetAttrib();
     auto &shapes = reader_.GetShapes();
 
@@ -106,6 +105,6 @@ void ObjLoader::LoadMeshes() {
             index_offset += vertices_count;
         }
 
-        objects_.emplace_back(mesh, materials_[shape.mesh.material_ids[0]]);
+        scene->AddObject(mesh, materials_[shape.mesh.material_ids[0]]);
     }
 }

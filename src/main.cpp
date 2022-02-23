@@ -13,8 +13,9 @@ int main() {
     Camera camera({278, 273, -800}, {278, 273, 0}, {0, 1, 0}, 40.f, 256, 256);
 
     std::string model_path = "scenes/", model_name = "cornell";
+    Scene scene;
     ObjLoader obj_loader(model_path, model_name);
-    Scene scene(obj_loader.Load());
+    obj_loader.Load(&scene);
 
     timer.StopTimer();
     std::cout << "Load complete, using " << timer.GetTime() << " seconds." << std::endl;

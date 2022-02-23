@@ -6,13 +6,13 @@
 #define PATH_TRACER_OBJ_LOADER_H
 
 
-#include "tinyobjloader/tiny_obj_loader.h"
 #include "../material/phong.h"
 #include "../material/lambert.h"
 #include "../material/refraction.h"
 #include "../geometry/object.h"
+#include "../geometry/scene.h"
 
-#include "global.h"
+#include "tinyobjloader/tiny_obj_loader.h"
 
 class ObjLoader {
 public:
@@ -20,18 +20,17 @@ public:
 
     ~ObjLoader() = default;
 
-    std::vector<Object> Load();
+    void Load(Scene *scene);
 
 private:
     std::string model_path_, filename_;
     tinyobj::ObjReader reader_;
 
     std::vector<Material *> materials_;
-    std::vector<Object> objects_;
 
     void LoadMaterials();
 
-    void LoadMeshes();
+    void LoadMeshes(Scene *scene);
 
 };
 
