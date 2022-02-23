@@ -14,6 +14,12 @@ public:
 
     virtual ~Material() = default;
 
+    enum MaterialType {
+        kLambert, kPhong
+    };
+
+    virtual MaterialType Type() const = 0;
+
     virtual bool HasEmitter() const;
 
     void SetEmission(const global::Color &emission) { emission_ = emission; }
@@ -30,6 +36,8 @@ public:
     friend std::ostream &operator<<(std::ostream &os, const Material &material);
 
 protected:
+
+
     global::Color emission_;
 
     static global::Vector ToWorld(const global::Vector &local, const global::Vector &normal);

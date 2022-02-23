@@ -11,6 +11,10 @@ class Lambert : public Material {
 public:
     explicit Lambert(const global::Color &k_d);
 
+    MaterialType Type() const override {
+        return MaterialType::kLambert;
+    }
+
     global::Color Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const override;
 
     global::Vector Sample(const global::Vector &wo, const global::Vector &normal) const override;
