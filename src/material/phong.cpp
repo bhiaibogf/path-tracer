@@ -23,7 +23,7 @@ global::Vector Phong::Sample(const global::Vector &wo, const global::Vector &nor
     if (cos_no > 0) {
         global::Vector reflect = global::Reflect(wo, normal);
 
-        auto xi_1 = global::RandomFloat(), xi_2 = global::RandomFloat();
+        auto xi_1 = global::Rand(), xi_2 = global::Rand();
 
         float z = std::pow(xi_1, 1 / (n_s_ + 1));
         float r = std::sqrt(1 - z * z);

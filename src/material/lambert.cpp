@@ -16,7 +16,7 @@ global::Color Lambert::Eval(const global::Vector &wo, const global::Vector &wi, 
 
 global::Vector Lambert::Sample(const global::Vector &wo, const global::Vector &normal) const {
     // uniform sample on the hemisphere
-    auto xi_1 = global::RandomFloat(), xi_2 = global::RandomFloat();
+    auto xi_1 = global::Rand(), xi_2 = global::Rand();
     float z = xi_1;
     float r = std::sqrt(1.f - z * z), phi = global::kPi2 * xi_2;
     float sin_phi = std::sin(phi), cos_phi = std::cos(phi);

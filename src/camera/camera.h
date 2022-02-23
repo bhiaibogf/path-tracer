@@ -24,7 +24,7 @@ public:
 
     int GetIndex(int x, int y) const;
 
-    Ray GenerateRay(int x, int y) const;
+    Ray GenerateRay(int x, int y, bool antialiasing) const;
 
 private:
     Eigen::Vector3f eye_, look_at_, up_;

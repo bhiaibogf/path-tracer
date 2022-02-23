@@ -59,7 +59,7 @@ bool Triangle::Intersect(Ray *ray, Intersection *intersection) const {
 
 void Triangle::Sample(Intersection *intersection, float *pdf) const {
     // TODO
-    float xi_1 = std::sqrt(global::RandomFloat()), xi_2 = global::RandomFloat();
+    float xi_1 = std::sqrt(global::Rand()), xi_2 = global::Rand();
     intersection->position =
             vertices_[0] * (1.f - xi_1) + vertices_[1] * (xi_1 * (1.f - xi_2)) + vertices_[2] * (xi_1 * xi_2);
     intersection->normal =

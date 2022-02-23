@@ -23,8 +23,12 @@ void global::UpdateProgress(float progress) {
     std::cout.flush();
 }
 
-float global::RandomFloat() {
-    return uniform_(random_engine_);
+float global::Rand() {
+    return uniform_distribution_(random_engine_);
+}
+
+float global::RandN() {
+    return normal_distribution_(random_engine_);
 }
 
 global::Vector global::Reflect(const global::Vector &wi, const global::Vector &normal) {

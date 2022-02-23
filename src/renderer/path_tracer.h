@@ -23,7 +23,7 @@ class PathTracer {
 public:
     PathTracer(const Camera &camera, const Scene &scene);
 
-    void Render(int spp);
+    void Render(int spp, bool antialiasing);
 
     void Save(const std::string &filename);
 

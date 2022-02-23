@@ -10,8 +10,10 @@ int main() {
     Scene scene(obj_loader::Load(model_path, model_name));
 
     PathTracer renderer(camera, scene);
-    renderer.Render(16);
-    renderer.Save("test.exr");
+    int spp = 16;
+    bool antialiasing = true;
+    renderer.Render(spp, antialiasing);
+    renderer.Save(model_name + "-" + std::to_string(spp) + "spp" + (antialiasing ? "-antialiasing" : "") + ".exr");
 
     return 0;
 }

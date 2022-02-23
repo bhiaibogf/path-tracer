@@ -15,7 +15,7 @@ int Camera::GetIndex(int x, int y) const {
     return (height_ - y - 1) * width_ + x;
 }
 
-Ray Camera::GenerateRay(int x, int y) const {
+Ray Camera::GenerateRay(int x, int y, bool antialiasing) const {
     Eigen::Vector3f direction = look_at_ - eye_;
     direction.normalize();
     Eigen::Vector3f right = direction.cross(up_);
@@ -26,8 +26,14 @@ Ray Camera::GenerateRay(int x, int y) const {
     float tangent = std::tan(global::Radius(fov_) / 2.0f);
     auto width = float(width_), height = float(height_), aspect = width / height;
 
-    float x_factor = tangent * aspect * (float(x) + 0.5 - width / 2.f) / (width / 2.f);
-    float y_factor = tangent * (float(y) + 0.5 - height / 2.f) / (height / 2.f);
+    float xx = float(x) + 0.5f, yy = float(y) + 0.5f;
+    if (antialiasing) {
+        xx += global::RandN();
+        yy += global::RandN();
+    }
+    float x_factor = tangent * aspect * (xx - width / 2.f) / (width / 2.f);
+    float y_factor = tangent * (yy - height / 2.f) / (height / 2.f);
+
     Eigen::Vector3f direction_x = x_factor * right;
     Eigen::Vector3f direction_y = y_factor * up;
     Eigen::Vector3f direction_z = direction;
