@@ -25,14 +25,14 @@ global::Vector Phong::Sample(const global::Vector &wo, const global::Vector &nor
 
         auto xi_1 = global::Rand(), xi_2 = global::Rand();
 
-        float z = std::pow(xi_1, 1 / (n_s_ + 1));
-        float r = std::sqrt(1 - z * z);
+        float z = std::pow(xi_1, 1.f / (n_s_ + 1.f));
+        float r = std::sqrt(1.f - z * z);
 
         float phi = global::kPi2 * xi_2;
         float sin_phi = std::sin(phi), cos_phi = std::cos(phi);
 
         global::Vector local(r * cos_phi, r * sin_phi, z);
-        return ToWorld(local, normal);
+        return ToWorld(local, reflect);
     }
     return -wo;
 }
