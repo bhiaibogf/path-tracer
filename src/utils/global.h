@@ -21,6 +21,10 @@ namespace global {
     typedef Eigen::Vector3f Vector;
     typedef Eigen::Vector2f TexCoord;
 
+    std::ostream &operator<<(std::ostream &os, const Eigen::Vector3f &vector);
+
+    std::ostream &operator<<(std::ostream &os, const Eigen::Vector2f &vector);
+
     float Radius(float alpha);
 
     void UpdateProgress(float progress);

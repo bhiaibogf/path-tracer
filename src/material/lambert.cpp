@@ -34,7 +34,8 @@ float Lambert::Pdf(const global::Vector &wo, const global::Vector &wi, const glo
 }
 
 std::ostream &operator<<(std::ostream &os, const Lambert &lambert) {
-    os << "Lambert:\n\tkd = [" << lambert.albedo_ << "]";
+    using namespace global;
+    os << "Lambert:\n\tkd = " << lambert.albedo_;
     if (lambert.HasEmitter()) {
         os << *((Material *) &lambert);
     }

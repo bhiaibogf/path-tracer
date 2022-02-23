@@ -5,11 +5,11 @@
 #include "obj_loader.h"
 
 std::vector<Object> obj_loader::Load(const std::string &model_path, const std::string &model_name) {
-    std::string filename = model_path + "/" + model_name + "/" + model_name + ".obj";
+    std::string filename = model_path + model_name + "/" + model_name + ".obj";
 
     tinyobj::ObjReaderConfig reader_config;
     // Path to material files
-    reader_config.mtl_search_path = model_path + "/" + model_name + "/";
+    reader_config.mtl_search_path = model_path + model_name + "/";
     tinyobj::ObjReader reader;
 
     if (!reader.ParseFromFile(filename, reader_config)) {
@@ -26,6 +26,7 @@ std::vector<Object> obj_loader::Load(const std::string &model_path, const std::s
     auto &shapes = reader.GetShapes();
     auto &materials = reader.GetMaterials();
 
+    std::cout << "Loading " << filename << " (" << shapes.size() << " objects)" << std::endl;
     std::vector<Object> objects;
     // Loop over shapes
     for (auto &shape: shapes) {

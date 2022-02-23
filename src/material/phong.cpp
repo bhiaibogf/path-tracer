@@ -49,7 +49,8 @@ float Phong::Pdf(const global::Vector &wo, const global::Vector &wi, const globa
 }
 
 std::ostream &operator<<(std::ostream &os, const Phong &phong) {
-    os << "Phong:\n\tks = [" << phong.k_s_ << "]\n\tns = " << phong.n_s_ << "\n\tni = " << phong.n_i_;
+    using namespace global;
+    os << "Phong:\n\tks = " << phong.k_s_ << "\n\tns = " << phong.n_s_ << "\n\tni = " << phong.n_i_;
     if (phong.HasEmitter()) {
         os << *((Material *) &phong);
     }

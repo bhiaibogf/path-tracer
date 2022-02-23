@@ -5,7 +5,6 @@
 #include "object.h"
 
 Object::Object(Mesh *mesh, Material *material) : mesh_(mesh), material_(material) {
-    std::cout << *mesh << std::endl;
-    std::cout << *(Lambert *) material << std::endl;
-    puts("");
+    std::cout << "    " << *mesh << std::endl;
+    std::cout << "    " << *(Lambert *) material << std::endl;
 }

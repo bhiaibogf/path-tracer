@@ -38,3 +38,13 @@ global::Vector global::Reflect(const global::Vector &wi, const global::Vector &n
 global::Vector global::Product(const global::Vector &a, const global::Vector &b) {
     return {a.x() * b.x(), a.y() * b.y(), a.z() * b.z()};
 }
+
+std::ostream &global::operator<<(std::ostream &os, const Eigen::Vector3f &vector) {
+    os << "[" << vector.x() << ", " << vector.y() << ", " << vector.z() << "]";
+    return os;
+}
+
+std::ostream &global::operator<<(std::ostream &os, const Eigen::Vector2f &vector) {
+    os << "[" << vector.x() << ", " << vector.y() << "]";
+    return os;
+}

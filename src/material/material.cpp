@@ -26,6 +26,7 @@ global::Vector Material::ToWorld(const global::Vector &local, const global::Vect
 }
 
 std::ostream &operator<<(std::ostream &os, const Material &material) {
-    os << "\n\temission = [" << material.emission_ << "]";
+    using namespace global;
+    os << "\n\temission = " << material.emission_;
     return os;
 }
