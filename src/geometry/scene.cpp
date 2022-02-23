@@ -12,7 +12,7 @@ const int Scene::kMaxBounce = 10;
 global::Color Scene::Trace(Ray *ray) const {
     Intersection intersection;
     if (Intersect(ray, &intersection)) {
-        return Shade(intersection, 1);
+        return Shade(intersection, 1, true);
     }
     return kBackgroundColor;
 }
@@ -28,7 +28,7 @@ bool Scene::Intersect(Ray *ray, Intersection *intersection) const {
     return has_intersection;
 }
 
-global::Color Scene::Shade(const Intersection &intersection, int bounce) const {
+global::Color Scene::Shade(const Intersection &intersection, int bounce, bool need_emission) const {
     if (bounce > kMaxBounce) {
         return global::kBlack;
     }
@@ -38,7 +38,7 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce) const {
 
     // light
     global::Color radiance_light = global::kBlack;
-    if (material->HasEmitter()) {
+    if (need_emission && material->HasEmitter()) {
         radiance_light = material->emission();
     }
 
@@ -76,7 +76,7 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce) const {
         Intersection intersection_next;
         if (Intersect(&ray_to_next, &intersection_next)) {
             radiance_indirect =
-                    global::Product(Shade(intersection_next, bounce + 1),
+                    global::Product(Shade(intersection_next, bounce + 1, false),
                                     material->Eval(direction, direction_to_next, normal))
                     * normal.dot(direction_to_next)
                     / material->Pdf(direction, direction_to_next, normal)
