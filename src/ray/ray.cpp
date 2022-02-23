@@ -4,8 +4,10 @@
 
 #include "ray.h"
 
+const float Ray::kEpsilon = 1e-4f;
+
 Ray::Ray(const Eigen::Vector3f &origin, const Eigen::Vector3f &direction) : origin_(origin), direction_(direction) {
-    t_ = t_min_ = 0.f;
+    t_min_ = kEpsilon;
     t_max_ = std::numeric_limits<float>::max();
 }
 
@@ -14,7 +16,7 @@ Eigen::Vector3f Ray::operator()(float t) const {
 }
 
 std::ostream &operator<<(std::ostream &os, const Ray &ray) {
-    os << "(" << ray.origin_ << ")->(" << ray.direction_ << "): " << ray.t_ << "\n";
+    os << "(" << ray.origin_ << ")->(" << ray.direction_ << "): " << ray.t_min_ << "\n";
     return os;
 }
 

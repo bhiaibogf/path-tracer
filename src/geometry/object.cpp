@@ -13,5 +13,8 @@ Object::Object(Mesh *mesh, Material *material) : mesh_(mesh), material_(material
         case Material::kPhong:
             std::cout << "    " << *(Phong *) material_ << std::endl;
             break;
+        case Material::kRefraction:
+            std::cout << "    " << *(Refraction *) material_ << std::endl;
+            break;
     }
 }

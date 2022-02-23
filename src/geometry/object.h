@@ -10,6 +10,7 @@
 #include "../material/material.h"
 #include "../material/lambert.h"
 #include "../material/phong.h"
+#include "../material/refraction.h"
 #include "../ray/ray.h"
 #include "intersection.h"
 #include "mesh.h"

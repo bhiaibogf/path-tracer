@@ -25,8 +25,10 @@ public:
     friend std::ostream &operator<<(std::ostream &os, const Ray &ray);
 
 private:
+    static const float kEpsilon;
+
     Eigen::Vector3f origin_, direction_;
-    float t_, t_min_, t_max_;
+    float t_min_, t_max_;
 
 };
 

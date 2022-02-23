@@ -15,7 +15,7 @@ public:
     virtual ~Material() = default;
 
     enum MaterialType {
-        kLambert, kPhong
+        kLambert, kPhong, kRefraction
     };
 
     virtual MaterialType Type() const = 0;

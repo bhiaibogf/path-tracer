@@ -47,12 +47,14 @@ void ObjLoader::LoadMaterials() {
             } else {
                 material_ = new Lambert(k_d);
             }
-        } else {
+        } else if (k_s != global::kBlack) {
             if (!specular_texture.empty()) {
                 // materials_.push_back(new Phong(specular_texture, n_s, n_i));
             } else {
                 material_ = new Phong(k_s, n_s, n_i);
             }
+        } else {
+            material_ = new Refraction(n_i);
         }
         if (material.name.find("Light") != std::string::npos) {
             material_->SetEmission({47.8348, 38.5664, 31.0808});

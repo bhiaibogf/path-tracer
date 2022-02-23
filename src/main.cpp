@@ -10,7 +10,7 @@ int main() {
     timer.StartTimer();
     std::cout << "Loading scene..." << std::endl;
 
-    Camera camera({278, 273, -800}, {278, 273, 0}, {0, 1, 0}, 40.f, 400, 300);
+    Camera camera({278, 273, -800}, {278, 273, 0}, {0, 1, 0}, 40.f, 256, 256);
 
     std::string model_path = "scenes/", model_name = "cornell";
     ObjLoader obj_loader(model_path, model_name);

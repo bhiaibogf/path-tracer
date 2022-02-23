@@ -42,6 +42,10 @@ namespace global {
 
     Vector Reflect(const Vector &wi, const Vector &normal);
 
+    Vector Refract(const Vector &wi, const Vector &normal, float ior);
+
+    float Schlick(const Vector &wi, const Vector &normal, float ior);
+
     Vector Product(const Vector &a, const Vector &b);
 
 }

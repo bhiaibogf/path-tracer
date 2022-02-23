@@ -1,17 +1,18 @@
 //
-// Created by bhiaibogf on 2022/2/22.
+// Created by bhiaibogf on 2022/2/23.
 //
 
-#ifndef PATH_TRACER_LAMBERT_H
-#define PATH_TRACER_LAMBERT_H
+#ifndef PATH_TRACER_REFRACTION_H
+#define PATH_TRACER_REFRACTION_H
+
 
 #include "material.h"
 
-class Lambert : public Material {
+class Refraction : public Material {
 public:
-    explicit Lambert(const global::Color &k_d);
+    Refraction(float n_i_);
 
-    MaterialType Type() const override { return MaterialType::kLambert; }
+    MaterialType Type() const override { return kRefraction; }
 
     global::Color Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const override;
 
@@ -19,12 +20,12 @@ public:
 
     float Pdf(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const override;
 
-    friend std::ostream &operator<<(std::ostream &os, const Lambert &lambert);
+    friend std::ostream &operator<<(std::ostream &os, const Refraction &refraction);
 
 private:
-    global::Color albedo_;
+    float ior_;
 
 };
 
 
-#endif //PATH_TRACER_LAMBERT_H
+#endif //PATH_TRACER_REFRACTION_H

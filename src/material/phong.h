@@ -12,9 +12,7 @@ class Phong : public Material {
 public:
     Phong(const global::Color &k_s, float n_s, float n_i = 1.f);
 
-    MaterialType Type() const override {
-        return MaterialType::kPhong;
-    }
+    MaterialType Type() const override { return MaterialType::kPhong; }
 
     global::Color Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const override;
 
