@@ -42,4 +42,5 @@ void PathTracer::Save(const std::string &filename) {
     cv::cvtColor(*fragment_mat_, *fragment_mat_, cv::COLOR_BGR2RGB);
     // fragment_mat_->convertTo(*fragment_mat_, CV_8UC3, 255.0f);
     cv::imwrite(filename, *fragment_mat_);
+    std::cout << "\nImage saved to ./" << filename << std::endl;
 }

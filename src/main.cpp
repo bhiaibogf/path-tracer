@@ -25,10 +25,11 @@ int main() {
     int spp = 16;
     bool antialiasing = true;
     renderer.Render(spp, antialiasing);
-    renderer.Save(model_name + "-" + std::to_string(spp) + "spp" + (antialiasing ? "-antialiasing" : "") + ".exr");
 
     timer.StopTimer();
     std::cout << "\nRender complete, using " << timer.GetTime() << " seconds." << std::endl;
+
+    renderer.Save(model_name + "-" + std::to_string(spp) + "spp" + (antialiasing ? "-antialiasing" : "") + ".exr");
 
     return 0;
 }
