@@ -8,8 +8,8 @@
 
 #include "../utils/global.h"
 #include "../material/material.h"
+#include "../material/lambert.h"
 #include "../material/phong.h"
-#include "../material/light.h"
 #include "../ray/ray.h"
 #include "intersection.h"
 #include "mesh.h"

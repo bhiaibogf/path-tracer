@@ -10,9 +10,15 @@
 
 class Material {
 public:
-    virtual bool IsEmitter() const = 0;
+    Material();
 
-    virtual global::Color emission() const = 0;
+    virtual ~Material() = default;
+
+    virtual bool HasEmitter() const;
+
+    void SetEmission(const global::Color &emission) { emission_ = emission; }
+
+    auto emission() const { return emission_; }
 
     virtual global::Color
     Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const = 0;
@@ -21,7 +27,11 @@ public:
 
     virtual float Pdf(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const = 0;
 
+    friend std::ostream &operator<<(std::ostream &os, const Material &material);
+
 protected:
+    global::Color emission_;
+
     static global::Vector ToWorld(const global::Vector &local, const global::Vector &normal);
 
 };

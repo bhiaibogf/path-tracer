@@ -33,9 +33,8 @@ global::Color Scene::Shade(const Intersection &intersection) const {
 
     // light
     global::Color radiance_light = global::kBlack;
-    if (material->IsEmitter()) {
+    if (material->HasEmitter()) {
         radiance_light = material->emission();
-        return radiance_light;
     }
 
     // direct light
@@ -89,7 +88,7 @@ bool Scene::RussianRoulette() const {
 void Scene::SampleLight(Intersection *intersection, float *pdf) const {
     float area_sum = 0;
     for (const auto &object: objects_) {
-        if (object.material()->IsEmitter()) {
+        if (object.material()->HasEmitter()) {
             area_sum += object.Area();
         }
     }
@@ -97,7 +96,7 @@ void Scene::SampleLight(Intersection *intersection, float *pdf) const {
     float random_area = global::RandomFloat() * area_sum;
     area_sum = 0;
     for (const auto &object: objects_) {
-        if (object.material()->IsEmitter()) {
+        if (object.material()->HasEmitter()) {
             area_sum += object.Area();
             if (random_area <= area_sum) {
                 intersection->material = object.material();

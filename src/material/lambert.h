@@ -11,12 +11,6 @@ class Lambert : public Material {
 public:
     explicit Lambert(const global::Color &k_d);
 
-    ~Lambert() = default;
-
-    bool IsEmitter() const override;
-
-    global::Color emission() const override;
-
     global::Color Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const override;
 
     global::Vector Sample(const global::Vector &wo, const global::Vector &normal) const override;

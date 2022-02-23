@@ -10,13 +10,7 @@
 
 class Phong : public Material {
 public:
-    Phong(const global::Color &k_d, const global::Color &k_s, float n_s, float n_i);
-
-    ~Phong() = default;
-
-    bool IsEmitter() const override;
-
-    global::Color emission() const override;
+    Phong(const global::Color &k_s, float n_s, float n_i = 1.f);
 
     global::Color Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const override;
 
@@ -27,7 +21,7 @@ public:
     friend std::ostream &operator<<(std::ostream &os, const Phong &phong);
 
 private:
-    global::Color k_d_, k_s_;
+    global::Color k_s_;
     float n_s_, n_i_;
 
 };
