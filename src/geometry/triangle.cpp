@@ -57,6 +57,33 @@ bool Triangle::Intersect(Ray *ray, Intersection *intersection) const {
     return false;
 }
 
+// // 6.837
+// bool Triangle::Intersect(Ray *ray, Intersection *intersection) const {
+//     float aa[] = {vertices_[0].x() - vertices_[1].x(), vertices_[0].x() - vertices_[2].x(), ray->direction().x(), 0.f,
+//                   vertices_[0].y() - vertices_[1].y(), vertices_[0].y() - vertices_[2].y(), ray->direction().y(), 0.f,
+//                   vertices_[0].z() - vertices_[1].z(), vertices_[0].z() - vertices_[2].z(), ray->direction().z(), 0.f,
+//                   0.f, 0.f, 0.f, 1.f};
+//     Eigen::Matrix4f A(aa);
+//     A.transposeInPlace();
+//
+//     Eigen::Vector4f b{vertices_[0].x() - ray->origin().x(), vertices_[0].y() - ray->origin().y(),
+//                       vertices_[0].z() - ray->origin().z(), 0.f};
+//
+//     if (A.determinant() == 0) {
+//         return false;
+//     }
+//
+//     b = A.inverse() * b;
+//
+//     float beta = b[0], gamma = b[1], t = b[2];
+//     if (beta + gamma <= 1 && beta >= 0 && gamma >= 0 && ray->Update(t)) {
+//         intersection->position = (*ray)(t);
+//         intersection->normal = (1 - beta - gamma) * normals_[0] + beta * normals_[1] + gamma * normals_[2];
+//         return true;
+//     }
+//     return false;
+// }
+
 void Triangle::Sample(Intersection *intersection, float *pdf) const {
     // TODO
     float xi_1 = std::sqrt(global::Rand()), xi_2 = global::Rand();
