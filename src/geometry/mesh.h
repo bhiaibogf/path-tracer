@@ -6,7 +6,6 @@
 #define PATH_TRACER_MESH_H
 
 
-#include "primitive.h"
 #include "triangle.h"
 
 class Mesh : public Primitive {

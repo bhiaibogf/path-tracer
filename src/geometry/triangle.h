@@ -6,8 +6,6 @@
 #define PATH_TRACER_TRIANGLE_H
 
 
-#include <utility>
-
 #include "primitive.h"
 
 class Triangle : public Primitive {

@@ -6,14 +6,7 @@
 #define PATH_TRACER_SCENE_H
 
 
-#include "intersection.h"
 #include "object.h"
-#include "../material/material.h"
-#include "../ray/ray.h"
-#include "../utils/global.h"
-
-#include <iostream>
-#include <random>
 
 class Scene {
 public:

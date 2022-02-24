@@ -7,8 +7,8 @@
 
 #include <eigen3/Eigen/Eigen>
 
-#include <iostream>
 #include <cmath>
+#include <iostream>
 #include <random>
 
 namespace global {

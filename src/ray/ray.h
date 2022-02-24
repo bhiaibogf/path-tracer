@@ -8,8 +8,6 @@
 
 #include "../utils/global.h"
 
-#include <eigen3/Eigen/Eigen>
-
 class Ray {
 public:
     Ray(const Eigen::Vector3f &origin, const Eigen::Vector3f &direction);

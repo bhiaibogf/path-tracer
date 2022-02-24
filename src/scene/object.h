@@ -6,14 +6,10 @@
 #define PATH_TRACER_OBJECT_H
 
 
-#include "../utils/global.h"
-#include "../material/material.h"
+#include "../geometry/mesh.h"
 #include "../material/lambert.h"
 #include "../material/phong.h"
 #include "../material/refraction.h"
-#include "../ray/ray.h"
-#include "intersection.h"
-#include "mesh.h"
 
 class Object {
 public:
@@ -27,17 +23,9 @@ public:
         return mesh_->area();
     }
 
-    bool Intersect(Ray *ray, Intersection *intersection) const {
-        if (mesh_->Intersect(ray, intersection)) {
-            intersection->material = material_;
-            return true;
-        }
-        return false;
-    }
+    bool Intersect(Ray *ray, Intersection *intersection) const;
 
-    void Sample(Intersection *intersection, float *pdf) const {
-        return mesh_->Sample(intersection, pdf);
-    }
+    void Sample(Intersection *intersection, float *pdf) const;
 
 private:
     Mesh *mesh_;

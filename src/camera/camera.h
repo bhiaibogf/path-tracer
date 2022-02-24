@@ -7,9 +7,6 @@
 
 
 #include "../ray/ray.h"
-#include "../utils/global.h"
-
-#include <eigen3/Eigen/Eigen>
 
 class Camera {
 public:

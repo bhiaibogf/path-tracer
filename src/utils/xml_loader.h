@@ -6,7 +6,6 @@
 #define PATH_TRACER_XML_LOADER_H
 
 
-#include "../utils/global.h"
 #include "../camera/camera.h"
 
 #include "tinyxml2/tinyxml2.h"

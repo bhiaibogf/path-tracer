@@ -8,7 +8,7 @@
 
 #include "../utils/global.h"
 #include "../ray/ray.h"
-#include "intersection.h"
+#include "../ray/intersection.h"
 
 class Primitive {
 public:

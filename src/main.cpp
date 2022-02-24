@@ -1,5 +1,5 @@
 #include "camera/camera.h"
-#include "geometry/scene.h"
+#include "scene/scene.h"
 #include "renderer/path_tracer.h"
 #include "utils/obj_loader.h"
 #include "utils/timer.h"

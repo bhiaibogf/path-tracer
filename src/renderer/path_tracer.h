@@ -7,17 +7,11 @@
 
 
 #include "../camera/camera.h"
-#include "../geometry/scene.h"
-#include "../ray/ray.h"
-#include "../utils/global.h"
+#include "../scene/scene.h"
 
 #include "ThreadPool/ThreadPool.h"
 
-#include <eigen3/Eigen/Core>
 #include <opencv2/opencv.hpp>
-
-#include <iostream>
-#include <vector>
 
 class PathTracer {
 public:

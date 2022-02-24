@@ -9,8 +9,7 @@
 #include "../material/phong.h"
 #include "../material/lambert.h"
 #include "../material/refraction.h"
-#include "../geometry/object.h"
-#include "../geometry/scene.h"
+#include "../scene/scene.h"
 
 #include "tinyobjloader/tiny_obj_loader.h"
 
