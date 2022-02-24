@@ -14,15 +14,15 @@ bool Material::HasEmitter() const {
 
 global::Vector Material::ToWorld(const global::Vector &local, const global::Vector &normal) {
     global::Vector t, b;
-    if (std::fabs(normal.x()) > std::fabs(normal.y())) {
-        float len = 1.f / std::sqrt(normal.x() * normal.x() + normal.z() * normal.z());
-        b = global::Vector(normal.z() / len, 0.f, -normal.x() / len);
+    if (std::abs(normal.x()) > std::abs(normal.y())) {
+        float inv_len = 1.f / std::sqrt(normal.x() * normal.x() + normal.z() * normal.z());
+        b = global::Vector(normal.z() * inv_len, 0.f, -normal.x() * inv_len);
     } else {
-        float len = 1.0f / std::sqrt(normal.y() * normal.y() + normal.z() * normal.z());
-        b = global::Vector(0.f, normal.z() / len, -normal.y() / len);
+        float inv_len = 1.f / std::sqrt(normal.y() * normal.y() + normal.z() * normal.z());
+        b = global::Vector(0.f, normal.z() * inv_len, -normal.y() * inv_len);
     }
     t = b.cross(normal);
-    return local.x() * t + local.y() * b + local.z() * normal;
+    return (local.x() * t + local.y() * b + local.z() * normal).normalized();
 }
 
 std::ostream &operator<<(std::ostream &os, const Material &material) {
