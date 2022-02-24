@@ -3,6 +3,7 @@
 #include "renderer/path_tracer.h"
 #include "utils/obj_loader.h"
 #include "utils/timer.h"
+#include "utils/xml_loader.h"
 
 int main() {
     Timer timer;
@@ -10,12 +11,14 @@ int main() {
     timer.StartTimer();
     std::cout << "Loading scene..." << std::endl;
 
-    Camera camera({278, 273, -800}, {278, 273, 0}, {0, 1, 0}, 40.f, 256, 256);
-
     std::string model_path = "scenes/", model_name = "cornell";
-    Scene scene;
+
+    XmlLoader loader(model_path + model_name + "/" + model_name + ".xml");
+    Camera *camera = loader.LoadCamera();
+
     ObjLoader obj_loader(model_path, model_name);
-    obj_loader.Load(&scene);
+    auto scene = new Scene();
+    obj_loader.Load(scene);
 
     timer.StopTimer();
     std::cout << "Load complete, using " << timer.GetTime() << " seconds." << std::endl;

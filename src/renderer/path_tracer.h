@@ -21,15 +21,15 @@
 
 class PathTracer {
 public:
-    PathTracer(const Camera &camera, const Scene &scene);
+    PathTracer(const Camera *camera, const Scene *scene);
 
     void Render(int spp, bool antialiasing);
 
     void Save(const std::string &filename);
 
 private:
-    Camera camera_;
-    Scene scene_;
+    const Camera *camera_;
+    const Scene *scene_;
     std::vector<Eigen::Vector3f> fragment_buffer_;
 
 };
