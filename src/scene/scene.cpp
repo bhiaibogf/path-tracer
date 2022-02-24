@@ -72,7 +72,7 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce) const {
     if (RussianRoulette(bounce)) {
         // wi (inter to next)
         auto direction_to_next = material->Sample(direction, normal);
-        global::Vector position_new = position + normal * (normal.dot(direction_to_next) > 0 ? 1e-4 : -1e-4);
+        global::Vector position_new = position + normal * (normal.dot(direction_to_next) > 0 ? kEpsilon : -kEpsilon);
         // global::Vector position_new = position;
         Ray ray_to_next = Ray(position_new, direction_to_next);
         Intersection intersection_next;
