@@ -16,7 +16,8 @@ Eigen::Vector3f Ray::operator()(float t) const {
 }
 
 std::ostream &operator<<(std::ostream &os, const Ray &ray) {
-    os << "(" << ray.origin_ << ")->(" << ray.direction_ << "): " << ray.t_min_ << "\n";
+    using namespace global;
+    os << ray.origin_ << " -> " << ray(ray.t_max_) << ": " << ray.direction_ << " * " << ray.t_max_ << "\n";
     return os;
 }
 

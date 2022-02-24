@@ -6,6 +6,8 @@
 #define PATH_TRACER_RAY_H
 
 
+#include "../utils/global.h"
+
 #include <eigen3/Eigen/Eigen>
 
 class Ray {
