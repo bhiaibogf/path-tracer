@@ -30,7 +30,7 @@ private:
 
     bool Intersect(Ray *ray, Intersection *intersection) const;
 
-    global::Color Shade(const Intersection &intersection, int bounce, bool need_emission) const;
+    global::Color Shade(const Intersection &intersection, int bounce) const;
 
     void SampleLight(Intersection *intersection, float *pdf) const;
 
