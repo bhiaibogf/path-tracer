@@ -29,6 +29,8 @@ namespace global {
     const Color kBlack = Eigen::Vector3f(0.f, 0.f, 0.f);
     const Color kWhite = Eigen::Vector3f(1.f, 1.f, 1.f);
 
+    const Vector kNone = Eigen::Vector3f(0.f, 0.f, 0.f);
+
     void UpdateProgress(float progress);
 
     float Radius(float alpha);
