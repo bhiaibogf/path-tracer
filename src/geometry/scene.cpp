@@ -4,7 +4,7 @@
 
 #include "scene.h"
 
-const Eigen::Vector3f Scene::kBackgroundColor = global::kBlack;
+const Eigen::Vector3f Scene::kBackgroundColor = global::Color(0.2f, 0.4f, 0.8f);
 const float Scene::kEpsilon = 1e-6f;
 const float Scene::kRussianRoulette = 0.8f;
 const int Scene::kMaxBounce = 10;
@@ -72,15 +72,23 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce, bool ne
     if (RussianRoulette(bounce)) {
         // wi (inter to next)
         auto direction_to_next = material->Sample(direction, normal);
-        Ray ray_to_next = Ray(position, direction_to_next);
+        global::Vector position_new = position + normal * (normal.dot(direction_to_next) > 0 ? 1e-4 : -1e-4);
+        // global::Vector position_new = position;
+        Ray ray_to_next = Ray(position_new, direction_to_next);
         Intersection intersection_next;
         if (Intersect(&ray_to_next, &intersection_next)) {
-            radiance_indirect =
-                    global::Product(Shade(intersection_next, bounce + 1, false),
-                                    material->Eval(direction, direction_to_next, normal))
-                    * normal.dot(direction_to_next)
-                    / material->Pdf(direction, direction_to_next, normal)
-                    / kRussianRoulette;
+            if (intersection.material->Type() == Material::kRefraction) {
+                radiance_indirect = global::Product(Shade(intersection_next, bounce + 1, false),
+                                                    material->Eval(direction, direction_to_next, normal))
+                                    / kRussianRoulette;
+            } else {
+                radiance_indirect =
+                        global::Product(Shade(intersection_next, bounce + 1, false),
+                                        material->Eval(direction, direction_to_next, normal))
+                        * normal.dot(direction_to_next)
+                        / material->Pdf(direction, direction_to_next, normal)
+                        / kRussianRoulette;
+            }
         }
     }
 

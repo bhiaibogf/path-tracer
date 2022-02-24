@@ -4,7 +4,7 @@
 
 #include "ray.h"
 
-const float Ray::kEpsilon = 1e-4f;
+const float Ray::kEpsilon = 0.f;
 
 Ray::Ray(const Eigen::Vector3f &origin, const Eigen::Vector3f &direction) : origin_(origin), direction_(direction) {
     t_min_ = kEpsilon;
