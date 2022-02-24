@@ -32,8 +32,7 @@ float Lambert::Pdf(const global::Vector &wo, const global::Vector &wi, const glo
     if (normal.dot(wo) <= 0 || cos_theta <= 0) {
         return 0.f;
     } else {
-        float sin_theta = std::sqrt(1.f - cos_theta * cos_theta);
-        return cos_theta * sin_theta * global::kInvPi;
+        return cos_theta * global::kInvPi;
     }
 }
 
