@@ -96,7 +96,7 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce, bool ne
 }
 
 bool Scene::RussianRoulette(int bounce) {
-    return global::Rand() < kRussianRoulette;
+    return generator::Rand() < kRussianRoulette;
 }
 
 void Scene::SampleLight(Intersection *intersection, float *pdf) const {
@@ -107,7 +107,7 @@ void Scene::SampleLight(Intersection *intersection, float *pdf) const {
         }
     }
 
-    float random_area = global::Rand() * area_sum;
+    float random_area = generator::Rand() * area_sum;
     area_sum = 0;
     for (const auto &object: objects_) {
         if (object.material()->HasEmitter()) {

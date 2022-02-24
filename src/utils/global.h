@@ -9,13 +9,12 @@
 
 #include <cmath>
 #include <iostream>
-#include <random>
 
 namespace global {
     const float kPi = M_PI;
-    const float kPi2 = M_PI_2;
-    const float k1PI = M_1_PI;
-    const Eigen::Vector3f kBlack = Eigen::Vector3f(0.f, 0.f, 0.f);
+    const float kTwoPi = M_PI_2;
+    const float kInvPi = M_1_PI;
+    const float kInvTwoPi = M_1_PI / 2.f;
 
     typedef Eigen::Vector3f Color;
     typedef Eigen::Vector3f Vector;
@@ -25,28 +24,20 @@ namespace global {
 
     std::ostream &operator<<(std::ostream &os, const Eigen::Vector2f &vector);
 
-    float Radius(float alpha);
+    Vector Product(const Vector &a, const Vector &b);
+
+    const Color kBlack = Eigen::Vector3f(0.f, 0.f, 0.f);
+    const Color kWhite = Eigen::Vector3f(1.f, 1.f, 1.f);
 
     void UpdateProgress(float progress);
 
-    namespace {
-        std::random_device rd_;
-        std::default_random_engine random_engine_(rd_());
-        std::uniform_real_distribution<float> uniform_distribution_(0.f, 1.f);
-        std::normal_distribution<float> normal_distribution_(0.f, 0.5f);
-    }
-
-    float Rand();
-
-    float RandN();
+    float Radius(float alpha);
 
     Vector Reflect(const Vector &wi, const Vector &normal);
 
     Vector Refract(const Vector &wi, const Vector &normal, float ior);
 
     float Schlick(const Vector &wi, const Vector &normal, float ior);
-
-    Vector Product(const Vector &a, const Vector &b);
 
 }
 

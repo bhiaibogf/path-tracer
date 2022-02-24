@@ -8,7 +8,7 @@ Lambert::Lambert(const global::Color &k_d) : albedo_(k_d) {}
 
 global::Color Lambert::Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const {
     if (normal.dot(wi) > 0) {
-        return albedo_ * global::k1PI;
+        return albedo_ * global::kInvPi;
     } else {
         return global::kBlack;
     }
@@ -16,9 +16,9 @@ global::Color Lambert::Eval(const global::Vector &wo, const global::Vector &wi, 
 
 global::Vector Lambert::Sample(const global::Vector &wo, const global::Vector &normal) const {
     // uniform sample on the hemisphere
-    auto xi_1 = global::Rand(), xi_2 = global::Rand();
+    auto xi_1 = generator::Rand(), xi_2 = generator::Rand();
     float z = xi_1;
-    float r = std::sqrt(1.f - z * z), phi = global::kPi2 * xi_2;
+    float r = std::sqrt(1.f - z * z), phi = global::kTwoPi * xi_2;
     float sin_phi = std::sin(phi), cos_phi = std::cos(phi);
     global::Vector local(r * cos_phi, r * sin_phi, z);
     return ToWorld(local, normal);
@@ -27,7 +27,7 @@ global::Vector Lambert::Sample(const global::Vector &wo, const global::Vector &n
 float Lambert::Pdf(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const {
     // uniform sample probability 1 / (2 * PI)
     if (normal.dot(wi) > 0) {
-        return 1.f / global::kPi2;
+        return 1.f / global::kTwoPi;
     } else {
         return 0.f;
     }

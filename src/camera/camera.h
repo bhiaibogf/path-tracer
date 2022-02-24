@@ -6,6 +6,7 @@
 #define PATH_TRACER_CAMERA_H
 
 
+#include "../utils/generator.h"
 #include "../ray/ray.h"
 
 class Camera {

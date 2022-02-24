@@ -15,7 +15,7 @@ bool Mesh::Intersect(Ray *ray, Intersection *intersection) const {
 }
 
 void Mesh::Sample(Intersection *intersection, float *pdf) const {
-    float random_area = global::Rand() * area_;
+    float random_area = generator::Rand() * area_;
     float area_sum = 0;
     for (const auto &triangle: triangles_) {
         area_sum += triangle->area();

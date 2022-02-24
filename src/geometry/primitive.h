@@ -7,6 +7,7 @@
 
 
 #include "../utils/global.h"
+#include "../utils/generator.h"
 #include "../ray/ray.h"
 #include "../ray/intersection.h"
 

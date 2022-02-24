@@ -28,8 +28,8 @@ Ray Camera::GenerateRay(int x, int y, bool antialiasing) const {
 
     float xx = float(x) + 0.5f, yy = float(y) + 0.5f;
     if (antialiasing) {
-        xx += global::RandN();
-        yy += global::RandN();
+        xx += generator::RandN();
+        yy += generator::RandN();
     }
     float x_factor = tangent * aspect * (xx - width / 2.f) / (width / 2.f);
     float y_factor = tangent * (yy - height / 2.f) / (height / 2.f);

@@ -6,6 +6,7 @@
 #define PATH_TRACER_MATERIAL_H
 
 
+#include "../utils/generator.h"
 #include "../utils/global.h"
 
 class Material {

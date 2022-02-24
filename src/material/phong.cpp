@@ -12,7 +12,7 @@ global::Color Phong::Eval(const global::Vector &wo, const global::Vector &wi, co
         global::Vector reflect = global::Reflect(wi, normal);
         float alpha = wo.dot(reflect);
         if (alpha > 0) {
-            return k_s_ * (n_s_ + 2) / global::kPi2 * std::pow(alpha, n_s_);
+            return k_s_ * (n_s_ + 2) / global::kTwoPi * std::pow(alpha, n_s_);
         }
     }
     return global::kBlack;
@@ -23,12 +23,12 @@ global::Vector Phong::Sample(const global::Vector &wo, const global::Vector &nor
     if (cos_no > 0) {
         global::Vector reflect = global::Reflect(wo, normal);
 
-        auto xi_1 = global::Rand(), xi_2 = global::Rand();
+        auto xi_1 = generator::Rand(), xi_2 = generator::Rand();
 
         float z = std::pow(xi_1, 1.f / (n_s_ + 1.f));
         float r = std::sqrt(1.f - z * z);
 
-        float phi = global::kPi2 * xi_2;
+        float phi = global::kTwoPi * xi_2;
         float sin_phi = std::sin(phi), cos_phi = std::cos(phi);
 
         global::Vector local(r * cos_phi, r * sin_phi, z);
@@ -42,7 +42,7 @@ float Phong::Pdf(const global::Vector &wo, const global::Vector &wi, const globa
         global::Vector reflect = global::Reflect(wi, normal);
         float alpha = wo.dot(reflect);
         if (alpha > 0) {
-            return (n_s_ + 1) / global::kPi2 * std::pow(alpha, n_s_);
+            return (n_s_ + 1) / global::kTwoPi * std::pow(alpha, n_s_);
         }
     }
     return 0;
