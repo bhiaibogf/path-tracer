@@ -13,39 +13,23 @@
 
 class Object {
 public:
-    Object() = default;
+    Object();
 
     virtual ~Object() = default;
 
-    void SetMesh(Mesh *mesh) {
-        std::cout << "  " << *mesh << std::endl;
-        mesh_ = mesh;
-    }
+    void SetMesh(Mesh *mesh);
 
-    void SetMaterial(Material *material) {
-        switch (material_->Type()) {
-            case Material::kLambert:
-                std::cout << "  " << *(Lambert *) material_ << std::endl;
-                break;
-            case Material::kPhong:
-                std::cout << "  " << *(Phong *) material_ << std::endl;
-                break;
-            case Material::kRefraction:
-                std::cout << "  " << *(Refraction *) material_ << std::endl;
-                break;
-        }
-        material_ = material;
-    }
+    void SetMaterial(Material *material);
 
     auto material() const { return material_; }
 
-    auto Area() const { return mesh_->area(); }
+    void InsertTo(std::vector<Primitive *> *primitives) const;
 
     bool Intersect(Ray *ray, Intersection *intersection) const;
 
-    void Sample(Intersection *intersection, float *pdf) const;
+    auto Area() const { return mesh_->area(); }
 
-    void InsertTo(std::vector<Primitive *> *primitives) const { mesh_->InsertTo(primitives); }
+    void Sample(Intersection *intersection, float *pdf) const;
 
 private:
     Mesh *mesh_;
