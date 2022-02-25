@@ -9,22 +9,36 @@ XmlLoader::XmlLoader(const std::string &file_name) {
 }
 
 Camera *XmlLoader::LoadCamera() {
-    auto ls = doc_.FirstChildElement("camera");
+    auto camera = doc_.FirstChildElement("camera");
 
     global::Vector eye, lookat, up;
-    eye = LoadVector(ls->FirstChildElement("eye"));
-    lookat = LoadVector(ls->FirstChildElement("lookat"));
-    up = LoadVector(ls->FirstChildElement("up"));
+    eye = LoadVector(camera->FirstChildElement("eye"));
+    lookat = LoadVector(camera->FirstChildElement("lookat"));
+    up = LoadVector(camera->FirstChildElement("up"));
 
-    float fovy = ls->FirstChildElement("fovy")->FirstAttribute()->FloatValue();
-    int width = ls->FirstChildElement("width")->FirstAttribute()->IntValue();
-    int height = ls->FirstChildElement("height")->FirstAttribute()->IntValue();
+    float fovy = camera->FirstChildElement("fovy")->FirstAttribute()->FloatValue();
+    int width = camera->FirstChildElement("width")->FirstAttribute()->IntValue();
+    int height = camera->FirstChildElement("height")->FirstAttribute()->IntValue();
 
     return new Camera(eye, lookat, up, fovy, width, height);
 }
 
+void XmlLoader::LoadLights(std::vector<global::Vector> *lights) {
+    for (auto light = doc_.FirstChildElement(); light; light = light->NextSiblingElement()) {
+        if (!light->Attribute("mtlname")) {
+            continue;
+        }
+        global::Vector radiance = LoadVector(light->Attribute("radiance"));
+        lights->push_back(radiance);
+    }
+}
+
 global::Vector XmlLoader::LoadVector(const tinyxml2::XMLElement *element) {
-    std::stringstream ss(element->FirstAttribute()->Value());
+    return LoadVector(element->FirstAttribute()->Value());
+}
+
+global::Vector XmlLoader::LoadVector(const std::string &string) {
+    std::stringstream ss(string);
     float x, y, z;
     char c;
     ss >> x >> c >> y >> c >> z;

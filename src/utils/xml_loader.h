@@ -18,10 +18,14 @@ public:
 
     Camera *LoadCamera();
 
+    void LoadLights(std::vector<global::Vector> *lights);
+
 private:
     tinyxml2::XMLDocument doc_;
 
     static global::Vector LoadVector(const tinyxml2::XMLElement *element);
+
+    static global::Vector LoadVector(const std::string &string);
 
 };
 

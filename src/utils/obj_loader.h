@@ -19,7 +19,7 @@ public:
 
     ~ObjLoader() = default;
 
-    void Load(Scene *scene);
+    void Load(const std::vector<global::Vector> &lights, Scene *scene);
 
 private:
     std::string model_path_, filename_;
@@ -27,7 +27,7 @@ private:
 
     std::vector<Material *> materials_;
 
-    void LoadMaterials();
+    void LoadMaterials(const std::vector<global::Vector> &lights);
 
     void LoadMeshes(Scene *scene);
 

@@ -15,10 +15,12 @@ int main() {
 
     XmlLoader loader(model_path + model_name + "/" + model_name + ".xml");
     Camera *camera = loader.LoadCamera();
+    auto *lights = new std::vector<global::Vector>();
+    loader.LoadLights(lights);
 
     ObjLoader obj_loader(model_path, model_name);
     auto scene = new Scene();
-    obj_loader.Load(scene);
+    obj_loader.Load(*lights, scene);
 
     timer.StopTimer();
     std::cout << "Load complete, using " << timer.GetTime() << " seconds." << std::endl;
