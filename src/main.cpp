@@ -24,6 +24,14 @@ int main() {
     std::cout << "Load complete, using " << timer.GetTime() << " seconds." << std::endl;
 
     timer.StartTimer();
+    std::cout << "Building BVH..." << std::endl;
+
+    scene->BuildBvh();
+
+    timer.StopTimer();
+    std::cout << "BVH built, using " << timer.GetTime() << " seconds." << std::endl;
+
+    timer.StartTimer();
     std::cout << "\nRendering..." << std::endl;
 
     PathTracer renderer(camera, scene);

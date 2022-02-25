@@ -35,3 +35,9 @@ std::ostream &operator<<(std::ostream &os, const Mesh &mesh) {
     os << "Mesh: " << mesh.triangles_.size() << " triangles with " << mesh.area_ << " area";
     return os;
 }
+
+void Mesh::InsertTo(std::vector<Primitive *> *primitives) const {
+    for (auto &triangle: triangles_) {
+        primitives->push_back(triangle);
+    }
+}

@@ -10,7 +10,7 @@
 
 class Mesh : public Primitive {
 public:
-    Mesh() = default;
+    Mesh(Object *object) : Primitive(object) {}
 
     ~Mesh() override = default;
 
@@ -21,6 +21,8 @@ public:
     void Sample(Intersection *intersection, float *pdf) const override;
 
     friend std::ostream &operator<<(std::ostream &os, const Mesh &mesh);
+
+    void InsertTo(std::vector<Primitive *> *primitives) const override;
 
 private:
     std::vector<Triangle *> triangles_;

@@ -7,6 +7,7 @@
 
 
 #include "object.h"
+#include "../bvh/bvh.h"
 
 class Scene {
 public:
@@ -16,9 +17,11 @@ public:
 
     global::Color Trace(Ray *ray) const;
 
-    void AddObject(Mesh *mesh, Material *material) {
-        objects_.emplace_back(mesh, material);
+    void AddObject(Object *object) {
+        objects_.push_back(object);
     }
+
+    void BuildBvh();
 
 private:
     static const Eigen::Vector3f kBackgroundColor;
@@ -26,7 +29,8 @@ private:
     static const float kRussianRoulette;
     static const int kMaxBounce;
 
-    std::vector<Object> objects_;
+    std::vector<Object *> objects_;
+    Bvh *bvh_;
 
     bool Intersect(Ray *ray, Intersection *intersection) const;
 

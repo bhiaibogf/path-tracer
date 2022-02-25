@@ -10,21 +10,32 @@
 #include "../utils/generator.h"
 #include "../ray/ray.h"
 #include "../ray/intersection.h"
+#include "../bvh/bound.h"
+
+class Object;
 
 class Primitive {
 public:
-    Primitive() = default;
+    explicit Primitive(Object *object);
 
     virtual ~Primitive() = default;
 
     auto area() const { return area_; }
 
+    auto bound() const { return bound_; }
+
+    Material *material() const;
+
     virtual bool Intersect(Ray *ray, Intersection *intersection) const = 0;
 
     virtual void Sample(Intersection *intersection, float *pdf) const = 0;
 
+    virtual void InsertTo(std::vector<Primitive *> *primitives) const = 0;
+
 protected:
     float area_;
+    Bound bound_;
+    Object *object_;
 
 };
 

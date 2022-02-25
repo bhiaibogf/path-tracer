@@ -18,6 +18,10 @@ public:
 
     auto direction() const { return direction_; }
 
+    auto t_min() const { return t_min_; }
+
+    auto t_max() const { return t_max_; }
+
     bool Update(float t);
 
     Eigen::Vector3f operator()(float t) const;

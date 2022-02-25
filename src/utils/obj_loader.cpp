@@ -70,8 +70,9 @@ void ObjLoader::LoadMeshes(Scene *scene) {
 
     // Loop over shapes
     for (auto &shape: shapes) {
+        Object *object = new Object();
         std::cout << "Loading " << shape.name << "..." << std::endl;
-        Mesh *mesh = new Mesh();
+        Mesh *mesh = new Mesh(object);
 
         // Loop over faces(polygon)
         size_t index_offset = 0;
@@ -100,11 +101,12 @@ void ObjLoader::LoadMeshes(Scene *scene) {
                 }
             }
 
-            auto *triangle = new Triangle(vertices, normals, tex_coords);
+            auto *triangle = new Triangle(object, vertices, normals, tex_coords);
             mesh->Add(triangle);
             index_offset += vertices_count;
         }
-
-        scene->AddObject(mesh, materials_[shape.mesh.material_ids[0]]);
+        object->SetMesh(mesh);
+        object->SetMaterial(materials_[shape.mesh.material_ids[0]]);
+        scene->AddObject(object);
     }
 }

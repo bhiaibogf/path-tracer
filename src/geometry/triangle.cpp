@@ -4,10 +4,14 @@
 
 #include "triangle.h"
 
-Triangle::Triangle(std::array<global::Vector, 3> vertices,
+Triangle::Triangle(Object *object,
+                   std::array<global::Vector, 3> vertices,
                    std::array<global::Vector, 3> normals,
-                   std::array<global::TexCoord, 3> tex_coords) :
-        vertices_(std::move(vertices)), normals_(std::move(normals)), tex_coords_(std::move(tex_coords)) {
+                   std::array<global::TexCoord, 3> tex_coords)
+        : Primitive(object),
+          vertices_(std::move(vertices)),
+          normals_(std::move(normals)),
+          tex_coords_(std::move(tex_coords)) {
     normal_ = (vertices_[1] - vertices_[0]).cross(vertices_[2] - vertices_[0]);
     area_ = normal_.norm() / 2;
     normal_.normalize();
@@ -15,9 +19,9 @@ Triangle::Triangle(std::array<global::Vector, 3> vertices,
         normal = normal_;
     }
 
-    // for (auto &vertex: vertices_) {
-    //     std::cout << vertex << std::endl;
-    // }
+    for (auto &vertex: vertices_) {
+        bound_ += vertex;
+    }
 }
 
 // Moller Trumbore
@@ -52,6 +56,7 @@ bool Triangle::Intersect(Ray *ray, Intersection *intersection) const {
         v *= inv_det;
         intersection->position = (*ray)(t);
         intersection->normal = (1 - u - v) * normals_[0] + u * normals_[1] + v * normals_[2];
+        intersection->material = material();
         return true;
     }
     return false;
@@ -93,4 +98,8 @@ void Triangle::Sample(Intersection *intersection, float *pdf) const {
             normals_[0] * (1.f - xi_1) + normals_[1] * (xi_1 * (1.f - xi_2)) + normals_[2] * (xi_1 * xi_2);
     intersection->normal.normalize();
     *pdf = 1.f / area_;
+}
+
+void Triangle::InsertTo(std::vector<Primitive *> *primitives) const {
+    primitives->push_back(const_cast<Triangle *>(this));
 }

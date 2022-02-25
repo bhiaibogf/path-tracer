@@ -10,7 +10,7 @@
 
 class Triangle : public Primitive {
 public:
-    Triangle(std::array<global::Vector, 3> vertices,
+    Triangle(Object *object, std::array<global::Vector, 3> vertices,
              std::array<global::Vector, 3> normals,
              std::array<global::TexCoord, 3> tex_coords);
 
@@ -19,6 +19,8 @@ public:
     bool Intersect(Ray *ray, Intersection *intersection) const override;
 
     void Sample(Intersection *intersection, float *pdf) const override;
+
+    void InsertTo(std::vector<Primitive *> *primitives) const override;
 
 private:
     std::array<global::Vector, 3> vertices_, normals_;

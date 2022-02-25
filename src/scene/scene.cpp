@@ -19,13 +19,7 @@ global::Color Scene::Trace(Ray *ray) const {
 
 bool Scene::Intersect(Ray *ray, Intersection *intersection) const {
     intersection->direction = -ray->direction();
-    bool has_intersection = false;
-    for (auto &object: objects_) {
-        if (object.Intersect(ray, intersection)) {
-            has_intersection = true;
-        }
-    }
-    return has_intersection;
+    return bvh_->Intersect(ray, intersection);
 }
 
 global::Color Scene::Shade(const Intersection &intersection, int bounce) const {
@@ -95,21 +89,25 @@ bool Scene::RussianRoulette(int bounce) {
 void Scene::SampleLight(Intersection *intersection, float *pdf) const {
     float area_sum = 0;
     for (const auto &object: objects_) {
-        if (object.material()->HasEmitter()) {
-            area_sum += object.Area();
+        if (object->material()->HasEmitter()) {
+            area_sum += object->Area();
         }
     }
 
     float random_area = generator::Rand() * area_sum;
     area_sum = 0;
     for (const auto &object: objects_) {
-        if (object.material()->HasEmitter()) {
-            area_sum += object.Area();
+        if (object->material()->HasEmitter()) {
+            area_sum += object->Area();
             if (random_area <= area_sum) {
-                intersection->material = object.material();
-                object.Sample(intersection, pdf);
+                intersection->material = object->material();
+                object->Sample(intersection, pdf);
                 break;
             }
         }
     }
+}
+
+void Scene::BuildBvh() {
+    bvh_ = new Bvh(objects_);
 }
