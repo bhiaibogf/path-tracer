@@ -10,7 +10,7 @@
 
 class Phong : public Material {
 public:
-    Phong(const global::Color &k_s, float n_s, float n_i = 1.f);
+    Phong(const global::Color &k_s, float n_s);
 
     MaterialType Type() const override { return MaterialType::kPhong; }
 
@@ -24,7 +24,7 @@ public:
 
 private:
     global::Color k_s_;
-    float n_s_, n_i_;
+    float n_s_;
 
 };
 

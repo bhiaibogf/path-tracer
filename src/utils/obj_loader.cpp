@@ -50,7 +50,7 @@ void ObjLoader::LoadMaterials() {
             if (!specular_texture.empty()) {
                 // materials_.push_back(new Phong(specular_texture, n_s, n_i));
             } else {
-                material_ = new Phong(k_s, n_s, n_i);
+                material_ = new Phong(k_s, n_s);
             }
         } else {
             material_ = new Refraction(n_i);

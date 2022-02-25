@@ -4,23 +4,22 @@
 
 #include "phong.h"
 
-Phong::Phong(const global::Color &k_s, float n_s, float n_i)
-        : k_s_(k_s), n_s_(n_s), n_i_(n_i) {}
+Phong::Phong(const global::Color &k_s, float n_s)
+        : k_s_(k_s), n_s_(n_s) {}
 
 global::Color Phong::Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const {
     if (normal.dot(wo) > 0 && normal.dot(wi) > 0) {
-        global::Vector reflect = global::Reflect(wi, normal);
-        float alpha = wo.dot(reflect);
+        global::Vector reflect = global::Reflect(wo, normal);
+        float alpha = wi.dot(reflect);
         if (alpha > 0) {
-            return k_s_ * (n_s_ + 2) / global::kTwoPi * std::pow(alpha, n_s_);
+            return k_s_ * (n_s_ + 2) * global::kInvTwoPi * std::pow(alpha, n_s_);
         }
     }
     return global::kBlack;
 }
 
 global::Vector Phong::Sample(const global::Vector &wo, const global::Vector &normal) const {
-    float cos_no = normal.dot(wo);
-    if (cos_no > 0) {
+    if (normal.dot(wo) > 0) {
         global::Vector reflect = global::Reflect(wo, normal);
 
         auto xi_1 = generator::Rand(), xi_2 = generator::Rand();
@@ -34,15 +33,15 @@ global::Vector Phong::Sample(const global::Vector &wo, const global::Vector &nor
         global::Vector local(r * cos_phi, r * sin_phi, z);
         return ToWorld(local, reflect);
     }
-    return -wo;
+    return global::kNone;
 }
 
 float Phong::Pdf(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const {
     if (normal.dot(wo) > 0 && normal.dot(wi) > 0) {
-        global::Vector reflect = global::Reflect(wi, normal);
-        float alpha = wo.dot(reflect);
+        global::Vector reflect = global::Reflect(wo, normal);
+        float alpha = wi.dot(reflect);
         if (alpha > 0) {
-            return (n_s_ + 1) / global::kTwoPi * std::pow(alpha, n_s_);
+            return (n_s_ + 1) * global::kInvTwoPi * std::pow(alpha, n_s_);
         }
     }
     return 0;
@@ -50,7 +49,7 @@ float Phong::Pdf(const global::Vector &wo, const global::Vector &wi, const globa
 
 std::ostream &operator<<(std::ostream &os, const Phong &phong) {
     using namespace global;
-    os << "Phong:\n\tks = " << phong.k_s_ << "\n\tns = " << phong.n_s_ << "\n\tni = " << phong.n_i_;
+    os << "Phong:\n\tks = " << phong.k_s_ << "\n\tns = " << phong.n_s_;
     if (phong.HasEmitter()) {
         os << *((Material *) &phong);
     }
