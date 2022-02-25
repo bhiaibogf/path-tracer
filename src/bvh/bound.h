@@ -6,7 +6,6 @@
 #define PATH_TRACER_BOUND_H
 
 
-#include "../utils/global.h"
 #include "../ray/ray.h"
 
 class Bound {
@@ -32,8 +31,8 @@ public:
     Bound operator+=(const global::Vector &other);
 
 private:
-    const float kMinFloat = std::numeric_limits<float>::lowest();
-    const float kMaxFloat = std::numeric_limits<float>::max();
+    static const float kMinFloat;
+    static const float kMaxFloat;
 
     global::Vector min_, max_;
 

@@ -4,10 +4,10 @@
 
 #include "bvh.h"
 
-Bvh::Bvh(std::vector<Object *> objects) {
-    std::vector<Primitive *> primitives;
+Bvh::Bvh(const std::vector<Object *> &objects) {
+    auto *primitives = new std::vector<Primitive *>();
     for (auto object: objects) {
-        object->InsertTo(&primitives);
+        object->InsertTo(primitives);
     }
     root_ = new Node(primitives);
 }

@@ -4,6 +4,9 @@
 
 #include "bound.h"
 
+const float Bound::kMinFloat = std::numeric_limits<float>::lowest();
+const float Bound::kMaxFloat = std::numeric_limits<float>::max();
+
 Bound::Bound() {
     min_ = global::Vector(kMaxFloat, kMaxFloat, kMaxFloat);
     max_ = global::Vector(kMinFloat, kMinFloat, kMinFloat);

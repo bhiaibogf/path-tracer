@@ -8,21 +8,22 @@
 
 #include "bound.h"
 #include "../geometry/primitive.h"
-#include "../ray/ray.h"
 
 class Node {
 public:
-    explicit Node(std::vector<Primitive *> primitives);
+    explicit Node(std::vector<Primitive *> *primitives);
+
+    ~Node() = default;
 
     bool Intersect(Ray *ray, Intersection *intersection) const;
 
 private:
-    Bound bound;
-    Primitive *primitive;
-    float area;
+    Bound bound_;
+    Primitive *primitive_;
+    float area_;
 
-    Node *left;
-    Node *right;
+    Node *left_;
+    Node *right_;
 
 };
 

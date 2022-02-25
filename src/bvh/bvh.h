@@ -11,7 +11,7 @@
 
 class Bvh {
 public:
-    Bvh(std::vector<Object *> objects);
+    explicit Bvh(const std::vector<Object *> &objects);
 
     ~Bvh() = default;
 
