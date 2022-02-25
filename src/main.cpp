@@ -11,7 +11,7 @@ int main() {
     timer.StartTimer();
     std::cout << "Loading scene..." << std::endl;
 
-    std::string model_path = "scenes/", model_name = "cornell";
+    std::string model_path = "scenes/", model_name = "veach-mis";
 
     XmlLoader loader(model_path + model_name + "/" + model_name + ".xml");
     Camera *camera = loader.LoadCamera();
