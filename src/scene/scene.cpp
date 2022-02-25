@@ -77,18 +77,11 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce) const {
         Ray ray_to_next = Ray(position_new, direction_to_next);
         Intersection intersection_next;
         if (Intersect(&ray_to_next, &intersection_next)) {
-            if (intersection.material->Type() == Material::kRefraction) {
-                radiance_indirect = global::Product(Shade(intersection_next, bounce + 1),
-                                                    material->Eval(direction, direction_to_next, normal))
-                                    / kRussianRoulette;
-            } else {
-                radiance_indirect =
-                        global::Product(Shade(intersection_next, bounce + 1),
-                                        material->Eval(direction, direction_to_next, normal))
-                        * normal.dot(direction_to_next)
-                        / material->Pdf(direction, direction_to_next, normal)
-                        / kRussianRoulette;
-            }
+            radiance_indirect = global::Product(Shade(intersection_next, bounce + 1),
+                                                material->Eval(direction, direction_to_next, normal))
+                                * std::abs(normal.dot(direction_to_next))
+                                / material->Pdf(direction, direction_to_next, normal)
+                                / kRussianRoulette;
         }
     }
 

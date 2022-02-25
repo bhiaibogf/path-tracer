@@ -55,11 +55,15 @@ global::Vector global::Refract(const global::Vector &wi, const global::Vector &n
         return -wi * eta + normal_real * nK;
         // return 1 - fresnel_dielectric(cos_ni, eta);
     }
-    return wi;
+    return global::kNone;
 }
 
 float global::Schlick(const global::Vector &wi, const global::Vector &normal, float ior) {
     float cos_theta = normal.dot(wi);
+    if (cos_theta < 0) {
+        cos_theta = -cos_theta;
+        ior = 1.f / ior;
+    }
     float r_0 = (1.f - ior) / (1.f + ior);
     return r_0 + (1.f - r_0) * std::pow(1.f - cos_theta, 5.f);
 }
