@@ -70,9 +70,10 @@ void ObjLoader::LoadMeshes(Scene *scene) {
 
     // Loop over shapes
     for (auto &shape: shapes) {
-        Object *object = new Object();
+        auto *object = new Object(shape.name);
         std::cout << "Loading " << shape.name << "..." << std::endl;
-        Mesh *mesh = new Mesh(object);
+
+        auto *mesh = new Mesh(object);
 
         // Loop over faces(polygon)
         size_t index_offset = 0;

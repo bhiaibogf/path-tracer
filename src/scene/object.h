@@ -13,7 +13,7 @@
 
 class Object {
 public:
-    Object();
+    Object(const std::string &name);
 
     virtual ~Object() = default;
 
@@ -34,6 +34,7 @@ public:
 private:
     Mesh *mesh_;
     Material *material_;
+    std::string name_;
 
 };
 
