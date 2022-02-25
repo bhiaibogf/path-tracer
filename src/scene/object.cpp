@@ -12,15 +12,15 @@ void Object::SetMesh(Mesh *mesh) {
 }
 
 void Object::SetMaterial(Material *material) {
-    switch (material_->Type()) {
+    switch (material->Type()) {
         case Material::kLambert:
-            std::cout << "  " << *(Lambert *) material_ << std::endl;
+            std::cout << "  " << *(Lambert *) material << std::endl;
             break;
         case Material::kPhong:
-            std::cout << "  " << *(Phong *) material_ << std::endl;
+            std::cout << "  " << *(Phong *) material << std::endl;
             break;
         case Material::kRefraction:
-            std::cout << "  " << *(Refraction *) material_ << std::endl;
+            std::cout << "  " << *(Refraction *) material << std::endl;
             break;
     }
     material_ = material;

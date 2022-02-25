@@ -24,7 +24,7 @@ int main() {
     std::cout << "Load complete, using " << timer.GetTime() << " seconds." << std::endl;
 
     timer.StartTimer();
-    std::cout << "Building BVH..." << std::endl;
+    std::cout << "\nBuilding BVH..." << std::endl;
 
     scene->BuildBvh();
 
