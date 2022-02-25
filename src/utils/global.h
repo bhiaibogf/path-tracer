@@ -12,7 +12,7 @@
 
 namespace global {
     const float kPi = M_PI;
-    const float kTwoPi = M_PI_2;
+    const float kTwoPi = M_PI * 2.f;
     const float kInvPi = M_1_PI;
     const float kInvTwoPi = M_1_PI / 2.f;
 
