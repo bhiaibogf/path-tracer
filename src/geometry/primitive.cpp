@@ -4,9 +4,8 @@
 
 #include "../scene/object.h"
 
-Primitive::Primitive(Object *object) : object_(object) {}
+Primitive::Primitive(Object *object) : object_(object), area_(0.f) {}
 
 Material *Primitive::material() const {
     return object_->material();
 }
-

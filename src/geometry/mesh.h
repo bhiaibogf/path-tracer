@@ -20,9 +20,9 @@ public:
 
     void Sample(Intersection *intersection, float *pdf) const override;
 
-    friend std::ostream &operator<<(std::ostream &os, const Mesh &mesh);
-
     void InsertTo(std::vector<Primitive *> *primitives) const override;
+
+    friend std::ostream &operator<<(std::ostream &os, const Mesh &mesh);
 
 private:
     std::vector<Triangle *> triangles_;
