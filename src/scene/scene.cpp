@@ -44,28 +44,28 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce) const {
 
     // direct light
     global::Color radiance_direct = global::kBlack;
-    // // sample from light
-    // Intersection intersection_light;
-    // float pdf_light;
-    // SampleLight(&intersection_light, &pdf_light);
-    //
-    // auto &position_light = intersection_light.position, &normal_light = intersection_light.normal;
-    // auto emission_light = intersection_light.material->emission();
-    // // wi (inter to light)
-    // auto direction_to_light = (position_light - position).normalized();
-    //
-    // // check if the light is visible
-    // Intersection intersection_to_light;
-    // Ray ray_to_light(position, direction_to_light);
-    // if (Intersect(&ray_to_light, &intersection_to_light)
-    //     && (position_light - intersection_to_light.position).squaredNorm() < kEpsilon) {
-    //     radiance_direct = global::Product(emission_light, material->Eval(direction, direction_to_light, normal))
-    //                       * normal.dot(direction_to_light)
-    //                       // TODO
-    //                       * normal_light.dot(-direction_to_light)
-    //                       / (position_light - position).squaredNorm()
-    //                       / pdf_light;
-    // }
+    // sample from light
+    Intersection intersection_light;
+    float pdf_light;
+    SampleLight(&intersection_light, &pdf_light);
+
+    auto &position_light = intersection_light.position, &normal_light = intersection_light.normal;
+    // wi (inter to light)
+    auto direction_to_light = (position_light - position).normalized();
+
+    // check if the light is visible
+    Intersection intersection_to_light;
+    Ray ray_to_light(position, direction_to_light);
+    if (Intersect(&ray_to_light, &intersection_to_light)
+        && (position_light - intersection_to_light.position).squaredNorm() < kEpsilon) {
+        radiance_direct = global::Product(Shade(intersection_to_light, bounce + 1),
+                                          material->Eval(direction, direction_to_light, normal))
+                          * normal.dot(direction_to_light)
+                          // TODO
+                          * normal_light.dot(-direction_to_light)
+                          / (position_light - position).squaredNorm()
+                          / pdf_light;
+    }
 
     // indirect light
     global::Color radiance_indirect = global::kBlack;
@@ -85,7 +85,7 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce) const {
         }
     }
 
-    return radiance_light + radiance_direct + radiance_indirect;
+    return radiance_light + 0.5 * radiance_direct + 0.5 * radiance_indirect;
 }
 
 bool Scene::RussianRoulette(int bounce) {
