@@ -36,6 +36,8 @@ private:
 
     global::Color Shade(const Intersection &intersection, int bounce) const;
 
+    global::Color ShadeMis(const Intersection &intersection, int bounce) const;
+
     global::Color Shade(const Intersection &intersection, int bounce, bool need_emission) const;
 
     void SampleLight(Intersection *intersection, float *pdf) const;

@@ -42,6 +42,8 @@ namespace global {
 
     float Schlick(const Vector &wi, const Vector &normal, float ior);
 
+    float PowerHeuristic(float pdf_1, float pdf_2, float beta = 2.f);
+
 }
 
 

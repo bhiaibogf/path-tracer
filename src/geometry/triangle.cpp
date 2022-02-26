@@ -68,6 +68,7 @@ bool Triangle::Intersect(Ray *ray, Intersection *intersection) const {
         intersection->normal = (1 - u - v) * normals_[0] + u * normals_[1] + v * normals_[2];
         intersection->tex_coord = (1 - u - v) * tex_coords_[0] + u * tex_coords_[1] + v * tex_coords_[2];
         intersection->material = material();
+        intersection->area = area_;
         return true;
     }
     return false;

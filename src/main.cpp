@@ -25,6 +25,9 @@ int main() {
     // bool sample_to_light = true;
     bool sample_to_light = false;
 
+    bool mis = true;
+    // bool mis = false;
+
     Timer timer;
 
     timer.StartTimer();
@@ -67,6 +70,7 @@ int main() {
                   + (antialiasing ? "-antialiasing" : "")
                   + (use_bvh ? "-BVH" : "")
                   + (sample_to_light ? "-light" : "")
+                  + (mis ? "-mis" : "")
                   + ".exr");
 
     return 0;

@@ -77,3 +77,7 @@ std::ostream &global::operator<<(std::ostream &os, const Eigen::Vector2f &vector
     os << "[" << vector.x() << ", " << vector.y() << "]";
     return os;
 }
+
+float global::PowerHeuristic(float pdf_1, float pdf_2, float beta) {
+    return std::pow(pdf_1, beta) / (std::pow(pdf_1, beta) + std::pow(pdf_2, beta));
+}
