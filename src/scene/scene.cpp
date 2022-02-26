@@ -16,7 +16,7 @@ Scene::Scene() {
 global::Color Scene::Trace(Ray *ray) const {
     Intersection intersection;
     if (Intersect(ray, &intersection)) {
-        return Shade(intersection, 1);
+        return Shade(intersection, 1, true);
     }
     return kBackgroundColor;
 }
@@ -36,19 +36,19 @@ bool Scene::Intersect(Ray *ray, Intersection *intersection) const {
     }
 }
 
-global::Color Scene::Shade(const Intersection &intersection, int bounce) const {
-    if (bounce > kMaxBounce) {
-        return global::kBlack;
-    }
-
+global::Color Scene::Shade(const Intersection &intersection, int bounce, bool need_emission) const {
     Material *material = intersection.material;
     auto &position = intersection.position, &normal = intersection.normal, &direction = intersection.direction;
     auto &tex_coord = intersection.tex_coord;
 
     // light
     global::Color radiance_light = global::kBlack;
-    if (material->HasEmitter()) {
+    if (material->HasEmitter() && need_emission) {
         radiance_light = material->emission();
+    }
+
+    if (bounce >= kMaxBounce) {
+        return radiance_light;
     }
 
     // direct light
@@ -67,7 +67,7 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce) const {
     Ray ray_to_light(position, direction_to_light);
     if (Intersect(&ray_to_light, &intersection_to_light)
         && (position_light - intersection_to_light.position).squaredNorm() < kEpsilon) {
-        radiance_direct = global::Product(Shade(intersection_to_light, bounce + 1),
+        radiance_direct = global::Product(intersection_to_light.material->emission(),
                                           material->Eval(direction, direction_to_light, normal, tex_coord))
                           * normal.dot(direction_to_light)
                           // TODO
@@ -86,7 +86,7 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce) const {
         Ray ray_to_next = Ray(position_new, direction_to_next);
         Intersection intersection_next;
         if (Intersect(&ray_to_next, &intersection_next)) {
-            radiance_indirect = global::Product(Shade(intersection_next, bounce + 1),
+            radiance_indirect = global::Product(Shade(intersection_next, bounce + 1, false),
                                                 material->Eval(direction, direction_to_next, normal, tex_coord))
                                 * std::abs(normal.dot(direction_to_next))
                                 / material->Pdf(direction, direction_to_next, normal)
@@ -94,7 +94,7 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce) const {
         }
     }
 
-    return radiance_light + 0.5 * radiance_direct + 0.5 * radiance_indirect;
+    return radiance_light + radiance_direct + radiance_indirect;
 }
 
 bool Scene::RussianRoulette(int bounce) {
