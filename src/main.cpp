@@ -6,9 +6,21 @@
 #include "utils/xml_loader.h"
 
 int main() {
-    std::string model_path = "scenes/", model_name = "cornell";
+    std::string model_path = "scenes/";
+
+    // std::string model_name = "cornell";
+    std::string model_name = "veach-mis";
+    // std::string model_name = "cornell-box";
+    // std::string model_name = "bedroom";
+
     int spp = 16;
-    bool antialiasing = true, use_bvh = true;
+    // int spp = 512;
+
+    bool antialiasing = true;
+    // bool antialiasing = false;
+
+    bool use_bvh = true;
+    // bool use_bvh = false;
 
     Timer timer;
 
