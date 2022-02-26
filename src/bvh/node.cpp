@@ -81,7 +81,7 @@ bool Node::Intersect(Ray *ray, Intersection *intersection) const {
 bool Node::SampleLight(Intersection *intersection, float *pdf, float area) const {
     if (primitive_) {
         if (primitive_->material()->HasEmitter()) {
-            assert(area_ > primitive_->area());
+            assert(area_ <= primitive_->area());
             primitive_->Sample(intersection, pdf);
             return true;
         } else {
