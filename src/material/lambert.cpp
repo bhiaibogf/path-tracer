@@ -4,11 +4,29 @@
 
 #include "lambert.h"
 
-Lambert::Lambert(const global::Color &k_d) : albedo_(k_d) {}
+Lambert::Lambert(const global::Color &k_d) : albedo_(k_d) {
+    texture_ = nullptr;
+}
+
+Lambert::Lambert(const std::string &texture_name) {
+    texture_ = new Texture(texture_name);
+}
 
 global::Color Lambert::Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const {
     if (normal.dot(wo) > 0 && normal.dot(wi) > 0) {
         return albedo_ * global::kInvPi;
+    }
+    return global::kBlack;
+}
+
+global::Color Lambert::Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal,
+                            const global::TexCoord &tex_coord) const {
+    if (normal.dot(wo) > 0 && normal.dot(wi) > 0) {
+        if (texture_ != nullptr) {
+            return texture_->GetColor(tex_coord) * global::kInvPi;
+        } else {
+            return albedo_ * global::kInvPi;
+        }
     }
     return global::kBlack;
 }
@@ -35,7 +53,11 @@ float Lambert::Pdf(const global::Vector &wo, const global::Vector &wi, const glo
 
 std::ostream &operator<<(std::ostream &os, const Lambert &lambert) {
     using namespace global;
-    os << "Lambert:\n\tkd = " << lambert.albedo_;
+    if (lambert.texture_) {
+        os << "Lambert:\n\tkd = " << lambert.texture_->path();
+    } else {
+        os << "Lambert:\n\tkd = " << lambert.albedo_;
+    }
     if (lambert.HasEmitter()) {
         os << *((Material *) &lambert);
     }

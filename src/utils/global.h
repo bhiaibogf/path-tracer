@@ -30,6 +30,7 @@ namespace global {
     const Color kWhite = Eigen::Vector3f(1.f, 1.f, 1.f);
 
     const Vector kNone = Eigen::Vector3f(0.f, 0.f, 0.f);
+    const TexCoord kNoTex = Eigen::Vector2f(0.f, 0.f);
 
     void UpdateProgress(float progress);
 

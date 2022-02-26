@@ -8,11 +8,10 @@
 
 #include "../material/material.h"
 
-#include <eigen3/Eigen/Eigen>
-
 struct Intersection {
     Material *material;
-    Eigen::Vector3f position, normal, direction;
+    global::Vector position, normal, direction;
+    global::TexCoord tex_coord;
 };
 
 

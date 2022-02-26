@@ -30,6 +30,11 @@ public:
     virtual global::Color
     Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const = 0;
 
+    virtual global::Color Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal,
+                               const global::TexCoord &tex_coord) const {
+        return Eval(wo, wi, normal);
+    }
+
     virtual global::Vector Sample(const global::Vector &wo, const global::Vector &normal) const = 0;
 
     virtual float Pdf(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const = 0;

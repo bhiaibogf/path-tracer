@@ -18,8 +18,10 @@ public:
 
     MaterialType Type() const override { return kMix; }
 
-    global::Color
-    Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const override;
+    global::Color Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const override;
+
+    global::Color Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal,
+                       const global::TexCoord &tex_coord) const override;
 
     global::Vector Sample(const global::Vector &wo, const global::Vector &normal) const override;
 

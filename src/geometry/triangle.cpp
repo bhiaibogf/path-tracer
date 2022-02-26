@@ -5,18 +5,28 @@
 #include "triangle.h"
 
 Triangle::Triangle(Object *object,
-                   std::array<global::Vector, 3> vertices,
-                   std::array<global::Vector, 3> normals,
-                   std::array<global::TexCoord, 3> tex_coords)
-        : Primitive(object),
-          vertices_(std::move(vertices)),
-          normals_(std::move(normals)),
-          tex_coords_(std::move(tex_coords)) {
-    normal_ = (vertices_[1] - vertices_[0]).cross(vertices_[2] - vertices_[0]);
-    area_ = normal_.norm() / 2;
-    normal_.normalize();
-    for (auto &normal: normals_) {
-        normal = normal_;
+                   std::array<global::Vector, 3> *vertices,
+                   std::array<global::Vector, 3> *normals,
+                   std::array<global::TexCoord, 3> *tex_coords)
+        : Primitive(object), vertices_(*vertices) {
+    global::Vector normal;
+    normal = (vertices_[1] - vertices_[0]).cross(vertices_[2] - vertices_[0]);
+    area_ = normal.norm() / 2;
+
+    if (normals) {
+        normals_ = *normals;
+    } else {
+        normal.normalize();
+        for (auto &normal_: normals_) {
+            normal_ = normal;
+        }
+    }
+    if (tex_coords) {
+        tex_coords_ = *tex_coords;
+    } else {
+        for (auto &tex_coord: tex_coords_) {
+            tex_coord = global::kNoTex;
+        }
     }
 
     for (auto &vertex: vertices_) {
@@ -56,6 +66,7 @@ bool Triangle::Intersect(Ray *ray, Intersection *intersection) const {
         v *= inv_det;
         intersection->position = (*ray)(t);
         intersection->normal = (1 - u - v) * normals_[0] + u * normals_[1] + v * normals_[2];
+        intersection->tex_coord = (1 - u - v) * tex_coords_[0] + u * tex_coords_[1] + v * tex_coords_[2];
         intersection->material = material();
         return true;
     }

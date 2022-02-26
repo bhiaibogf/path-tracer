@@ -11,6 +11,11 @@ global::Color Mix::Eval(const global::Vector &wo, const global::Vector &wi, cons
     return material_1_->Eval(wo, wi, normal) + material_2_->Eval(wo, wi, normal);
 }
 
+global::Color Mix::Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal,
+                        const global::TexCoord &tex_coord) const {
+    return material_1_->Eval(wo, wi, normal, tex_coord) + material_2_->Eval(wo, wi, normal, tex_coord);
+}
+
 global::Vector Mix::Sample(const global::Vector &wo, const global::Vector &normal) const {
     if (generator::Rand() < ratio_) {
         return material_1_->Sample(wo, normal);

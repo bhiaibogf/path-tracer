@@ -6,14 +6,20 @@
 #define PATH_TRACER_LAMBERT_H
 
 #include "material.h"
+#include "texture.h"
 
 class Lambert : public Material {
 public:
     explicit Lambert(const global::Color &k_d);
 
+    explicit Lambert(const std::string &texture_name);
+
     MaterialType Type() const override { return MaterialType::kLambert; }
 
     global::Color Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const override;
+
+    global::Color Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal,
+                       const global::TexCoord &tex_coord) const override;
 
     global::Vector Sample(const global::Vector &wo, const global::Vector &normal) const override;
 
@@ -23,6 +29,7 @@ public:
 
 private:
     global::Color albedo_;
+    Texture *texture_;
 
 };
 

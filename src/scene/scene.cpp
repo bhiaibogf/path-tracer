@@ -29,6 +29,7 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce) const {
 
     Material *material = intersection.material;
     auto &position = intersection.position, &normal = intersection.normal, &direction = intersection.direction;
+    auto &tex_coord = intersection.tex_coord;
 
     // light
     global::Color radiance_light = global::kBlack;
@@ -53,7 +54,7 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce) const {
     if (Intersect(&ray_to_light, &intersection_to_light)
         && (position_light - intersection_to_light.position).squaredNorm() < kEpsilon) {
         radiance_direct = global::Product(Shade(intersection_to_light, bounce + 1),
-                                          material->Eval(direction, direction_to_light, normal))
+                                          material->Eval(direction, direction_to_light, normal, tex_coord))
                           * normal.dot(direction_to_light)
                           // TODO
                           * normal_light.dot(-direction_to_light)
@@ -72,7 +73,7 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce) const {
         Intersection intersection_next;
         if (Intersect(&ray_to_next, &intersection_next)) {
             radiance_indirect = global::Product(Shade(intersection_next, bounce + 1),
-                                                material->Eval(direction, direction_to_next, normal))
+                                                material->Eval(direction, direction_to_next, normal, tex_coord))
                                 * std::abs(normal.dot(direction_to_next))
                                 / material->Pdf(direction, direction_to_next, normal)
                                 / kRussianRoulette;

@@ -30,6 +30,7 @@ void ObjLoader::Load(const std::vector<global::Vector> &lights, Scene *scene) {
 void ObjLoader::LoadMaterials(const std::vector<global::Vector> &lights) {
     auto &materials = reader_.GetMaterials();
     for (const auto &material: materials) {
+        std::string texture_path = model_path_;
         // diffuse
         global::Color k_d(material.diffuse[0], material.diffuse[1], material.diffuse[2]);
         std::string diffuse_texture = material.diffuse_texname;
@@ -44,11 +45,17 @@ void ObjLoader::LoadMaterials(const std::vector<global::Vector> &lights) {
             material_ = new Refraction(n_i);
         } else {
             if (k_s == global::kBlack && specular_texture.empty()) {
-                material_ = new Lambert(k_d);
+                if (!diffuse_texture.empty()) {
+                    material_ = new Lambert(texture_path + diffuse_texture);
+                } else {
+                    material_ = new Lambert(k_d);
+                }
             } else if (k_d == global::kBlack && diffuse_texture.empty()) {
                 material_ = new Phong(k_s, n_s);
             } else {
-                material_ = new Mix(new Lambert(k_d), new Phong(k_s, n_s));
+                material_ = new Mix(
+                        diffuse_texture.empty() ? new Lambert(k_d) : new Lambert(texture_path + diffuse_texture),
+                        new Phong(k_s, n_s));
             }
             if (material.name.find("Light") != std::string::npos) {
                 if (material.name.size() == 5) {
@@ -79,27 +86,33 @@ void ObjLoader::LoadMeshes(Scene *scene) {
         // Loop over faces(polygon)
         size_t index_offset = 0;
         for (auto vertices_count: shape.mesh.num_face_vertices) {
-            std::array<global::Vector, 3> vertices;
-            std::array<global::Vector, 3> normals;
-            std::array<global::TexCoord, 3> tex_coords;
+            std::array<global::Vector, 3> *vertices = new std::array<global::Vector, 3>;
+            std::array<global::Vector, 3> *normals = nullptr;
+            std::array<global::TexCoord, 3> *tex_coords = nullptr;
 
             assert(vertices_count == 3);
             // Loop over vertices in the face
             for (size_t idx_in_face = 0; idx_in_face < vertices_count; idx_in_face++) {
                 tinyobj::index_t idx = shape.mesh.indices[index_offset + idx_in_face];
-                vertices[idx_in_face] = global::Vector(attrib.vertices[3 * idx.vertex_index + 0],
-                                                       attrib.vertices[3 * idx.vertex_index + 1],
-                                                       attrib.vertices[3 * idx.vertex_index + 2]);
+                (*vertices)[idx_in_face] = global::Vector(attrib.vertices[3 * idx.vertex_index + 0],
+                                                          attrib.vertices[3 * idx.vertex_index + 1],
+                                                          attrib.vertices[3 * idx.vertex_index + 2]);
 
                 if (idx.normal_index >= 0) {
-                    normals[idx_in_face] = global::Vector(attrib.normals[3 * idx.normal_index + 0],
-                                                          attrib.normals[3 * idx.normal_index + 1],
-                                                          attrib.normals[3 * idx.normal_index + 2]);
+                    if (!normals) {
+                        normals = new std::array<global::Vector, 3>;
+                    }
+                    (*normals)[idx_in_face] = global::Vector(attrib.normals[3 * idx.normal_index + 0],
+                                                             attrib.normals[3 * idx.normal_index + 1],
+                                                             attrib.normals[3 * idx.normal_index + 2]);
                 }
 
                 if (idx.texcoord_index >= 0) {
-                    tex_coords[idx_in_face] = global::TexCoord(attrib.texcoords[2 * idx.texcoord_index + 0],
-                                                               attrib.texcoords[2 * idx.texcoord_index + 1]);
+                    if (!tex_coords) {
+                        tex_coords = new std::array<global::TexCoord, 3>;
+                    }
+                    (*tex_coords)[idx_in_face] = global::TexCoord(attrib.texcoords[2 * idx.texcoord_index + 0],
+                                                                  1.f - attrib.texcoords[2 * idx.texcoord_index + 1]);
                 }
             }
 
