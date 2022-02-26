@@ -51,8 +51,12 @@ void ObjLoader::LoadMaterials(const std::vector<global::Vector> &lights) {
                 material_ = new Mix(new Lambert(k_d), new Phong(k_s, n_s));
             }
             if (material.name.find("Light") != std::string::npos) {
-                int light_id = std::stoi(material.name.substr(5));
-                material_->SetEmission(lights[light_id - 1]);
+                if (material.name.size() == 5) {
+                    material_->SetEmission(lights[0]);
+                } else {
+                    int light_id = std::stoi(material.name.substr(5));
+                    material_->SetEmission(lights[light_id - 1]);
+                }
             }
         }
         materials_.push_back(material_);
