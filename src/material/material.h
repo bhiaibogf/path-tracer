@@ -16,7 +16,7 @@ public:
     virtual ~Material() = default;
 
     enum MaterialType {
-        kLambert, kPhong, kRefraction
+        kLambert, kPhong, kRefraction, kMix
     };
 
     virtual MaterialType Type() const = 0;
@@ -37,8 +37,6 @@ public:
     friend std::ostream &operator<<(std::ostream &os, const Material &material);
 
 protected:
-
-
     global::Color emission_;
 
     static global::Vector ToWorld(const global::Vector &local, const global::Vector &normal);

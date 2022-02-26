@@ -7,9 +7,7 @@
 
 
 #include "../geometry/mesh.h"
-#include "../material/lambert.h"
-#include "../material/phong.h"
-#include "../material/refraction.h"
+#include "../material/mix.h"
 
 class Object {
 public:

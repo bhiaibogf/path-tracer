@@ -22,6 +22,9 @@ void Object::SetMaterial(Material *material) {
         case Material::kRefraction:
             std::cout << "  " << *(Refraction *) material << std::endl;
             break;
+        case Material::kMix:
+            std::cout << "  " << *(Mix *) material << std::endl;
+            break;
     }
     material_ = material;
 }

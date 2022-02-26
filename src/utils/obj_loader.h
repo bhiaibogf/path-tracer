@@ -6,9 +6,7 @@
 #define PATH_TRACER_OBJ_LOADER_H
 
 
-#include "../material/phong.h"
-#include "../material/lambert.h"
-#include "../material/refraction.h"
+#include "../material/mix.h"
 #include "../scene/scene.h"
 
 #include "tinyobjloader/tiny_obj_loader.h"

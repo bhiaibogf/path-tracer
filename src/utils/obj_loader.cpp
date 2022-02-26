@@ -40,25 +40,20 @@ void ObjLoader::LoadMaterials(const std::vector<global::Vector> &lights) {
         float n_i = material.ior;
 
         Material *material_;
-        // if (k_d != global::kBlack) {
-        //     if (!diffuse_texture.empty()) {
-        //         // materials_.push_back(new Lambert(diffuse_texture));
-        //     } else {
-        //         material_ = new Lambert(k_d);
-        //     }
-        // } else if (k_s != global::kBlack) {
-        //     if (!specular_texture.empty()) {
-        //         // materials_.push_back(new Phong(specular_texture, n_s, n_i));
-        //     } else {
-        //         material_ = new Phong(k_s, n_s);
-        //     }
-        // } else {
-        //     material_ = new Refraction(n_i);
-        // }
-        material_ = new Lambert(k_d);
-        if (material.name.find("Light") != std::string::npos) {
-            int light_id = std::stoi(material.name.substr(5));
-            material_->SetEmission(lights[light_id - 1]);
+        if (n_i != 1.f) {
+            material_ = new Refraction(n_i);
+        } else {
+            if (k_s == global::kBlack && specular_texture.empty()) {
+                material_ = new Lambert(k_d);
+            } else if (k_d == global::kBlack && diffuse_texture.empty()) {
+                material_ = new Phong(k_s, n_s);
+            } else {
+                material_ = new Mix(new Lambert(k_d), new Phong(k_s, n_s));
+            }
+            if (material.name.find("Light") != std::string::npos) {
+                int light_id = std::stoi(material.name.substr(5));
+                material_->SetEmission(lights[light_id - 1]);
+            }
         }
         materials_.push_back(material_);
     }
