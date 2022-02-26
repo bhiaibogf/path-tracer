@@ -8,7 +8,7 @@ Node::Node(std::vector<Primitive *> *primitives) {
     if (primitives->size() == 1) {
         bound_ = (*primitives)[0]->bound();
         primitive_ = (*primitives)[0];
-        area_ = primitive_->area();
+        area_ = primitive_->material()->HasEmitter() ? primitive_->area() : 0.f;
 
         left_ = nullptr;
         right_ = nullptr;
@@ -78,14 +78,21 @@ bool Node::Intersect(Ray *ray, Intersection *intersection) const {
     return has_intersection;
 }
 
-void Node::SampleLight(Intersection *intersection, float *pdf, float area) const {
+bool Node::SampleLight(Intersection *intersection, float *pdf, float area) const {
     if (primitive_) {
-        primitive_->Sample(intersection, pdf);
-    } else {
-        if (area > left_->area_) {
-            return left_->SampleLight(intersection, pdf, area);
+        if (primitive_->material()->HasEmitter()) {
+            assert(area_ > primitive_->area());
+            primitive_->Sample(intersection, pdf);
+            return true;
         } else {
-            return right_->SampleLight(intersection, pdf, area - left_->area_);
+            return false;
         }
+    } else {
+        if (area <= left_->area_) {
+            if (left_->SampleLight(intersection, pdf, area)) {
+                return true;
+            }
+        }
+        return right_->SampleLight(intersection, pdf, area - left_->area_);
     }
 }

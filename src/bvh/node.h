@@ -19,7 +19,7 @@ public:
 
     bool Intersect(Ray *ray, Intersection *intersection) const;
 
-    void SampleLight(Intersection *intersection, float *pdf, float area) const;
+    bool SampleLight(Intersection *intersection, float *pdf, float area) const;
 
 private:
     Bound bound_;
