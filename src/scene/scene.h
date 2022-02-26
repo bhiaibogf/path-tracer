@@ -15,7 +15,7 @@ public:
 
     ~Scene() = default;
 
-    global::Color Trace(Ray *ray) const;
+    global::Color Trace(Ray *ray, bool sample_to_light) const;
 
     void AddObject(Object *object) {
         objects_.push_back(object);
@@ -33,6 +33,8 @@ private:
     Bvh *bvh_;
 
     bool Intersect(Ray *ray, Intersection *intersection) const;
+
+    global::Color Shade(const Intersection &intersection, int bounce) const;
 
     global::Color Shade(const Intersection &intersection, int bounce, bool need_emission) const;
 

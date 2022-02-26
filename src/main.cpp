@@ -22,6 +22,9 @@ int main() {
     bool use_bvh = true;
     // bool use_bvh = false;
 
+    // bool sample_to_light = true;
+    bool sample_to_light = false;
+
     Timer timer;
 
     timer.StartTimer();
@@ -53,7 +56,7 @@ int main() {
     std::cout << "\nRendering..." << std::endl;
 
     PathTracer renderer(camera, scene);
-    renderer.Render(spp, antialiasing);
+    renderer.Render(spp, antialiasing, sample_to_light);
 
     timer.StopTimer();
     std::cout << "\nRender complete, using " << timer.GetTime() << " seconds." << std::endl;
@@ -63,6 +66,7 @@ int main() {
                   + "-" + std::to_string(spp)
                   + (antialiasing ? "-antialiasing" : "")
                   + (use_bvh ? "-BVH" : "")
+                  + (sample_to_light ? "-light" : "")
                   + ".exr");
 
     return 0;
