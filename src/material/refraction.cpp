@@ -36,8 +36,8 @@ global::Vector Refraction::Sample(const global::Vector &wo, const global::Vector
 }
 
 float Refraction::Pdf(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const {
-    if (normal.dot(wo) * normal.dot(wi) < 0) {
-        global::Vector refract = global::Refract(wo, normal, ior_);
+    global::Vector refract = global::Refract(wo, normal, ior_);
+    if (refract != global::kNone) {
         float alpha = wi.dot(refract);
         if (alpha > 0) {
             return (n_s + 1) * global::kInvTwoPi * std::pow(alpha, n_s);

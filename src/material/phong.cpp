@@ -37,7 +37,7 @@ global::Vector Phong::Sample(const global::Vector &wo, const global::Vector &nor
 }
 
 float Phong::Pdf(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const {
-    if (normal.dot(wo) > 0 && normal.dot(wi) > 0) {
+    if (normal.dot(wo) > 0) {
         global::Vector reflect = global::Reflect(wo, normal);
         float alpha = wi.dot(reflect);
         if (alpha > 0) {
