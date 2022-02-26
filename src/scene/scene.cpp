@@ -81,6 +81,9 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce, bool ne
     if (RussianRoulette(bounce)) {
         // wi (inter to next)
         auto direction_to_next = material->Sample(direction, normal);
+        if (material->Pdf(direction, direction_to_next, normal) == 0) {
+            return radiance_light + radiance_direct;
+        }
         global::Vector position_new = position + normal * (normal.dot(direction_to_next) > 0 ? kEpsilon : -kEpsilon);
         // global::Vector position_new = position;
         Ray ray_to_next = Ray(position_new, direction_to_next);
