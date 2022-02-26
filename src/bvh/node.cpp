@@ -77,3 +77,15 @@ bool Node::Intersect(Ray *ray, Intersection *intersection) const {
 
     return has_intersection;
 }
+
+void Node::SampleLight(Intersection *intersection, float *pdf, float area) const {
+    if (primitive_) {
+        primitive_->Sample(intersection, pdf);
+    } else {
+        if (area > left_->area_) {
+            return left_->SampleLight(intersection, pdf, area);
+        } else {
+            return right_->SampleLight(intersection, pdf, area - left_->area_);
+        }
+    }
+}

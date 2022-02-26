@@ -17,6 +17,8 @@ public:
 
     bool Intersect(Ray *ray, Intersection *intersection) const;
 
+    void SampleLight(Intersection *intersection, float *pdf) const;
+
 private:
     Node *root_;
 

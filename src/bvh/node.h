@@ -15,7 +15,11 @@ public:
 
     ~Node() = default;
 
+    auto area() const { return area_; }
+
     bool Intersect(Ray *ray, Intersection *intersection) const;
+
+    void SampleLight(Intersection *intersection, float *pdf, float area) const;
 
 private:
     Bound bound_;

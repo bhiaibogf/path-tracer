@@ -9,6 +9,10 @@ const float Scene::kEpsilon = 1e-6f;
 const float Scene::kRussianRoulette = 0.8f;
 const int Scene::kMaxBounce = 10;
 
+Scene::Scene() {
+    bvh_ = nullptr;
+}
+
 global::Color Scene::Trace(Ray *ray) const {
     Intersection intersection;
     if (Intersect(ray, &intersection)) {
@@ -19,7 +23,17 @@ global::Color Scene::Trace(Ray *ray) const {
 
 bool Scene::Intersect(Ray *ray, Intersection *intersection) const {
     intersection->direction = -ray->direction();
-    return bvh_->Intersect(ray, intersection);
+    if (bvh_) {
+        return bvh_->Intersect(ray, intersection);
+    } else {
+        bool has_intersection = false;
+        for (auto &object: objects_) {
+            if (object->Intersect(ray, intersection)) {
+                has_intersection = true;
+            }
+        }
+        return has_intersection;
+    }
 }
 
 global::Color Scene::Shade(const Intersection &intersection, int bounce) const {
@@ -88,22 +102,26 @@ bool Scene::RussianRoulette(int bounce) {
 }
 
 void Scene::SampleLight(Intersection *intersection, float *pdf) const {
-    float area_sum = 0;
-    for (const auto &object: objects_) {
-        if (object->material()->HasEmitter()) {
-            area_sum += object->Area();
+    if (bvh_) {
+        bvh_->SampleLight(intersection, pdf);
+    } else {
+        float area_sum = 0;
+        for (const auto &object: objects_) {
+            if (object->material()->HasEmitter()) {
+                area_sum += object->Area();
+            }
         }
-    }
 
-    float random_area = generator::Rand() * area_sum;
-    area_sum = 0;
-    for (const auto &object: objects_) {
-        if (object->material()->HasEmitter()) {
-            area_sum += object->Area();
-            if (random_area <= area_sum) {
-                intersection->material = object->material();
-                object->Sample(intersection, pdf);
-                break;
+        float random_area = generator::Rand() * area_sum;
+        area_sum = 0;
+        for (const auto &object: objects_) {
+            if (object->material()->HasEmitter()) {
+                area_sum += object->Area();
+                if (random_area <= area_sum) {
+                    intersection->material = object->material();
+                    object->Sample(intersection, pdf);
+                    break;
+                }
             }
         }
     }
