@@ -78,6 +78,27 @@ std::ostream &global::operator<<(std::ostream &os, const Eigen::Vector2f &vector
     return os;
 }
 
-float global::PowerHeuristic(float pdf_1, float pdf_2, float beta) {
-    return std::pow(pdf_1, beta) / (std::pow(pdf_1, beta) + std::pow(pdf_2, beta));
+float global::PowerHeuristic(float pdf_sample, float pdf_other, float beta) {
+    // NOTE: inf is ok!
+    assert(pdf_sample >= 0);
+    assert(pdf_other >= 0);
+
+    float r, mis;
+    if (pdf_sample > pdf_other) {
+        r = pdf_other / pdf_sample;
+        mis = 1 / (1 + r * r);
+    } else if (pdf_sample < pdf_other) {
+        r = pdf_sample / pdf_other;
+        mis = 1 - 1 / (1 + r * r);
+    } else {
+        // avoid (possible, but extremely rare) inf/inf cases
+        assert(pdf_sample == pdf_other);
+        r = 1.0f;
+        mis = 0.5f;
+    }
+    assert(r >= 0);
+    assert(r <= 1);
+    assert(mis >= 0);
+    assert(mis <= 1);
+    return mis;
 }
