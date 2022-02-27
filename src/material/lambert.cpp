@@ -41,6 +41,7 @@ global::Vector Lambert::Sample(const global::Vector &wo, const global::Vector &n
         *pdf = z * global::kInvPi;
         return ToWorld(local, normal);
     }
+    *pdf = 0.f;
     return global::kNone;
 }
 

@@ -15,6 +15,7 @@ namespace global {
     const float kTwoPi = M_PI * 2.f;
     const float kInvPi = M_1_PI;
     const float kInvTwoPi = M_1_PI / 2.f;
+    const float kInf = std::numeric_limits<float>::infinity();
 
     typedef Eigen::Vector3f Color;
     typedef Eigen::Vector3f Vector;

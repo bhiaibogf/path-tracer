@@ -205,11 +205,17 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce, SampleT
     Intersection intersection_next;
 
     if (Intersect(&ray_to_next, &intersection_next)) {
-        radiance_bsdf = global::Product(Shade(intersection_next, bounce + 1, sample_type),
-                                        material->Eval(direction, direction_to_next, normal, tex_coord))
-                        * std::abs(normal.dot(direction_to_next))
-                        / pdf_bsdf
-                        / kRussianRoulette;
+        if (pdf_bsdf == global::kInf) {
+            radiance_bsdf = global::Product(Shade(intersection_next, bounce + 1, sample_type),
+                                            ((Refraction *) material)->Albedo(direction, direction_to_next, normal))
+                            / kRussianRoulette;
+        } else {
+            radiance_bsdf = global::Product(Shade(intersection_next, bounce + 1, sample_type),
+                                            material->Eval(direction, direction_to_next, normal, tex_coord))
+                            * std::abs(normal.dot(direction_to_next))
+                            / pdf_bsdf
+                            / kRussianRoulette;
+        }
         if (sample_type == kSampleBsdf) {
             return radiance_emission + radiance_bsdf;
         }

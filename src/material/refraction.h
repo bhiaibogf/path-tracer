@@ -14,6 +14,8 @@ public:
 
     MaterialType Type() const override { return kRefraction; }
 
+    global::Color Albedo(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const;
+
     global::Color Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const override;
 
     global::Vector Sample(const global::Vector &wo, const global::Vector &normal, float *pdf) const override;
