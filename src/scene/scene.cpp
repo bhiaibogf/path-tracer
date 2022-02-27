@@ -94,11 +94,19 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce) const {
             Ray ray_to_next = Ray(position_new, direction_to_next);
             Intersection intersection_next;
             if (Intersect(&ray_to_next, &intersection_next)) {
-                radiance_indirect = global::Product(Shade(intersection_next, bounce + 1),
-                                                    material->Eval(direction, direction_to_next, normal, tex_coord))
-                                    * std::abs(normal.dot(direction_to_next))
-                                    / pdf_bsdf
-                                    / kRussianRoulette;
+                if (pdf_bsdf == global::kInf) {
+                    radiance_indirect
+                            = global::Product(Shade(intersection_next, bounce + 1),
+                                              ((Refraction *) material)->Albedo(direction, direction_to_next, normal))
+                              / kRussianRoulette;
+                } else {
+                    radiance_indirect
+                            = global::Product(Shade(intersection_next, bounce + 1),
+                                              material->Eval(direction, direction_to_next, normal, tex_coord))
+                              * std::abs(normal.dot(direction_to_next))
+                              / pdf_bsdf
+                              / kRussianRoulette;
+                }
             }
         }
     }
