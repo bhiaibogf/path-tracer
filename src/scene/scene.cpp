@@ -184,6 +184,8 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce, SampleT
                 return radiance_emission + radiance_light;
             }
             float pdf_bsdf = material->Pdf(direction, direction_to_light, normal);
+            pdf_light = pdf_light * (position_light - position).squaredNorm() /
+                        std::abs(normal_light.dot(-direction_to_light));
             float mis_wight = global::PowerHeuristic(pdf_light, pdf_bsdf);
             radiance_light *= mis_wight;
         }
@@ -213,7 +215,9 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce, SampleT
         }
         float pdf_light = 0.f;
         if (intersection_next.material->HasEmitter()) {
-            pdf_light = 1.f / intersection_next.area;
+            pdf_light = (intersection_next.position - position).squaredNorm()
+                        / intersection_next.area
+                        / std::abs(intersection_next.normal.dot(direction_to_next));
         }
         float mis_wight = global::PowerHeuristic(pdf_bsdf, pdf_light);
         radiance_bsdf *= mis_wight;
