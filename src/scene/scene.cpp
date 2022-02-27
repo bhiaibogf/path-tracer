@@ -65,18 +65,19 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce) const {
 
     // direct light
     global::Color radiance_direct = global::kBlack;
+
     // sample from light
     Intersection intersection_light;
     float pdf_light;
     SampleLight(&intersection_light, &pdf_light);
 
     auto &position_light = intersection_light.position, &normal_light = intersection_light.normal;
-    // wi (inter to light)
     auto direction_to_light = (position_light - position).normalized();
+    global::Vector position_new = position + normal * (normal.dot(direction_to_light) > 0 ? kEpsilon : -kEpsilon);
 
     // check if the light is visible
     Intersection intersection_to_light;
-    Ray ray_to_light(position, direction_to_light);
+    Ray ray_to_light(position_new, direction_to_light);
     if (Intersect(&ray_to_light, &intersection_to_light)
         && (position_light - intersection_to_light.position).squaredNorm() < kEpsilon) {
         radiance_direct = global::Product(intersection_to_light.material->emission(),
@@ -148,6 +149,7 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce, SampleT
 
     // emission
     global::Color radiance_emission = global::kBlack;
+
     if (material->HasEmitter()) {
         radiance_emission = material->emission();
     }
@@ -156,47 +158,49 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce, SampleT
         return radiance_emission;
     }
 
-    // light
+    // sample light
     global::Color radiance_light = global::kBlack;
-    // sample from light
-    Intersection intersection_light;
-    float pdf_light;
-    SampleLight(&intersection_light, &pdf_light);
 
-    auto &position_light = intersection_light.position, &normal_light = intersection_light.normal;
-    // wi (inter to light)
-    auto direction_to_light = (position_light - position).normalized();
+    if (sample_type != kSampleBsdf) {
+        Intersection intersection_light;
+        float pdf_light;
+        SampleLight(&intersection_light, &pdf_light);
+        auto &position_light = intersection_light.position, &normal_light = intersection_light.normal;
 
-    // check if the light is visible
-    Intersection intersection_to_light;
-    Ray ray_to_light(position, direction_to_light);
-    if (Intersect(&ray_to_light, &intersection_to_light)) {
-        radiance_light = global::Product(Shade(intersection_to_light, bounce + 1, sample_type),
-                                         material->Eval(direction, direction_to_light, normal, tex_coord))
-                         * std::abs(normal.dot(direction_to_light))
-                         * std::abs(normal_light.dot(-direction_to_light))
-                         / (position_light - position).squaredNorm()
-                         / pdf_light
-                         / kRussianRoulette;
-        if (sample_type == kSampleLight) {
-            return radiance_emission + radiance_light;
+        auto direction_to_light = (position_light - position).normalized();
+        global::Vector position_new = position + normal * (normal.dot(direction_to_light) > 0 ? kEpsilon : -kEpsilon);
+        Ray ray_to_light(position_new, direction_to_light);
+        Intersection intersection_to_light;
+
+        if (Intersect(&ray_to_light, &intersection_to_light)) {
+            radiance_light = global::Product(Shade(intersection_to_light, bounce + 1, sample_type),
+                                             material->Eval(direction, direction_to_light, normal, tex_coord))
+                             * std::abs(normal.dot(direction_to_light))
+                             * std::abs(normal_light.dot(-direction_to_light))
+                             / (position_light - position).squaredNorm()
+                             / pdf_light
+                             / kRussianRoulette;
+            if (sample_type == kSampleLight) {
+                return radiance_emission + radiance_light;
+            }
+            float pdf_bsdf = material->Pdf(direction, direction_to_light, normal);
+            float mis_wight = global::PowerHeuristic(pdf_light, pdf_bsdf);
+            radiance_light *= mis_wight;
         }
-        float pdf_bsdf = material->Pdf(direction, direction_to_light, normal);
-        float mis_wight = global::PowerHeuristic(pdf_bsdf, pdf_light);
-        radiance_light *= mis_wight;
     }
 
-    // bsdf
+    // sample bsdf
     global::Color radiance_bsdf = global::kBlack;
-    // wi (inter to next)
+
     auto direction_to_next = material->Sample(direction, normal);
     if (direction_to_next == global::kNone) {
         return radiance_emission + radiance_light;
     }
+
     global::Vector position_new = position + normal * (normal.dot(direction_to_next) > 0 ? kEpsilon : -kEpsilon);
-    // global::Vector position_new = position;
     Ray ray_to_next = Ray(position_new, direction_to_next);
     Intersection intersection_next;
+
     if (Intersect(&ray_to_next, &intersection_next)) {
         float pdf_bsdf = material->Pdf(direction, direction_to_next, normal);
         radiance_bsdf = global::Product(Shade(intersection_next, bounce + 1, sample_type),
@@ -207,7 +211,7 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce, SampleT
         if (sample_type == kSampleBsdf) {
             return radiance_emission + radiance_bsdf;
         }
-        pdf_light = 0.f;
+        float pdf_light = 0.f;
         if (intersection_next.material->HasEmitter()) {
             pdf_light = 1.f / intersection_next.area;
         }
