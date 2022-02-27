@@ -5,7 +5,7 @@
 #include "texture.h"
 
 Texture::Texture(const std::string &filename) : path_(filename) {
-    data_ = stbi_load(filename.c_str(), &width_, &height_, &channel_, 0);
+    img_ = stbi_loadf(filename.c_str(), &width_, &height_, &channel_, 0);
 }
 
 global::Color Texture::GetColor(const global::TexCoord &tex_coord) const {
@@ -15,7 +15,6 @@ global::Color Texture::GetColor(const global::TexCoord &tex_coord) const {
 
     int x = int(u * float(width_)), y = int(v * float(height_));
     int index = (x + y * width_) * channel_;
-    global::Color color = global::Color(data_[index], data_[index + 1], data_[index + 2]);
-    color /= 255.f;
+    global::Color color = global::Color(img_[index], img_[index + 1], img_[index + 2]);
     return color;
 }

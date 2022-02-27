@@ -22,7 +22,7 @@ public:
 
 private:
     std::string path_;
-    unsigned char *data_;
+    float *img_;
     int width_, height_, channel_;
 
 };
