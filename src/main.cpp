@@ -8,13 +8,14 @@
 int main() {
     std::string model_path = "scenes/";
 
-    // std::string model_name = "cornell";
-    std::string model_name = "veach-mis";
+    std::string model_name = "cornell-simple";
+    // std::string model_name = "cornell-complex";
+    // std::string model_name = "veach-mis";
     // std::string model_name = "cornell-box";
     // std::string model_name = "bedroom";
 
-    int spp = 16;
-    // int spp = 512;
+    // int spp = 16;
+    int spp = 512;
 
     bool antialiasing = true;
     // bool antialiasing = false;
@@ -22,8 +23,8 @@ int main() {
     bool use_bvh = true;
     // bool use_bvh = false;
 
-    Scene::SampleType sample_type = Scene::kSampleBoth;
-    // Scene::SampleType sample_type = Scene::kSampleBsdf;
+    // Scene::SampleType sample_type = Scene::kSampleBoth;
+    Scene::SampleType sample_type = Scene::kSampleBsdf;
     // Scene::SampleType sample_type = Scene::kSampleLight;
     // Scene::SampleType sample_type = Scene::kMis;
 
