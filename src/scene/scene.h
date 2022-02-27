@@ -15,13 +15,15 @@ public:
 
     ~Scene() = default;
 
-    global::Color Trace(Ray *ray, bool sample_to_light) const;
-
-    void AddObject(Object *object) {
-        objects_.push_back(object);
-    }
+    void AddObject(Object *object) { objects_.push_back(object); }
 
     void BuildBvh();
+
+    enum SampleType {
+        kSampleLight, kSampleBsdf, kSampleBoth, kMis
+    };
+
+    global::Color Trace(Ray *ray, SampleType sample_type) const;
 
 private:
     static const Eigen::Vector3f kBackgroundColor;
@@ -36,9 +38,7 @@ private:
 
     global::Color Shade(const Intersection &intersection, int bounce) const;
 
-    global::Color ShadeMis(const Intersection &intersection, int bounce) const;
-
-    global::Color Shade(const Intersection &intersection, int bounce, bool need_emission) const;
+    global::Color Shade(const Intersection &intersection, int bounce, SampleType sample_type) const;
 
     void SampleLight(Intersection *intersection, float *pdf) const;
 

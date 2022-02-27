@@ -17,13 +17,16 @@ void Scene::BuildBvh() {
     bvh_ = new Bvh(objects_);
 }
 
-global::Color Scene::Trace(Ray *ray, bool sample_to_light) const {
+global::Color Scene::Trace(Ray *ray, SampleType sample_type) const {
     Intersection intersection;
     if (Intersect(ray, &intersection)) {
-        if (sample_to_light) {
-            return Shade(intersection, 0, true);
-        } else {
-            return ShadeMis(intersection, 0);
+        switch (sample_type) {
+            case kSampleLight:
+            case kSampleBsdf:
+            case kMis:
+                return Shade(intersection, 0, sample_type);
+            case kSampleBoth:
+                return Shade(intersection, 0);
         }
     }
     return kBackgroundColor;
@@ -44,6 +47,7 @@ bool Scene::Intersect(Ray *ray, Intersection *intersection) const {
     }
 }
 
+// Whitted Style
 global::Color Scene::Shade(const Intersection &intersection, int bounce) const {
     Material *material = intersection.material;
     auto &position = intersection.position, &normal = intersection.normal, &direction = intersection.direction;
@@ -51,46 +55,7 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce) const {
 
     // light
     global::Color radiance_light = global::kBlack;
-    if (material->HasEmitter()) {
-        radiance_light = material->emission();
-    }
-
-    if (bounce >= kMaxBounce) {
-        return radiance_light;
-    }
-
-    // other
-    global::Color radiance_path = global::kBlack;
-    if (RussianRoulette(bounce)) {
-        // wi (inter to next)
-        auto direction_to_next = material->Sample(direction, normal);
-        if (direction_to_next == global::kNone) {
-            return radiance_light;
-        }
-        global::Vector position_new = position + normal * (normal.dot(direction_to_next) > 0 ? kEpsilon : -kEpsilon);
-        // global::Vector position_new = position;
-        Ray ray_to_next = Ray(position_new, direction_to_next);
-        Intersection intersection_next;
-        if (Intersect(&ray_to_next, &intersection_next)) {
-            radiance_path = global::Product(Shade(intersection_next, bounce + 1),
-                                            material->Eval(direction, direction_to_next, normal, tex_coord))
-                            * std::abs(normal.dot(direction_to_next))
-                            / material->Pdf(direction, direction_to_next, normal)
-                            / kRussianRoulette;
-        }
-    }
-
-    return radiance_light + radiance_path;
-}
-
-global::Color Scene::Shade(const Intersection &intersection, int bounce, bool need_emission) const {
-    Material *material = intersection.material;
-    auto &position = intersection.position, &normal = intersection.normal, &direction = intersection.direction;
-    auto &tex_coord = intersection.tex_coord;
-
-    // light
-    global::Color radiance_light = global::kBlack;
-    if (material->HasEmitter() && need_emission) {
+    if (material->HasEmitter() && bounce == 0) {
         radiance_light = material->emission();
     }
 
@@ -116,8 +81,8 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce, bool ne
         && (position_light - intersection_to_light.position).squaredNorm() < kEpsilon) {
         radiance_direct = global::Product(intersection_to_light.material->emission(),
                                           material->Eval(direction, direction_to_light, normal, tex_coord))
-                          * normal.dot(direction_to_light)
-                          * normal_light.dot(-direction_to_light)
+                          * std::abs(normal.dot(direction_to_light))
+                          * std::abs(normal_light.dot(-direction_to_light))
                           / (position_light - position).squaredNorm()
                           / pdf_light;
     }
@@ -127,19 +92,19 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce, bool ne
     if (RussianRoulette(bounce)) {
         // wi (inter to next)
         auto direction_to_next = material->Sample(direction, normal);
-        if (direction_to_next == global::kNone) {
-            return radiance_light + radiance_direct;
-        }
-        global::Vector position_new = position + normal * (normal.dot(direction_to_next) > 0 ? kEpsilon : -kEpsilon);
-        // global::Vector position_new = position;
-        Ray ray_to_next = Ray(position_new, direction_to_next);
-        Intersection intersection_next;
-        if (Intersect(&ray_to_next, &intersection_next)) {
-            radiance_indirect = global::Product(Shade(intersection_next, bounce + 1, false),
-                                                material->Eval(direction, direction_to_next, normal, tex_coord))
-                                * std::abs(normal.dot(direction_to_next))
-                                / material->Pdf(direction, direction_to_next, normal)
-                                / kRussianRoulette;
+        if (direction_to_next != global::kNone) {
+            global::Vector position_new =
+                    position + normal * (normal.dot(direction_to_next) > 0 ? kEpsilon : -kEpsilon);
+            // global::Vector position_new = position;
+            Ray ray_to_next = Ray(position_new, direction_to_next);
+            Intersection intersection_next;
+            if (Intersect(&ray_to_next, &intersection_next)) {
+                radiance_indirect = global::Product(Shade(intersection_next, bounce + 1),
+                                                    material->Eval(direction, direction_to_next, normal, tex_coord))
+                                    * std::abs(normal.dot(direction_to_next))
+                                    / material->Pdf(direction, direction_to_next, normal)
+                                    / kRussianRoulette;
+            }
         }
     }
 
@@ -176,23 +141,23 @@ void Scene::SampleLight(Intersection *intersection, float *pdf) const {
     }
 }
 
-global::Color Scene::ShadeMis(const Intersection &intersection, int bounce) const {
+global::Color Scene::Shade(const Intersection &intersection, int bounce, SampleType sample_type) const {
     Material *material = intersection.material;
     auto &position = intersection.position, &normal = intersection.normal, &direction = intersection.direction;
     auto &tex_coord = intersection.tex_coord;
 
+    // emission
+    global::Color radiance_emission = global::kBlack;
+    if (material->HasEmitter()) {
+        radiance_emission = material->emission();
+    }
+
+    if (bounce >= kMaxBounce || !RussianRoulette(bounce)) {
+        return radiance_emission;
+    }
+
     // light
     global::Color radiance_light = global::kBlack;
-    if (material->HasEmitter()) {
-        radiance_light = material->emission();
-    }
-
-    if (bounce >= kMaxBounce) {
-        return radiance_light;
-    }
-
-    // direct light
-    global::Color radiance_direct = global::kBlack;
     // sample from light
     Intersection intersection_light;
     float pdf_light;
@@ -205,47 +170,50 @@ global::Color Scene::ShadeMis(const Intersection &intersection, int bounce) cons
     // check if the light is visible
     Intersection intersection_to_light;
     Ray ray_to_light(position, direction_to_light);
-    if (Intersect(&ray_to_light, &intersection_to_light)
-        && (position_light - intersection_to_light.position).squaredNorm() < kEpsilon) {
+    if (Intersect(&ray_to_light, &intersection_to_light)) {
+        radiance_light = global::Product(Shade(intersection_to_light, bounce + 1, sample_type),
+                                         material->Eval(direction, direction_to_light, normal, tex_coord))
+                         * std::abs(normal.dot(direction_to_light))
+                         * std::abs(normal_light.dot(-direction_to_light))
+                         / (position_light - position).squaredNorm()
+                         / pdf_light
+                         / kRussianRoulette;
+        if (sample_type == kSampleLight) {
+            return radiance_emission + radiance_light;
+        }
         float pdf_bsdf = material->Pdf(direction, direction_to_light, normal);
         float mis_wight = global::PowerHeuristic(pdf_bsdf, pdf_light);
-        radiance_direct = global::Product(ShadeMis(intersection_to_light, bounce + 1),
-                                          material->Eval(direction, direction_to_light, normal, tex_coord))
-                          * normal.dot(direction_to_light)
-                          * normal_light.dot(-direction_to_light)
-                          / (position_light - position).squaredNorm()
-                          / pdf_light
-                          * mis_wight;
+        radiance_light *= mis_wight;
     }
 
-    // indirect light
-    global::Color radiance_indirect = global::kBlack;
-    if (RussianRoulette(bounce)) {
-        // wi (inter to next)
-        auto direction_to_next = material->Sample(direction, normal);
-        if (direction_to_next == global::kNone) {
-            return radiance_light + radiance_direct;
+    // bsdf
+    global::Color radiance_bsdf = global::kBlack;
+    // wi (inter to next)
+    auto direction_to_next = material->Sample(direction, normal);
+    if (direction_to_next == global::kNone) {
+        return radiance_emission + radiance_light;
+    }
+    global::Vector position_new = position + normal * (normal.dot(direction_to_next) > 0 ? kEpsilon : -kEpsilon);
+    // global::Vector position_new = position;
+    Ray ray_to_next = Ray(position_new, direction_to_next);
+    Intersection intersection_next;
+    if (Intersect(&ray_to_next, &intersection_next)) {
+        float pdf_bsdf = material->Pdf(direction, direction_to_next, normal);
+        radiance_bsdf = global::Product(Shade(intersection_next, bounce + 1, sample_type),
+                                        material->Eval(direction, direction_to_next, normal, tex_coord))
+                        * std::abs(normal.dot(direction_to_next))
+                        / pdf_bsdf
+                        / kRussianRoulette;
+        if (sample_type == kSampleBsdf) {
+            return radiance_emission + radiance_bsdf;
         }
-        global::Vector position_new = position + normal * (normal.dot(direction_to_next) > 0 ? kEpsilon : -kEpsilon);
-        // global::Vector position_new = position;
-        Ray ray_to_next = Ray(position_new, direction_to_next);
-        Intersection intersection_next;
-        if (Intersect(&ray_to_next, &intersection_next)) {
-            float pdf_bsdf = material->Pdf(direction, direction_to_next, normal);
-            ray_to_next = Ray(position_new, direction_to_next);
-            pdf_light = 0.f;
-            if (intersection_next.material->HasEmitter()) {
-                pdf_light = 1.f / intersection_next.area;
-            }
-            float mis_wight = global::PowerHeuristic(pdf_bsdf, pdf_light);
-            radiance_indirect = global::Product(ShadeMis(intersection_next, bounce + 1),
-                                                material->Eval(direction, direction_to_next, normal, tex_coord))
-                                * std::abs(normal.dot(direction_to_next))
-                                / pdf_bsdf
-                                * mis_wight
-                                / kRussianRoulette;
+        pdf_light = 0.f;
+        if (intersection_next.material->HasEmitter()) {
+            pdf_light = 1.f / intersection_next.area;
         }
+        float mis_wight = global::PowerHeuristic(pdf_bsdf, pdf_light);
+        radiance_bsdf *= mis_wight;
     }
 
-    return radiance_light + radiance_direct + radiance_indirect;
+    return radiance_emission + radiance_light + radiance_bsdf;
 }

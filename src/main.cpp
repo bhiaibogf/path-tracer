@@ -22,11 +22,10 @@ int main() {
     bool use_bvh = true;
     // bool use_bvh = false;
 
-    // bool sample_to_light = true;
-    bool sample_to_light = false;
-
-    bool mis = true;
-    // bool mis = false;
+    Scene::SampleType sample_type = Scene::kSampleBoth;
+    // Scene::SampleType sample_type = Scene::kSampleBsdf;
+    // Scene::SampleType sample_type = Scene::kSampleLight;
+    // Scene::SampleType sample_type = Scene::kMis;
 
     Timer timer;
 
@@ -59,7 +58,7 @@ int main() {
     std::cout << "\nRendering..." << std::endl;
 
     PathTracer renderer(camera, scene);
-    renderer.Render(spp, antialiasing, sample_to_light);
+    renderer.Render(spp, antialiasing, sample_type);
 
     timer.StopTimer();
     std::cout << "\nRender complete, using " << timer.GetTime() << " seconds." << std::endl;
@@ -69,8 +68,10 @@ int main() {
                   + "-" + std::to_string(spp)
                   + (antialiasing ? "-antialiasing" : "")
                   + (use_bvh ? "-BVH" : "")
-                  + (sample_to_light ? "-light" : "")
-                  + (mis ? "-mis" : "")
+                  + (sample_type == Scene::kSampleBsdf ? "-bsdf" : "")
+                  + (sample_type == Scene::kSampleLight ? "-light" : "")
+                  + (sample_type == Scene::kSampleBoth ? "-both" : "")
+                  + (sample_type == Scene::kMis ? "-mis" : "")
                   + ".exr");
 
     return 0;
