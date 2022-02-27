@@ -40,7 +40,9 @@ private:
 
     global::Color Shade(const Intersection &intersection, int bounce, SampleType sample_type) const;
 
-    void SampleLight(Intersection *intersection, float *pdf) const;
+    global::Vector SampleLight(const global::Vector &position, float *pdf) const;
+
+    static float PdfLight(const global::Vector &position, const Intersection &intersection_next);
 
     static bool RussianRoulette(int bounce);
 
