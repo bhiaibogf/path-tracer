@@ -86,7 +86,8 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce) const {
     global::Color radiance_indirect = global::kBlack;
     if (RussianRoulette(bounce)) {
         // wi (inter to next)
-        auto direction_to_next = material->Sample(direction, normal);
+        float pdf_bsdf;
+        auto direction_to_next = material->Sample(direction, normal, &pdf_bsdf);
         if (direction_to_next != global::kNone) {
             global::Vector position_new =
                     position + normal * (normal.dot(direction_to_next) > 0 ? kEpsilon : -kEpsilon);
@@ -96,7 +97,7 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce) const {
                 radiance_indirect = global::Product(Shade(intersection_next, bounce + 1),
                                                     material->Eval(direction, direction_to_next, normal, tex_coord))
                                     * std::abs(normal.dot(direction_to_next))
-                                    / material->Pdf(direction, direction_to_next, normal)
+                                    / pdf_bsdf
                                     / kRussianRoulette;
             }
         }
@@ -193,7 +194,8 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce, SampleT
     // sample bsdf
     global::Color radiance_bsdf = global::kBlack;
 
-    auto direction_to_next = material->Sample(direction, normal);
+    float pdf_bsdf;
+    auto direction_to_next = material->Sample(direction, normal, &pdf_bsdf);
     if (direction_to_next == global::kNone) {
         return radiance_emission + radiance_light;
     }
@@ -203,7 +205,6 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce, SampleT
     Intersection intersection_next;
 
     if (Intersect(&ray_to_next, &intersection_next)) {
-        float pdf_bsdf = material->Pdf(direction, direction_to_next, normal);
         radiance_bsdf = global::Product(Shade(intersection_next, bounce + 1, sample_type),
                                         material->Eval(direction, direction_to_next, normal, tex_coord))
                         * std::abs(normal.dot(direction_to_next))

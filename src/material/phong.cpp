@@ -18,7 +18,7 @@ global::Color Phong::Eval(const global::Vector &wo, const global::Vector &wi, co
     return global::kBlack;
 }
 
-global::Vector Phong::Sample(const global::Vector &wo, const global::Vector &normal) const {
+global::Vector Phong::Sample(const global::Vector &wo, const global::Vector &normal, float *pdf) const {
     if (normal.dot(wo) > 0) {
         global::Vector reflect = global::Reflect(wo, normal);
 
@@ -31,6 +31,7 @@ global::Vector Phong::Sample(const global::Vector &wo, const global::Vector &nor
         float sin_phi = std::sin(phi), cos_phi = std::cos(phi);
 
         global::Vector local(r * cos_phi, r * sin_phi, z);
+        *pdf = (n_s_ + 1) * global::kInvTwoPi * std::pow(z, n_s_);
         return ToWorld(local, reflect);
     }
     return global::kNone;

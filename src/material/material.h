@@ -35,7 +35,7 @@ public:
         return Eval(wo, wi, normal);
     }
 
-    virtual global::Vector Sample(const global::Vector &wo, const global::Vector &normal) const = 0;
+    virtual global::Vector Sample(const global::Vector &wo, const global::Vector &normal, float *pdf) const = 0;
 
     virtual float Pdf(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const = 0;
 

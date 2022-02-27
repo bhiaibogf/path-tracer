@@ -16,7 +16,7 @@ public:
 
     global::Color Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const override;
 
-    global::Vector Sample(const global::Vector &wo, const global::Vector &normal) const override;
+    global::Vector Sample(const global::Vector &wo, const global::Vector &normal, float *pdf) const override;
 
     float Pdf(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const override;
 

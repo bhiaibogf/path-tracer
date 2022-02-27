@@ -31,13 +31,14 @@ global::Color Lambert::Eval(const global::Vector &wo, const global::Vector &wi, 
     return global::kBlack;
 }
 
-global::Vector Lambert::Sample(const global::Vector &wo, const global::Vector &normal) const {
+global::Vector Lambert::Sample(const global::Vector &wo, const global::Vector &normal, float *pdf) const {
     if (normal.dot(wo) > 0) {
         auto xi_1 = generator::Rand(), xi_2 = generator::Rand();
         float z = std::sqrt(1.f - xi_1);
         float r = std::sqrt(xi_1), phi = global::kTwoPi * xi_2;
         float sin_phi = std::sin(phi), cos_phi = std::cos(phi);
         global::Vector local(r * cos_phi, r * sin_phi, z);
+        *pdf = z * global::kInvPi;
         return ToWorld(local, normal);
     }
     return global::kNone;

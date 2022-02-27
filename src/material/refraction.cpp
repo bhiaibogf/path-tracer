@@ -21,7 +21,7 @@ global::Color Refraction::Eval(const global::Vector &wo, const global::Vector &w
     return global::kBlack;
 }
 
-global::Vector Refraction::Sample(const global::Vector &wo, const global::Vector &normal) const {
+global::Vector Refraction::Sample(const global::Vector &wo, const global::Vector &normal, float *pdf) const {
     global::Vector refract = global::Refract(wo, normal, ior_);
     if (refract != global::kNone) {
         auto xi_1 = generator::Rand(), xi_2 = generator::Rand();
@@ -30,6 +30,7 @@ global::Vector Refraction::Sample(const global::Vector &wo, const global::Vector
         float phi = global::kTwoPi * xi_2;
         float sin_phi = std::sin(phi), cos_phi = std::cos(phi);
         global::Vector local(r * cos_phi, r * sin_phi, z);
+        *pdf = (n_s + 1) * global::kInvTwoPi * std::pow(z, n_s);
         return ToWorld(local, refract);
     }
     return global::kNone;

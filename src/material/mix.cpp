@@ -16,12 +16,16 @@ global::Color Mix::Eval(const global::Vector &wo, const global::Vector &wi, cons
     return material_1_->Eval(wo, wi, normal, tex_coord) + material_2_->Eval(wo, wi, normal, tex_coord);
 }
 
-global::Vector Mix::Sample(const global::Vector &wo, const global::Vector &normal) const {
+global::Vector Mix::Sample(const global::Vector &wo, const global::Vector &normal, float *pdf) const {
+    global::Vector out;
     if (generator::Rand() < ratio_) {
-        return material_1_->Sample(wo, normal);
+        out = material_1_->Sample(wo, normal, pdf);
+        (*pdf) *= ratio_;
     } else {
-        return material_2_->Sample(wo, normal);
+        out = material_2_->Sample(wo, normal, pdf);
+        (*pdf) *= 1 - ratio_;
     }
+    return out;
 }
 
 float Mix::Pdf(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const {
