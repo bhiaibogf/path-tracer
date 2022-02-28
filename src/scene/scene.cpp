@@ -80,10 +80,28 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce) const {
                                           material->Eval(direction, direction_to_light, normal, tex_coord))
                           * std::abs(normal.dot(direction_to_light))
                           / pdf_light;
-        // // MIS
-        // float pdf_bsdf = material->Pdf(direction, direction_to_light, normal);
-        // float mis_wight = global::PowerHeuristic(pdf_light, pdf_bsdf);
-        // radiance_direct *= mis_wight;
+        // MIS
+        float pdf_bsdf = material->Pdf(direction, direction_to_light, normal);
+        float mis_wight = global::PowerHeuristic(pdf_light, pdf_bsdf);
+        radiance_direct *= mis_wight;
+
+        auto direction_another_light = material->Sample(direction, normal, &pdf_bsdf);
+        auto position_another_light =
+                position + normal * (normal.dot(direction_another_light) > 0 ? kEpsilon : -kEpsilon);
+        Ray ray_another_light = Ray(position_another_light, direction_another_light);
+        Intersection intersection_another_light;
+
+        if (Intersect(&ray_another_light, &intersection_another_light)
+            && intersection_another_light.material->HasEmitter()) {
+            pdf_light = PdfLight(position, intersection_another_light);
+            mis_wight = global::PowerHeuristic(pdf_bsdf, pdf_light);
+            radiance_direct +=
+                    mis_wight
+                    * global::Product(intersection_another_light.material->emission(),
+                                      material->Eval(direction, direction_another_light, normal, tex_coord))
+                    * std::abs(normal.dot(direction_another_light))
+                    / pdf_bsdf;
+        }
     }
 
     if (!RussianRoulette(bounce)) {
