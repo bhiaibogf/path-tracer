@@ -67,7 +67,7 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce) const {
 
     // sample from light
     float pdf_light;
-    auto[position_light, direction_to_light] = SampleLight(position, &pdf_light);
+    auto[direction_to_light, position_light] = SampleLight(position, &pdf_light);
 
     Intersection intersection_to_light;
     global::Vector position_to_light = position + normal * (normal.dot(direction_to_light) > 0 ? kEpsilon : -kEpsilon);
