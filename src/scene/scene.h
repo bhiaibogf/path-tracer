@@ -26,7 +26,7 @@ public:
     global::Color Trace(Ray *ray, SampleType sample_type) const;
 
 private:
-    static const Eigen::Vector3f kBackgroundColor;
+    static const global::Color kBackgroundColor;
     static const float kEpsilon;
     static const float kRussianRoulette;
     static const int kMaxBounce;
@@ -40,7 +40,7 @@ private:
 
     global::Color Shade(const Intersection &intersection, int bounce, SampleType sample_type) const;
 
-    global::Vector SampleLight(const global::Vector &position, float *pdf) const;
+    std::pair<global::Vector, global::Vector> SampleLight(const global::Vector &position, float *pdf) const;
 
     static float PdfLight(const global::Vector &position, const Intersection &intersection_next);
 
