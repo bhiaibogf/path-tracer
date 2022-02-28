@@ -171,11 +171,12 @@ std::pair<global::Vector, global::Vector> Scene::SampleLight(const global::Vecto
     return {direction_to_light, intersection_light.position};
 }
 
-float Scene::PdfLight(const global::Vector &position, const Intersection &intersection_next) {
-    if (intersection_next.material->HasEmitter()) {
-        return (intersection_next.position - position).squaredNorm()
-               / intersection_next.area
-               / std::abs(intersection_next.normal.dot(intersection_next.direction));
+float Scene::PdfLight(const global::Vector &position, const Intersection &intersection_another_light) const {
+    if (intersection_another_light.material->HasEmitter()) {
+        return (intersection_another_light.position - position).squaredNorm()
+               / std::abs(intersection_another_light.normal.dot(intersection_another_light.direction))
+               * intersection_another_light.material->emission().squaredNorm()
+               / bvh_->Area();
     }
     return 0.f;
 }

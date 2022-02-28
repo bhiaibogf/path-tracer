@@ -42,7 +42,7 @@ private:
 
     std::pair<global::Vector, global::Vector> SampleLight(const global::Vector &position, float *pdf) const;
 
-    static float PdfLight(const global::Vector &position, const Intersection &intersection_next);
+    float PdfLight(const global::Vector &position, const Intersection &intersection_another_light) const;
 
     static bool RussianRoulette(int bounce);
 

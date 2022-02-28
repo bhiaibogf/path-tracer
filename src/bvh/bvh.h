@@ -15,6 +15,8 @@ public:
 
     ~Bvh() = default;
 
+    float Area() const { return root_->area(); }
+
     bool Intersect(Ray *ray, Intersection *intersection) const;
 
     void SampleLight(Intersection *intersection, float *pdf) const;
