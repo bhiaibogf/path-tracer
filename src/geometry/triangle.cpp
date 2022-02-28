@@ -102,14 +102,13 @@ bool Triangle::Intersect(Ray *ray, Intersection *intersection) const {
 // }
 
 void Triangle::Sample(Intersection *intersection, float *pdf) const {
-    // TODO
     float xi_1 = std::sqrt(generator::Rand()), xi_2 = generator::Rand();
     intersection->position =
             vertices_[0] * (1.f - xi_1) + vertices_[1] * (xi_1 * (1.f - xi_2)) + vertices_[2] * (xi_1 * xi_2);
     intersection->normal =
             normals_[0] * (1.f - xi_1) + normals_[1] * (xi_1 * (1.f - xi_2)) + normals_[2] * (xi_1 * xi_2);
     intersection->normal.normalize();
-    *pdf = 1.f / area_;
+    *pdf = material()->emission().squaredNorm();
 }
 
 void Triangle::InsertTo(std::vector<Primitive *> *primitives) const {
