@@ -4,7 +4,7 @@
 
 #include "node.h"
 
-const int Node::kMaxPrimitives = 1;
+const int Node::kMaxPrimitives = 8;
 
 Node::Node(std::vector<const Primitive *> *primitives) {
     if (primitives->size() <= kMaxPrimitives) {
@@ -90,8 +90,6 @@ bool Node::SampleLight(Intersection *intersection, float *pdf, float area) const
             if (area <= area_sum) {
                 primitive->Sample(intersection, pdf);
                 return true;
-            } else {
-                return false;
             }
         }
     } else {
