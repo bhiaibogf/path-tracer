@@ -15,7 +15,7 @@ public:
 
     ~Node() = default;
 
-    auto area() const { return area_; }
+    auto area_weighted() const { return area_weighted_; }
 
     bool Intersect(Ray *ray, Intersection *intersection) const;
 
@@ -26,7 +26,7 @@ private:
 
     Bound bound_;
     std::vector<const Primitive *> primitives_;
-    float area_;
+    float area_weighted_;
 
     Node *left_;
     Node *right_;

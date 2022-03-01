@@ -11,7 +11,7 @@ Node::Node(std::vector<const Primitive *> *primitives) {
         for (auto primitive: *primitives) {
             primitives_.push_back(primitive);
             bound_ |= primitive->bound();
-            area_ += primitive->AreaWeighted();
+            area_weighted_ += primitive->AreaWeighted();
         }
         left_ = nullptr;
         right_ = nullptr;
@@ -40,7 +40,7 @@ Node::Node(std::vector<const Primitive *> *primitives) {
         right_ = new Node(right);
     }
     bound_ = left_->bound_ | right_->bound_;
-    area_ = left_->area_ + right_->area_;
+    area_weighted_ = left_->area_weighted_ + right_->area_weighted_;
 }
 
 bool Node::Intersect(Ray *ray, Intersection *intersection) const {
@@ -96,14 +96,14 @@ bool Node::SampleLight(Intersection *intersection, float *pdf, float area) const
     }
 
     // TODO EPS
-    if (area <= left_->area_) {
+    if (area <= left_->area_weighted_) {
         if (left_->SampleLight(intersection, pdf, area)) {
             return true;
         } else {
-            return right_->SampleLight(intersection, pdf, area - left_->area_);
+            return right_->SampleLight(intersection, pdf, area - left_->area_weighted_);
         }
     } else {
-        if (right_->SampleLight(intersection, pdf, area - left_->area_)) {
+        if (right_->SampleLight(intersection, pdf, area - left_->area_weighted_)) {
             return true;
         } else {
             return left_->SampleLight(intersection, pdf, area);

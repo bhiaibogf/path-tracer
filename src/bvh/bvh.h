@@ -15,7 +15,7 @@ public:
 
     ~Bvh() = default;
 
-    float Area() const { return root_->area(); }
+    float AreaWeighted() const { return root_->area_weighted(); }
 
     bool Intersect(Ray *ray, Intersection *intersection) const;
 

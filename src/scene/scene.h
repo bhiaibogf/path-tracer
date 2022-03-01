@@ -36,8 +36,6 @@ private:
 
     bool Intersect(Ray *ray, Intersection *intersection) const;
 
-    global::Color Shade(const Intersection &intersection, int bounce) const;
-
     global::Color Shade(const Intersection &intersection, int bounce, SampleType sample_type) const;
 
     std::pair<global::Vector, global::Vector> SampleLight(const global::Vector &position, float *pdf) const;

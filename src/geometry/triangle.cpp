@@ -105,6 +105,7 @@ void Triangle::Sample(Intersection *intersection, float *pdf) const {
     intersection->normal =
             normals_[0] * (1.f - xi_1) + normals_[1] * (xi_1 * (1.f - xi_2)) + normals_[2] * (xi_1 * xi_2);
     intersection->normal.normalize();
+    intersection->weight = Weight();
     *pdf = Weight();
 }
 

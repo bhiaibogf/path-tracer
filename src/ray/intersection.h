@@ -12,6 +12,7 @@ struct Intersection {
     Material *material;
     global::Vector position, normal, direction;
     global::TexCoord tex_coord;
+    float weight;
 };
 
 

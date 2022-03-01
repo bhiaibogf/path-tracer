@@ -17,7 +17,7 @@ bool Bvh::Intersect(Ray *ray, Intersection *intersection) const {
 }
 
 void Bvh::SampleLight(Intersection *intersection, float *pdf) const {
-    float random_area = generator::Rand() * root_->area();
+    float random_area = generator::Rand() * root_->area_weighted();
     root_->SampleLight(intersection, pdf, random_area);
-    (*pdf) /= root_->area();
+    (*pdf) /= root_->area_weighted();
 }
