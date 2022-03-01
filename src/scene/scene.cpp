@@ -68,39 +68,41 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce) const {
     // sample from light
     float pdf_light;
     auto[direction_to_light, position_light] = SampleLight(position, &pdf_light);
+    if (direction_to_light != global::kNone) {
+        Intersection intersection_to_light;
+        global::Vector position_to_light =
+                position + normal * (normal.dot(direction_to_light) > 0 ? kEpsilon : -kEpsilon);
+        Ray ray_to_light(position_to_light, direction_to_light);
 
-    Intersection intersection_to_light;
-    global::Vector position_to_light = position + normal * (normal.dot(direction_to_light) > 0 ? kEpsilon : -kEpsilon);
-    Ray ray_to_light(position_to_light, direction_to_light);
+        if (Intersect(&ray_to_light, &intersection_to_light)
+            // check if the light is visible
+            && (position_light - intersection_to_light.position).squaredNorm() < kEpsilon) {
+            radiance_direct = global::Product(intersection_to_light.material->emission(),
+                                              material->Eval(direction, direction_to_light, normal, tex_coord))
+                              * std::abs(normal.dot(direction_to_light))
+                              / pdf_light;
+            // MIS
+            float pdf_bsdf = material->Pdf(direction, direction_to_light, normal);
+            float mis_wight = global::PowerHeuristic(pdf_light, pdf_bsdf);
+            radiance_direct *= mis_wight;
 
-    if (Intersect(&ray_to_light, &intersection_to_light)
-        // check if the light is visible
-        && (position_light - intersection_to_light.position).squaredNorm() < kEpsilon) {
-        radiance_direct = global::Product(intersection_to_light.material->emission(),
-                                          material->Eval(direction, direction_to_light, normal, tex_coord))
-                          * std::abs(normal.dot(direction_to_light))
-                          / pdf_light;
-        // MIS
-        float pdf_bsdf = material->Pdf(direction, direction_to_light, normal);
-        float mis_wight = global::PowerHeuristic(pdf_light, pdf_bsdf);
-        radiance_direct *= mis_wight;
+            auto direction_another_light = material->Sample(direction, normal, &pdf_bsdf);
+            auto position_another_light =
+                    position + normal * (normal.dot(direction_another_light) > 0 ? kEpsilon : -kEpsilon);
+            Ray ray_another_light = Ray(position_another_light, direction_another_light);
+            Intersection intersection_another_light;
 
-        auto direction_another_light = material->Sample(direction, normal, &pdf_bsdf);
-        auto position_another_light =
-                position + normal * (normal.dot(direction_another_light) > 0 ? kEpsilon : -kEpsilon);
-        Ray ray_another_light = Ray(position_another_light, direction_another_light);
-        Intersection intersection_another_light;
-
-        if (Intersect(&ray_another_light, &intersection_another_light)
-            && intersection_another_light.material->HasEmitter()) {
-            pdf_light = PdfLight(position, intersection_another_light);
-            mis_wight = global::PowerHeuristic(pdf_bsdf, pdf_light);
-            radiance_direct +=
-                    mis_wight
-                    * global::Product(intersection_another_light.material->emission(),
-                                      material->Eval(direction, direction_another_light, normal, tex_coord))
-                    * std::abs(normal.dot(direction_another_light))
-                    / pdf_bsdf;
+            if (Intersect(&ray_another_light, &intersection_another_light)
+                && intersection_another_light.material->HasEmitter()) {
+                pdf_light = PdfLight(position, intersection_another_light);
+                mis_wight = global::PowerHeuristic(pdf_bsdf, pdf_light);
+                radiance_direct +=
+                        mis_wight
+                        * global::Product(intersection_another_light.material->emission(),
+                                          material->Eval(direction, direction_another_light, normal, tex_coord))
+                        * std::abs(normal.dot(direction_another_light))
+                        / pdf_bsdf;
+            }
         }
     }
 
@@ -166,8 +168,11 @@ std::pair<global::Vector, global::Vector> Scene::SampleLight(const global::Vecto
         (*pdf) /= area_sum;
     }
     auto direction_to_light = (intersection_light.position - position).normalized();
+    if (intersection_light.normal.dot(-direction_to_light) < 0) {
+        return std::make_pair(global::kNone, global::kNone);
+    }
     *pdf = (*pdf) * (intersection_light.position - position).squaredNorm()
-           / std::abs(intersection_light.normal.dot(-direction_to_light));
+           / intersection_light.normal.dot(-direction_to_light);
     return {direction_to_light, intersection_light.position};
 }
 
