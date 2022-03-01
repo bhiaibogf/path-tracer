@@ -108,6 +108,6 @@ void Triangle::Sample(Intersection *intersection, float *pdf) const {
     *pdf = Weight();
 }
 
-void Triangle::InsertTo(std::vector<Primitive *> *primitives) const {
+void Triangle::InsertTo(std::vector<const Primitive *> *primitives) const {
     primitives->push_back((Primitive *) this);
 }

@@ -12,7 +12,7 @@ Bound::Bound() {
     max_ = global::Vector(kMinFloat, kMinFloat, kMinFloat);
 }
 
-Bound::Bound(const global::Vector &min, const global::Vector &max) : min_(min), max_(max) {}
+Bound::Bound(global::Vector min, global::Vector max) : min_(std::move(min)), max_(std::move(max)) {}
 
 bool Bound::Intersect(const Ray &ray) const {
     float t_enter = kMinFloat, t_exit = kMaxFloat;

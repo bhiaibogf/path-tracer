@@ -12,7 +12,7 @@ class Bound {
 public:
     Bound();
 
-    Bound(const global::Vector &min, const global::Vector &max);
+    Bound(global::Vector min, global::Vector max);
 
     ~Bound() = default;
 

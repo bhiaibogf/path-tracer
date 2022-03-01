@@ -20,7 +20,7 @@ public:
 
     void Sample(Intersection *intersection, float *pdf) const override;
 
-    void InsertTo(std::vector<Primitive *> *primitives) const override;
+    void InsertTo(std::vector<const Primitive *> *primitives) const override;
 
     friend std::ostream &operator<<(std::ostream &os, const Mesh &mesh);
 

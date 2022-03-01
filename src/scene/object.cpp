@@ -29,7 +29,9 @@ void Object::SetMaterial(Material *material) {
     material_ = material;
 }
 
-void Object::InsertTo(std::vector<Primitive *> *primitives) const { mesh_->InsertTo(primitives); }
+void Object::InsertTo(std::vector<const Primitive *> *primitives) const {
+    mesh_->InsertTo(primitives);
+}
 
 bool Object::Intersect(Ray *ray, Intersection *intersection) const {
     if (mesh_->Intersect(ray, intersection)) {

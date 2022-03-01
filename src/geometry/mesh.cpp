@@ -31,7 +31,7 @@ void Mesh::Add(Triangle *triangle) {
     area_ += triangle->area();
 }
 
-void Mesh::InsertTo(std::vector<Primitive *> *primitives) const {
+void Mesh::InsertTo(std::vector<const Primitive *> *primitives) const {
     for (auto triangle: triangles_) {
         primitives->push_back(triangle);
     }

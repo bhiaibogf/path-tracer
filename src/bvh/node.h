@@ -11,7 +11,7 @@
 
 class Node {
 public:
-    explicit Node(std::vector<Primitive *> *primitives);
+    explicit Node(std::vector<const Primitive *> *primitive_1);
 
     ~Node() = default;
 
@@ -22,8 +22,10 @@ public:
     bool SampleLight(Intersection *intersection, float *pdf, float area) const;
 
 private:
+    static const int kMaxPrimitives;
+
     Bound bound_;
-    Primitive *primitive_;
+    std::vector<const Primitive *> primitives_;
     float area_;
 
     Node *left_;

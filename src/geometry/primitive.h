@@ -34,7 +34,7 @@ public:
 
     virtual void Sample(Intersection *intersection, float *pdf) const = 0;
 
-    virtual void InsertTo(std::vector<Primitive *> *primitives) const = 0;
+    virtual void InsertTo(std::vector<const Primitive *> *primitives) const = 0;
 
 protected:
     float area_;

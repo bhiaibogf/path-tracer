@@ -21,7 +21,7 @@ public:
 
     auto material() const { return material_; }
 
-    void InsertTo(std::vector<Primitive *> *primitives) const;
+    void InsertTo(std::vector<const Primitive *> *primitives) const;
 
     bool Intersect(Ray *ray, Intersection *intersection) const;
 

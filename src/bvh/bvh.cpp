@@ -5,7 +5,7 @@
 #include "bvh.h"
 
 Bvh::Bvh(const std::vector<Object *> &objects) {
-    auto *primitives = new std::vector<Primitive *>();
+    auto *primitives = new std::vector<const Primitive *>();
     for (auto object: objects) {
         object->InsertTo(primitives);
     }
