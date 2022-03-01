@@ -11,9 +11,8 @@
 class Triangle : public Primitive {
 public:
     Triangle(Object *object,
-             std::array<global::Vector, 3> *vertices,
-             std::array<global::Vector, 3> *normals,
-             std::array<global::TexCoord, 3> *tex_coords);
+             global::VectorArray *vertices, global::VectorArray *normals,
+             global::TexCoordArray *tex_coords);
 
     ~Triangle() override = default;
 
@@ -24,8 +23,8 @@ public:
     void InsertTo(std::vector<Primitive *> *primitives) const override;
 
 private:
-    std::array<global::Vector, 3> vertices_, normals_;
-    std::array<global::TexCoord, 3> tex_coords_;
+    global::VectorArray vertices_, normals_;
+    global::TexCoordArray tex_coords_;
 
 };
 

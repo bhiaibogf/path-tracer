@@ -10,7 +10,7 @@
 
 class Mesh : public Primitive {
 public:
-    Mesh(Object *object) : Primitive(object) {}
+    explicit Mesh(Object *object) : Primitive(object) {}
 
     ~Mesh() override = default;
 

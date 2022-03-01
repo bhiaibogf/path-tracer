@@ -22,6 +22,10 @@ public:
 
     auto area() const { return area_; }
 
+    float Weight() const;
+
+    float AreaWeighted() const;
+
     auto bound() const { return bound_; }
 
     Material *material() const;

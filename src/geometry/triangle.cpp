@@ -5,13 +5,12 @@
 #include "triangle.h"
 
 Triangle::Triangle(Object *object,
-                   std::array<global::Vector, 3> *vertices,
-                   std::array<global::Vector, 3> *normals,
-                   std::array<global::TexCoord, 3> *tex_coords)
+                   global::VectorArray *vertices, global::VectorArray *normals,
+                   global::TexCoordArray *tex_coords)
         : Primitive(object), vertices_(*vertices) {
     global::Vector normal;
     normal = (vertices_[1] - vertices_[0]).cross(vertices_[2] - vertices_[0]);
-    area_ = normal.norm() / 2;
+    area_ = normal.norm() / 2.f;
 
     if (normals) {
         normals_ = *normals;
@@ -37,38 +36,36 @@ Triangle::Triangle(Object *object,
 // Moller Trumbore
 bool Triangle::Intersect(Ray *ray, Intersection *intersection) const {
     auto &v0 = vertices_[0], &v1 = vertices_[1], &v2 = vertices_[2];
-    global::Vector edge1 = v1 - v0;
-    global::Vector edge2 = v2 - v0;
+    global::Vector e1 = v1 - v0, e2 = v2 - v0;
 
-    global::Vector pvec = ray->direction().cross(edge2);
-    float det = edge1.dot(pvec);
+    global::Vector p_vec = ray->direction().cross(e2);
+    float det = e1.dot(p_vec);
     if (det <= 0) {
         return false;
     }
 
-    global::Vector tvec = ray->origin() - v0;
-    float u = tvec.dot(pvec);
+    global::Vector t_vec = ray->origin() - v0;
+    float u = t_vec.dot(p_vec);
     if (u < 0 || u > det) {
         return false;
     }
 
-    global::Vector qvec = tvec.cross(edge1);
-    float v = qvec.dot(ray->direction());
+    global::Vector q_vec = t_vec.cross(e1);
+    float v = q_vec.dot(ray->direction());
     if (v < 0 || u + v > det) {
         return false;
     }
 
     float inv_det = 1 / det;
 
-    float t = edge2.dot(qvec) * inv_det;
+    float t = e2.dot(q_vec) * inv_det;
     if (ray->Update(t)) {
         u *= inv_det;
         v *= inv_det;
-        intersection->position = (*ray)(t);
+        intersection->position = (1 - u - v) * vertices_[0] + u * vertices_[1] + v * vertices_[2];;
         intersection->normal = (1 - u - v) * normals_[0] + u * normals_[1] + v * normals_[2];
         intersection->tex_coord = (1 - u - v) * tex_coords_[0] + u * tex_coords_[1] + v * tex_coords_[2];
         intersection->material = material();
-        intersection->area = area_;
         return true;
     }
     return false;
@@ -108,7 +105,7 @@ void Triangle::Sample(Intersection *intersection, float *pdf) const {
     intersection->normal =
             normals_[0] * (1.f - xi_1) + normals_[1] * (xi_1 * (1.f - xi_2)) + normals_[2] * (xi_1 * xi_2);
     intersection->normal.normalize();
-    *pdf = material()->emission().squaredNorm();
+    *pdf = Weight();
 }
 
 void Triangle::InsertTo(std::vector<Primitive *> *primitives) const {

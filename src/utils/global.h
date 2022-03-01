@@ -22,6 +22,9 @@ namespace global {
     typedef Eigen::Vector3f Vector;
     typedef Eigen::Vector2f TexCoord;
 
+    typedef std::array<global::Vector, 3> VectorArray;
+    typedef std::array<global::TexCoord, 3> TexCoordArray;
+
     std::ostream &operator<<(std::ostream &os, const Eigen::Vector3f &vector);
 
     std::ostream &operator<<(std::ostream &os, const Eigen::Vector2f &vector);
