@@ -10,7 +10,7 @@
 
 class Ray {
 public:
-    Ray(const Eigen::Vector3f &origin, const Eigen::Vector3f &direction);
+    Ray(const global::Vector &origin, const global::Vector &direction);
 
     ~Ray() = default;
 
@@ -22,17 +22,19 @@ public:
 
     auto t_max() const { return t_max_; }
 
-    bool Update(float t);
+    auto t() const { return t_max_; }
 
-    Eigen::Vector3f operator()(float t) const;
+    bool Update(float t);
 
     friend std::ostream &operator<<(std::ostream &os, const Ray &ray);
 
 private:
     static const float kEpsilon;
 
-    Eigen::Vector3f origin_, direction_;
+    global::Vector origin_, direction_;
     float t_min_, t_max_;
+
+    global::Vector operator()(float t) const;
 
 };
 

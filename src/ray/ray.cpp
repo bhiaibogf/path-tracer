@@ -6,18 +6,18 @@
 
 const float Ray::kEpsilon = 0.f;
 
-Ray::Ray(const Eigen::Vector3f &origin, const Eigen::Vector3f &direction) : origin_(origin), direction_(direction) {
+Ray::Ray(const global::Vector &origin, const global::Vector &direction) : origin_(origin), direction_(direction) {
     t_min_ = kEpsilon;
-    t_max_ = std::numeric_limits<float>::max();
+    t_max_ = global::kInf;
 }
 
-Eigen::Vector3f Ray::operator()(float t) const {
+global::Vector Ray::operator()(float t) const {
     return origin_ + direction_ * t;
 }
 
 std::ostream &operator<<(std::ostream &os, const Ray &ray) {
     using namespace global;
-    os << ray.origin_ << " -> " << ray(ray.t_max_) << ": " << ray.direction_ << " * " << ray.t_max_ << "\n";
+    os << ray.origin_ << " -> " << ray(ray.t_max_) << " : " << ray.direction_ << " * " << ray.t_max_ << "\n";
     return os;
 }
 
