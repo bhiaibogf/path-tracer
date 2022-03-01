@@ -11,7 +11,7 @@
 
 class Object {
 public:
-    Object(const std::string &name);
+    explicit Object(std::string name);
 
     virtual ~Object() = default;
 
@@ -21,11 +21,11 @@ public:
 
     auto material() const { return material_; }
 
+    auto AreaWeighted() const { return mesh_->AreaWeighted(); }
+
     void InsertTo(std::vector<const Primitive *> *primitives) const;
 
     bool Intersect(Ray *ray, Intersection *intersection) const;
-
-    auto Area() const { return mesh_->area(); }
 
     void Sample(Intersection *intersection, float *pdf) const;
 

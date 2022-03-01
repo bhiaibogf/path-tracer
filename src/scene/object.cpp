@@ -4,7 +4,7 @@
 
 #include "object.h"
 
-Object::Object(const std::string &name) : mesh_(nullptr), material_(nullptr), name_(name) {}
+Object::Object(std::string name) : mesh_(nullptr), material_(nullptr), name_(std::move(name)) {}
 
 void Object::SetMesh(Mesh *mesh) {
     std::cout << "  " << *mesh << std::endl;

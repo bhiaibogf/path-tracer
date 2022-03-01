@@ -153,13 +153,13 @@ std::pair<global::Vector, global::Vector> Scene::SampleLight(const global::Vecto
     } else {
         float area_sum = 0;
         for (const auto &object: objects_) {
-            area_sum += object->material()->emission().squaredNorm() * object->Area();
+            area_sum += object->AreaWeighted();
         }
 
         float random_area = generator::Rand() * area_sum;
         area_sum = 0;
         for (const auto &object: objects_) {
-            area_sum += object->material()->emission().squaredNorm() * object->Area();
+            area_sum += object->AreaWeighted();
             if (random_area <= area_sum) {
                 object->Sample(&intersection_light, pdf);
                 break;
@@ -169,7 +169,7 @@ std::pair<global::Vector, global::Vector> Scene::SampleLight(const global::Vecto
     }
     auto direction_to_light = (intersection_light.position - position).normalized();
     if (intersection_light.normal.dot(-direction_to_light) < 0) {
-        return std::make_pair(global::kNone, global::kNone);
+        return {global::kNone, global::kNone};
     }
     *pdf = (*pdf) * (intersection_light.position - position).squaredNorm()
            / intersection_light.normal.dot(-direction_to_light);
