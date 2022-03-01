@@ -4,9 +4,12 @@
 
 #include "camera.h"
 
-Camera::Camera(const Eigen::Vector3f &eye, const Eigen::Vector3f &look_at, const Eigen::Vector3f &up,
+Camera::Camera(global::Vector eye, const global::Vector &look_at, const global::Vector &up,
                float fov, int width, int height)
-        : eye_(eye), look_at_(look_at), up_(up), fov_(fov), width_(width), height_(height) {
+        : eye_(std::move(eye)), fov_(fov), width_(width), height_(height) {
+    direction_ = (look_at - eye_).normalized();
+    right_ = direction_.cross(up).normalized();
+    up_ = right_.cross(direction_).normalized();
 }
 
 int Camera::GetIndex(int x, int y) const {
@@ -16,14 +19,7 @@ int Camera::GetIndex(int x, int y) const {
 }
 
 Ray Camera::GenerateRay(int x, int y, bool antialiasing) const {
-    Eigen::Vector3f direction = look_at_ - eye_;
-    direction.normalize();
-    Eigen::Vector3f right = direction.cross(up_);
-    right.normalize();
-    Eigen::Vector3f up = right.cross(direction);
-    up.normalize();
-
-    float tangent = std::tan(global::Radius(fov_) / 2.0f);
+    float tangent = std::tan(global::Radius(fov_) / 2.f);
     auto width = float(width_), height = float(height_), aspect = width / height;
 
     float xx = float(x) + 0.5f, yy = float(y) + 0.5f;
@@ -31,14 +27,15 @@ Ray Camera::GenerateRay(int x, int y, bool antialiasing) const {
         xx += generator::RandN();
         yy += generator::RandN();
     }
+
     float x_factor = tangent * aspect * (xx - width / 2.f) / (width / 2.f);
     float y_factor = tangent * (yy - height / 2.f) / (height / 2.f);
 
-    Eigen::Vector3f direction_x = x_factor * right;
-    Eigen::Vector3f direction_y = y_factor * up;
-    Eigen::Vector3f direction_z = direction;
+    auto direction_x = x_factor * right_;
+    auto direction_y = y_factor * up_;
+    auto direction_z = direction_;
 
-    Eigen::Vector3f direction_final = direction_x + direction_y + direction_z;
+    global::Vector direction_final = direction_x + direction_y + direction_z;
     direction_final.normalize();
 
     return {eye_, direction_final};

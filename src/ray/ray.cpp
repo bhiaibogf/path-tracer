@@ -6,7 +6,8 @@
 
 const float Ray::kEpsilon = 0.f;
 
-Ray::Ray(const global::Vector &origin, const global::Vector &direction) : origin_(origin), direction_(direction) {
+Ray::Ray(global::Vector origin, global::Vector direction)
+        : origin_(std::move(origin)), direction_(std::move(direction)) {
     t_min_ = kEpsilon;
     t_max_ = global::kInf;
 }

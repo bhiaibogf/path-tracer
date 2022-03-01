@@ -11,7 +11,7 @@
 
 class Camera {
 public:
-    Camera(const Eigen::Vector3f &eye, const Eigen::Vector3f &look_at, const Eigen::Vector3f &up,
+    Camera(Eigen::Vector3f eye, const Eigen::Vector3f &look_at, const Eigen::Vector3f &up,
            float fov, int width, int height);
 
     ~Camera() = default;
@@ -25,7 +25,7 @@ public:
     Ray GenerateRay(int x, int y, bool antialiasing) const;
 
 private:
-    Eigen::Vector3f eye_, look_at_, up_;
+    global::Vector eye_, direction_, right_, up_;
     float fov_;
     int width_, height_;
 

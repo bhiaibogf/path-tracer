@@ -10,7 +10,7 @@
 
 class Ray {
 public:
-    Ray(const global::Vector &origin, const global::Vector &direction);
+    Ray(global::Vector origin, global::Vector direction);
 
     ~Ray() = default;
 
