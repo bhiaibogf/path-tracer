@@ -82,22 +82,21 @@ bool Node::Intersect(Ray *ray, Intersection *intersection) const {
     return has_intersection;
 }
 
-bool Node::SampleLight(Intersection *intersection, float *pdf, float area) const {
+void Node::SampleLight(Intersection *intersection, float *pdf, float area) const {
     if (!primitives_.empty()) {
         float area_sum = 0.f;
         for (auto primitive: primitives_) {
             area_sum += primitive->AreaWeighted();
             if (area <= area_sum) {
                 primitive->Sample(intersection, pdf);
-                return true;
+                return;
             }
         }
+    }
+
+    if (area <= left_->area_) {
+        left_->SampleLight(intersection, pdf, area);
     } else {
-        if (area <= left_->area_) {
-            if (left_->SampleLight(intersection, pdf, area)) {
-                return true;
-            }
-        }
-        return right_->SampleLight(intersection, pdf, area - left_->area_);
+        right_->SampleLight(intersection, pdf, area - left_->area_);
     }
 }
