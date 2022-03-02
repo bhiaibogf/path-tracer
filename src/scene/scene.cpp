@@ -61,57 +61,72 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce, SampleT
     // direct light
     global::Color radiance_direct = global::kBlack;
 
-    // sample from light
-    float pdf_light;
-    auto[direction_to_light, position_light] = SampleLight(position, &pdf_light);
-    if (pdf_light != 0.f) {
-        Intersection intersection_to_light;
-        global::Vector position_to_light =
-                position + normal * (normal.dot(direction_to_light) > 0 ? kEpsilon : -kEpsilon);
-        Ray ray_to_light(position_to_light, direction_to_light);
+    if (sample_type != kSampleBsdf) {
+        // sample from light
+        global::Color radiance_light = global::kBlack;
 
-        if (Intersect(&ray_to_light, &intersection_to_light)
-            // check if the light is visible
-            && (position_light - intersection_to_light.position).squaredNorm() < kEpsilon) {
-            radiance_direct = global::Product(intersection_to_light.material->emission(),
-                                              material->Eval(direction, direction_to_light, normal, tex_coord))
-                              * std::abs(normal.dot(direction_to_light))
-                              / pdf_light;
-            if (sample_type == kMis) {
-                // MIS
-                float pdf_bsdf = material->Pdf(direction, direction_to_light, normal);
-                float mis_wight = global::PowerHeuristic(pdf_light, pdf_bsdf);
-                radiance_direct *= mis_wight;
+        float pdf_light;
+        auto[direction_to_light, position_light] = SampleLight(position, &pdf_light);
+        if (pdf_light != 0.f) {
+            global::Vector position_to_light =
+                    position + normal * (normal.dot(direction_to_light) > 0 ? kEpsilon : -kEpsilon);
+            Ray ray_to_light(position_to_light, direction_to_light);
+            Intersection intersection_to_light;
 
-                auto direction_another_light = material->Sample(direction, normal, &pdf_bsdf);
-                auto position_another_light =
-                        position + normal * (normal.dot(direction_another_light) > 0 ? kEpsilon : -kEpsilon);
-                Ray ray_another_light = Ray(position_another_light, direction_another_light);
-                Intersection intersection_another_light;
-
-                if (Intersect(&ray_another_light, &intersection_another_light)
-                    && intersection_another_light.material->HasEmitter()) {
-                    pdf_light = PdfLight(position, intersection_another_light);
-                    mis_wight = global::PowerHeuristic(pdf_bsdf, pdf_light);
-                    if (pdf_bsdf == global::kInf) {
-                        radiance_direct +=
-                                mis_wight
-                                * global::Product(
-                                        intersection_another_light.material->emission(),
-                                        ((Refraction *) material)->Albedo(direction, direction_another_light, normal)
-                                );
-
-                    } else {
-                        radiance_direct +=
-                                mis_wight
-                                * global::Product(intersection_another_light.material->emission(),
-                                                  material->Eval(direction, direction_another_light, normal, tex_coord))
-                                * std::abs(normal.dot(direction_another_light))
-                                / pdf_bsdf;
-                    }
+            if (Intersect(&ray_to_light, &intersection_to_light)
+                // check if the light is visible
+                && (position_light - intersection_to_light.position).squaredNorm() < kEpsilon) {
+                radiance_light = global::Product(intersection_to_light.material->emission(),
+                                                 material->Eval(direction, direction_to_light, normal, tex_coord))
+                                 * std::abs(normal.dot(direction_to_light))
+                                 / pdf_light;
+                if (sample_type == kMis) {
+                    float pdf_bsdf = material->Pdf(direction, direction_to_light, normal);
+                    float mis_wight = global::PowerHeuristic(pdf_light, pdf_bsdf);
+                    radiance_light *= mis_wight;
                 }
             }
         }
+
+        radiance_direct += radiance_light;
+    }
+
+    if (sample_type != kSampleLight) {
+        // sample from bsdf
+        global::Color radiance_bsdf = global::kBlack;
+
+        float pdf_bsdf;
+        auto direction_another_light = material->Sample(direction, normal, &pdf_bsdf);
+        if (pdf_bsdf != 0.f) {
+            auto position_another_light =
+                    position + normal * (normal.dot(direction_another_light) > 0 ? kEpsilon : -kEpsilon);
+            Ray ray_another_light = Ray(position_another_light, direction_another_light);
+            Intersection intersection_another_light;
+
+            if (Intersect(&ray_another_light, &intersection_another_light)
+                && intersection_another_light.material->HasEmitter()) {
+                if (pdf_bsdf == global::kInf) {
+                    radiance_bsdf =
+                            global::Product(intersection_another_light.material->emission(),
+                                            ((Refraction *) material)->Albedo(direction, direction_another_light,
+                                                                              normal));
+
+                } else {
+                    radiance_bsdf =
+                            global::Product(intersection_another_light.material->emission(),
+                                            material->Eval(direction, direction_another_light, normal, tex_coord))
+                            * std::abs(normal.dot(direction_another_light))
+                            / pdf_bsdf;
+                }
+                if (sample_type == kMis) {
+                    float pdf_light = PdfLight(position, intersection_another_light);
+                    float mis_wight = global::PowerHeuristic(pdf_bsdf, pdf_light);
+                    radiance_bsdf *= mis_wight;
+                }
+            }
+        }
+
+        radiance_direct += radiance_bsdf;
     }
 
     if (!RussianRoulette(bounce)) {
