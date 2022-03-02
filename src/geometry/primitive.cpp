@@ -11,7 +11,7 @@ Material *Primitive::material() const {
 }
 
 float Primitive::Weight() const {
-    return material()->emission().squaredNorm();
+    return global::Luminance(material()->emission());
 }
 
 float Primitive::AreaWeighted() const {
