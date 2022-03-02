@@ -65,7 +65,7 @@ int main() {
     std::cout << "\nRender complete, using " << timer.GetTime() << " seconds." << std::endl;
 
     renderer.Save("img/" + model_name + "/"
-                  + std::to_string(camera->width()) + "X" + std::to_string(camera->width())
+                  + std::to_string(camera->width()) + "X" + std::to_string(camera->height())
                   + "-" + std::to_string(spp)
                   + (antialiasing ? "-antialiasing" : "")
                   + (use_bvh ? "-BVH" : "")
