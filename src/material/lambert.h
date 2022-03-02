@@ -16,6 +16,8 @@ public:
 
     MaterialType Type() const override { return MaterialType::kLambert; }
 
+    global::Color Albedo() const override;
+
     global::Color Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const override;
 
     global::Color Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal,

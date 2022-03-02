@@ -27,6 +27,8 @@ public:
 
     auto emission() const { return emission_; }
 
+    virtual global::Color Albedo() const { return global::kBlack; }
+
     virtual global::Color
     Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const = 0;
 

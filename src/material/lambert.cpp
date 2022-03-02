@@ -10,6 +10,13 @@ Lambert::Lambert(const global::Color &k_d) : albedo_(k_d) {
 
 Lambert::Lambert(const std::string &texture_name) {
     texture_ = new Texture(texture_name);
+    global::Color sum = global::kBlack;
+    for (int i = 0; i < 100; ++i) {
+        for (int j = 0; j < 100; j++) {
+            sum += texture_->GetColor(global::TexCoord(float(i) / 100.f, float(j) / 100.f));
+        }
+    }
+    albedo_ = sum / 1e4;
 }
 
 global::Color Lambert::Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const {
@@ -64,4 +71,10 @@ std::ostream &operator<<(std::ostream &os, const Lambert &lambert) {
         os << *((Material *) &lambert);
     }
     return os;
+}
+
+global::Color Lambert::Albedo() const {
+    if (albedo_ != global::kBlack) {
+        return albedo_;
+    }
 }

@@ -12,7 +12,7 @@
 
 class Mix : public Material {
 public:
-    Mix(Material *material_1, Material *material_2, float ratio = 0.5f);
+    Mix(Material *material_1, Material *material_2);
 
     ~Mix() override = default;
 

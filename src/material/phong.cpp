@@ -57,3 +57,7 @@ std::ostream &operator<<(std::ostream &os, const Phong &phong) {
     }
     return os;
 }
+
+global::Color Phong::Albedo() const {
+    return k_s_;
+}

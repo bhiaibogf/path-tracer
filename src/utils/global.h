@@ -45,6 +45,8 @@ namespace global {
 
     Vector Refract(const Vector &wi, const Vector &normal, float ior);
 
+    float Luminance(const Color &color);
+
     float Schlick(const Vector &wi, const Vector &normal, float ior);
 
     float PowerHeuristic(float pdf_sample, float pdf_other, float beta = 2.f);
