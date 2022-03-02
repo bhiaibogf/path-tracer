@@ -10,8 +10,15 @@ Texture::Texture(const std::string &filename) : path_(filename) {
 
 global::Color Texture::GetColor(const global::TexCoord &tex_coord) const {
     float u = tex_coord.x(), v = tex_coord.y();
-    u -= std::floor(u);
-    v -= std::floor(v);
+
+    int uu = int(std::floor(u)), vv = int(std::floor(v));
+    u -= uu;
+    v -= vv;
+
+    uu %= 2;
+    vv %= 2;
+    if (uu == 1) u = 1 - u;
+    if (vv == 1) v = 1 - v;
 
     int x = int(u * float(width_)), y = int(v * float(height_));
     int index = (x + y * width_) * channel_;
