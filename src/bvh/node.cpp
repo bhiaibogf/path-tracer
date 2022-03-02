@@ -8,6 +8,7 @@ const int Node::kMaxPrimitives = 8;
 
 Node::Node(std::vector<const Primitive *> *primitives) {
     if (primitives->size() <= kMaxPrimitives) {
+        area_weighted_ = 0.f;
         for (auto primitive: *primitives) {
             primitives_.push_back(primitive);
             bound_ |= primitive->bound();
