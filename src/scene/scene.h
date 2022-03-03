@@ -27,7 +27,9 @@ public:
 
 private:
     static const global::Color kBackgroundColor;
-    static const float kEpsilon;
+    static const float kEpsilonPosition;
+    static const float kEpsilonLight;
+    static const float kEpsilonPdf;
     static const float kRussianRoulette;
     static const int kMaxBounce;
 
