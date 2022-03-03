@@ -8,14 +8,16 @@ const int Node::kMaxPrimitives = 8;
 
 Node::Node(std::vector<const Primitive *> *primitives) {
     if (primitives->size() <= kMaxPrimitives) {
+        bound_ = Bound();
         area_weighted_ = 0.f;
+        left_ = nullptr;
+        right_ = nullptr;
+
         for (auto primitive: *primitives) {
             primitives_.push_back(primitive);
             bound_ |= primitive->bound();
             area_weighted_ += primitive->AreaWeighted();
         }
-        left_ = nullptr;
-        right_ = nullptr;
         return;
     } else {
         Bound centroid_bound;
