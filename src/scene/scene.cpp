@@ -5,9 +5,9 @@
 #include "scene.h"
 
 const Eigen::Vector3f Scene::kBackgroundColor = global::Color(0.2f, 0.4f, 0.8f);
-const float Scene::kEpsilonPosition = 0.f;
-const float Scene::kEpsilonLight = 1e-8f;
-const float Scene::kEpsilonPdf = 1e-16f;
+const float Scene::kEpsilonPosition = 1e-4f;
+const float Scene::kEpsilonLight = 1e2f * kEpsilonPosition * kEpsilonPosition;
+const float Scene::kEpsilonPdf = 1e-4f;
 const float Scene::kRussianRoulette = 0.8f;
 const int Scene::kMaxBounce = 10;
 
