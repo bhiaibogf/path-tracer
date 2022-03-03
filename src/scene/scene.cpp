@@ -17,6 +17,7 @@ Scene::Scene() {
 
 void Scene::BuildBvh() {
     bvh_ = new Bvh(objects_);
+    alias_table_ = new AliasTable(objects_);
 }
 
 global::Color Scene::Trace(Ray *ray, SampleType sample_type) const {
@@ -175,7 +176,8 @@ bool Scene::RussianRoulette(int bounce) {
 std::pair<global::Vector, global::Vector> Scene::SampleLight(const global::Vector &position, float *pdf) const {
     Intersection intersection_light;
     if (bvh_) {
-        bvh_->SampleLight(&intersection_light, pdf);
+        // bvh_->SampleLight(&intersection_light, pdf);
+        alias_table_->SampleLight(&intersection_light, pdf);
     } else {
         float area_sum = 0;
         for (const auto &object: objects_) {

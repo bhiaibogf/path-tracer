@@ -6,7 +6,7 @@
 #define PATH_TRACER_SCENE_H
 
 
-#include "object.h"
+#include "alias_table.h"
 #include "../bvh/bvh.h"
 
 class Scene {
@@ -35,6 +35,7 @@ private:
 
     std::vector<Object *> objects_;
     Bvh *bvh_;
+    AliasTable *alias_table_;
 
     bool Intersect(Ray *ray, Intersection *intersection) const;
 
