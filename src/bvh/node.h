@@ -19,7 +19,7 @@ public:
 
     bool Intersect(Ray *ray, Intersection *intersection) const;
 
-    bool SampleLight(Intersection *intersection, float *pdf, float area) const;
+    void SampleLight(Intersection *intersection, float *pdf, float area) const;
 
 private:
     static const int kMaxPrimitives;

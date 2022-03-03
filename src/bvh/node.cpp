@@ -85,31 +85,21 @@ bool Node::Intersect(Ray *ray, Intersection *intersection) const {
     return has_intersection;
 }
 
-bool Node::SampleLight(Intersection *intersection, float *pdf, float area) const {
+void Node::SampleLight(Intersection *intersection, float *pdf, float area) const {
     if (!primitives_.empty()) {
         float area_sum = 0.f;
         for (auto primitive: primitives_) {
             area_sum += primitive->AreaWeighted();
             if (area <= area_sum) {
                 primitive->Sample(intersection, pdf);
-                return true;
+                return;
             }
         }
-        return false;
     }
 
-    // TODO EPS
     if (area <= left_->area_weighted_) {
-        if (left_->SampleLight(intersection, pdf, area)) {
-            return true;
-        } else {
-            return right_->SampleLight(intersection, pdf, area - left_->area_weighted_);
-        }
+        left_->SampleLight(intersection, pdf, area);
     } else {
-        if (right_->SampleLight(intersection, pdf, area - left_->area_weighted_)) {
-            return true;
-        } else {
-            return left_->SampleLight(intersection, pdf, area);
-        }
+        right_->SampleLight(intersection, pdf, area - left_->area_weighted_);
     }
 }
