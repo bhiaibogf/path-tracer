@@ -8,8 +8,9 @@
 int main() {
     std::string model_path = "scenes/";
 
-    std::string model_name = "cornell-simple";
+    // std::string model_name = "cornell-simple";
     // std::string model_name = "cornell-complex";
+    std::string model_name = "cornell-sphere";
     // std::string model_name = "veach-mis";
     // std::string model_name = "cornell-box";
     // std::string model_name = "bedroom";
@@ -35,12 +36,16 @@ int main() {
 
     XmlLoader loader(model_path + model_name + "/" + model_name + ".xml");
     Camera *camera = loader.LoadCamera();
-    auto *lights = new std::vector<global::Vector>();
-    loader.LoadLights(lights);
+
+    std::vector<global::Vector> lights;
+    loader.LoadLights(&lights);
+
+    std::vector<Sphere *> spheres;
+    loader.LoadSphere(&spheres);
 
     ObjLoader obj_loader(model_path, model_name);
     auto scene = new Scene();
-    obj_loader.Load(*lights, scene);
+    obj_loader.Load(lights, spheres, scene);
 
     timer.StopTimer();
     std::cout << "Load complete, using " << timer.GetTime() << " seconds." << std::endl;

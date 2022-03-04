@@ -7,6 +7,7 @@
 
 
 #include "../geometry/mesh.h"
+#include "../geometry/sphere.h"
 #include "../material/mix.h"
 
 class Object {
@@ -15,13 +16,15 @@ public:
 
     virtual ~Object() = default;
 
-    void SetMesh(Mesh *mesh);
+    auto name() const { return name_; }
+
+    void SetPrimitive(Primitive *primitive);
 
     void SetMaterial(Material *material);
 
     auto material() const { return material_; }
 
-    auto AreaWeighted() const { return mesh_->AreaWeighted(); }
+    auto AreaWeighted() const { return primitive_->AreaWeighted(); }
 
     void InsertTo(std::vector<const Primitive *> *primitives) const;
 
@@ -30,7 +33,7 @@ public:
     void Sample(Intersection *intersection, float *pdf) const;
 
 private:
-    Mesh *mesh_;
+    Primitive *primitive_;
     Material *material_;
     std::string name_;
 

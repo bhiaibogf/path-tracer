@@ -56,3 +56,9 @@ void Sphere::Sample(Intersection *intersection, float *pdf) const {
 void Sphere::InsertTo(std::vector<const Primitive *> *primitives) const {
     primitives->push_back(this);
 }
+
+std::ostream &operator<<(std::ostream &os, const Sphere &sphere) {
+    using namespace global;
+    os << "Sphere:\n\t" << "center : " << sphere.center_ << "\n\tradius = " << sphere.radius_;
+    return os;
+}

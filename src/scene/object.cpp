@@ -4,11 +4,21 @@
 
 #include "object.h"
 
-Object::Object(std::string name) : mesh_(nullptr), material_(nullptr), name_(std::move(name)) {}
+Object::Object(std::string name) : primitive_(nullptr), material_(nullptr), name_(std::move(name)) {}
 
-void Object::SetMesh(Mesh *mesh) {
-    std::cout << "  " << *mesh << std::endl;
-    mesh_ = mesh;
+void Object::SetPrimitive(Primitive *primitive) {
+    switch (primitive->Type()) {
+        case Primitive::kMesh:
+            std::cout << "  " << *(Mesh *) primitive << std::endl;
+            break;
+        case Primitive::kSphere:
+            std::cout << "  " << *(Sphere *) primitive << std::endl;
+            break;
+        case Primitive::kTriangle:
+            std::cout << "  " << *(Triangle *) primitive << std::endl;
+            break;
+    }
+    primitive_ = primitive;
 }
 
 void Object::SetMaterial(Material *material) {
@@ -30,11 +40,11 @@ void Object::SetMaterial(Material *material) {
 }
 
 void Object::InsertTo(std::vector<const Primitive *> *primitives) const {
-    mesh_->InsertTo(primitives);
+    primitive_->InsertTo(primitives);
 }
 
 bool Object::Intersect(Ray *ray, Intersection *intersection) const {
-    if (mesh_->Intersect(ray, intersection)) {
+    if (primitive_->Intersect(ray, intersection)) {
         intersection->material = material_;
         return true;
     }
@@ -42,5 +52,5 @@ bool Object::Intersect(Ray *ray, Intersection *intersection) const {
 }
 
 void Object::Sample(Intersection *intersection, float *pdf) const {
-    return mesh_->Sample(intersection, pdf);
+    return primitive_->Sample(intersection, pdf);
 }

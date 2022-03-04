@@ -7,6 +7,7 @@
 
 
 #include "../camera/camera.h"
+#include "../scene/object.h"
 
 #include "tinyxml2/tinyxml2.h"
 
@@ -18,7 +19,9 @@ public:
 
     Camera *LoadCamera();
 
-    void LoadLights(std::vector<global::Vector> *lights);
+    void LoadLights(std::vector<global::Vector> *lights) const;
+
+    void LoadSphere(std::vector<Sphere *> *spheres) const;
 
 private:
     tinyxml2::XMLDocument doc_;

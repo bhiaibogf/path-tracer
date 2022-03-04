@@ -22,12 +22,13 @@ ObjLoader::ObjLoader(const std::string &model_path, const std::string &model_nam
     }
 }
 
-void ObjLoader::Load(const std::vector<global::Vector> &lights, Scene *scene) {
-    LoadMaterials(lights);
+void ObjLoader::Load(const std::vector<global::Vector> &lights, const std::vector<Sphere *> &spheres, Scene *scene) {
+    LoadMaterials(lights, spheres);
+    LoadSpheres(scene, spheres);
     LoadMeshes(scene);
 }
 
-void ObjLoader::LoadMaterials(const std::vector<global::Vector> &lights) {
+void ObjLoader::LoadMaterials(const std::vector<global::Vector> &lights, const std::vector<Sphere *> &spheres) {
     auto &materials = reader_.GetMaterials();
     for (const auto &material: materials) {
         std::string texture_path = model_path_;
@@ -66,7 +67,20 @@ void ObjLoader::LoadMaterials(const std::vector<global::Vector> &lights) {
                 }
             }
         }
+        for (auto sphere: spheres) {
+            if (material.name == sphere->object()->name()) {
+                std::cout << "Loading " << material.name << "..." << std::endl;
+                sphere->object()->SetPrimitive(sphere);
+                sphere->object()->SetMaterial(material_);
+            }
+        }
         materials_.push_back(material_);
+    }
+}
+
+void ObjLoader::LoadSpheres(Scene *scene, const std::vector<Sphere *> &spheres) {
+    for (auto sphere: spheres) {
+        scene->AddObject(sphere->object());
     }
 }
 
@@ -120,7 +134,7 @@ void ObjLoader::LoadMeshes(Scene *scene) {
             mesh->Add(triangle);
             index_offset += vertices_count;
         }
-        object->SetMesh(mesh);
+        object->SetPrimitive(mesh);
         object->SetMaterial(materials_[shape.mesh.material_ids[0]]);
         scene->AddObject(object);
     }

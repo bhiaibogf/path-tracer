@@ -20,7 +20,15 @@ public:
 
     virtual ~Primitive() = default;
 
+    enum PrimitiveType {
+        kTriangle, kMesh, kSphere
+    };
+
+    virtual PrimitiveType Type() const = 0;
+
     auto area() const { return area_; }
+
+    auto object() const { return object_; }
 
     float Weight() const;
 

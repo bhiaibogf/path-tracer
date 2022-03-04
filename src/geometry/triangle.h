@@ -16,11 +16,15 @@ public:
 
     ~Triangle() override = default;
 
+    PrimitiveType Type() const override { return kTriangle; }
+
     bool Intersect(Ray *ray, Intersection *intersection) const override;
 
     void Sample(Intersection *intersection, float *pdf) const override;
 
     void InsertTo(std::vector<const Primitive *> *primitives) const override;
+
+    friend std::ostream &operator<<(std::ostream &os, const Triangle &triangle);
 
 private:
     global::VectorArray vertices_, normals_;

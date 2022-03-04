@@ -14,6 +14,8 @@ public:
 
     ~Mesh() override = default;
 
+    PrimitiveType Type() const override { return kMesh; }
+
     void Add(Triangle *triangle);
 
     bool Intersect(Ray *ray, Intersection *intersection) const override;

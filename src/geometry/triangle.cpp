@@ -117,3 +117,8 @@ void Triangle::Sample(Intersection *intersection, float *pdf) const {
 void Triangle::InsertTo(std::vector<const Primitive *> *primitives) const {
     primitives->push_back(this);
 }
+
+std::ostream &operator<<(std::ostream &os, const Triangle &triangle) {
+    os << "Triangle: " << triangle.area_ << " area";
+    return os;
+}

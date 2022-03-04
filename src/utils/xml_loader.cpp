@@ -23,13 +23,20 @@ Camera *XmlLoader::LoadCamera() {
     return new Camera(eye, lookat, up, fovy, width, height);
 }
 
-void XmlLoader::LoadLights(std::vector<global::Vector> *lights) {
-    for (auto light = doc_.FirstChildElement(); light; light = light->NextSiblingElement()) {
-        if (!light->Attribute("mtlname")) {
-            continue;
-        }
+void XmlLoader::LoadLights(std::vector<global::Vector> *lights) const {
+    for (auto light = doc_.FirstChildElement("light"); light; light = light->NextSiblingElement("light")) {
         global::Vector radiance = LoadVector(light->Attribute("radiance"));
         lights->push_back(radiance);
+    }
+}
+
+void XmlLoader::LoadSphere(std::vector<Sphere *> *spheres) const {
+    for (auto sphere = doc_.FirstChildElement("sphere"); sphere; sphere = sphere->NextSiblingElement("sphere")) {
+        global::Vector center = LoadVector(sphere->Attribute("center"));
+        float radius = sphere->FindAttribute("radius")->FloatValue();
+        std::string mtlname = sphere->Attribute("mtlname");
+        auto *object = new Object(mtlname);
+        spheres->push_back(new Sphere(object, center, radius));
     }
 }
 

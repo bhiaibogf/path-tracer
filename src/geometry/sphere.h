@@ -12,11 +12,15 @@ class Sphere : public Primitive {
 public:
     Sphere(Object *object, global::Vector center, float radius);
 
+    PrimitiveType Type() const override { return kSphere; }
+
     bool Intersect(Ray *ray, Intersection *intersection) const override;
 
     void Sample(Intersection *intersection, float *pdf) const override;
 
     void InsertTo(std::vector<const Primitive *> *primitives) const override;
+
+    friend std::ostream &operator<<(std::ostream &os, const Sphere &sphere);
 
 private:
     global::Vector center_;
