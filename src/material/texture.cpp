@@ -20,7 +20,7 @@ global::Color Texture::GetColor(const global::TexCoord &tex_coord) const {
     if (uu == 1) u = 1 - u;
     if (vv == 1) v = 1 - v;
 
-    int x = int(u * float(width_)), y = int(v * float(height_));
+    int x = int(u * float(width_ - 1)), y = int(v * float(height_ - 1));
     int index = (x + y * width_) * channel_;
     global::Color color = global::Color(img_[index], img_[index + 1], img_[index + 2]);
     return color;
