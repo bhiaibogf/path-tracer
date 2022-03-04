@@ -8,6 +8,7 @@
     <height value="256"/>
 </camera>
 <sphere mtlname="White" center="186, 82.5, 168.5" radius="64"/>
-<sphere mtlname="White" center="368.5, 165, 351.5" radius="128"/>
+<sphere mtlname="Mirror" center="368.5, 165, 351.5" radius="128"/>
+<sphere mtlname="Glass" center="180, 300, 150" radius="128"/>
 <sphere mtlname="Light" center="278, 500, 279.5" radius="32"/>
 <light mtlname="Light" radiance="47.8348, 38.5664, 31.0808"/>
