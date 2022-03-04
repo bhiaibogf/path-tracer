@@ -26,6 +26,8 @@ public:
 
     bool Update(float t);
 
+    global::Vector operator()(float t) const;
+
     friend std::ostream &operator<<(std::ostream &os, const Ray &ray);
 
 private:
@@ -33,8 +35,6 @@ private:
 
     global::Vector origin_, direction_;
     float t_min_, t_max_;
-
-    global::Vector operator()(float t) const;
 
 };
 

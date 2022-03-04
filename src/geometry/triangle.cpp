@@ -115,5 +115,5 @@ void Triangle::Sample(Intersection *intersection, float *pdf) const {
 }
 
 void Triangle::InsertTo(std::vector<const Primitive *> *primitives) const {
-    primitives->push_back((Primitive *) this);
+    primitives->push_back(this);
 }
