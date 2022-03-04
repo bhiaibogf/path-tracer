@@ -6,9 +6,9 @@
 
 const Eigen::Vector3f Scene::kBackgroundColor = global::Color(0.2f, 0.4f, 0.8f);
 const float Scene::kEpsilonPosition = 1e-4f;
-const float Scene::kEpsilonLight = 1e2f * kEpsilonPosition * kEpsilonPosition;
-const float Scene::kEpsilonPdf = 1e-4f;
-const float Scene::kRussianRoulette = 0.8f;
+const float Scene::kEpsilonLight = 10.f * kEpsilonPosition;
+const float Scene::kEpsilonPdf = 1e-2f;
+const float Scene::kRussianRoulette = 0.9f;
 const int Scene::kMaxBounce = 10;
 
 Scene::Scene() {
@@ -78,10 +78,10 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce, SampleT
 
             if (Intersect(&ray_to_light, &intersection_to_light)
                 // check if the light is visible
-                && (position_light - intersection_to_light.position).squaredNorm() < kEpsilonLight) {
+                && (position_light - intersection_to_light.position).norm() < kEpsilonLight) {
                 radiance_light = global::Product(intersection_to_light.material->emission(),
                                                  material->Eval(direction, direction_to_light, normal, tex_coord))
-                                 * std::abs(normal.dot(direction_to_light))
+                                 * normal.dot(direction_to_light)
                                  / pdf_light;
                 if (sample_type == kMis) {
                     float pdf_bsdf = material->Pdf(direction, direction_to_light, normal);
@@ -119,7 +119,7 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce, SampleT
                     radiance_bsdf =
                             global::Product(intersection_another_light.material->emission(),
                                             material->Eval(direction, direction_another_light, normal, tex_coord))
-                            * std::abs(normal.dot(direction_another_light))
+                            * normal.dot(direction_another_light)
                             / pdf_bsdf;
                 }
                 if (sample_type == kMis) {
@@ -160,7 +160,7 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce, SampleT
             radiance_indirect
                     = global::Product(Shade(intersection_next, bounce + 1, sample_type),
                                       material->Eval(direction, direction_next, normal, tex_coord))
-                      * std::abs(normal.dot(direction_next))
+                      * normal.dot(direction_next)
                       / pdf_bsdf
                       / kRussianRoulette;
         }
@@ -195,14 +195,14 @@ std::pair<global::Vector, global::Vector> Scene::SampleLight(const global::Vecto
         }
         (*pdf) /= area_sum;
     }
-    auto direction_to_light = (intersection_light.position - position).normalized();
-    if (intersection_light.normal.dot(-direction_to_light) < 0) {
+    auto direction_light = (intersection_light.position - position).normalized();
+    if (intersection_light.normal.dot(-direction_light) < 0) {
         *pdf = 0.f;
         return {global::kNone, global::kNone};
     }
     *pdf = (*pdf) * (intersection_light.position - position).squaredNorm()
-           / intersection_light.normal.dot(-direction_to_light);
-    return {direction_to_light, intersection_light.position};
+           / intersection_light.normal.dot(-direction_light);
+    return {direction_light, intersection_light.position};
 }
 
 float Scene::PdfLight(const global::Vector &position, const Intersection &intersection_another_light) const {
