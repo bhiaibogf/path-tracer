@@ -10,7 +10,7 @@
 
 class Lambert : public Material {
 public:
-    explicit Lambert(const global::Color &k_d);
+    explicit Lambert(global::Color k_d);
 
     explicit Lambert(const std::string &texture_name);
 

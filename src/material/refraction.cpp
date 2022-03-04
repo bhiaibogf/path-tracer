@@ -4,8 +4,6 @@
 
 #include "refraction.h"
 
-const float Refraction::n_s = 1e5f;
-
 Refraction::Refraction(float n_i_) : ior_(n_i_) {}
 
 global::Color

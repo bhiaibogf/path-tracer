@@ -25,7 +25,6 @@ public:
     friend std::ostream &operator<<(std::ostream &os, const Refraction &refraction);
 
 private:
-    static const float n_s;
     float ior_;
 
 };

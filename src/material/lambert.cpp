@@ -4,7 +4,7 @@
 
 #include "lambert.h"
 
-Lambert::Lambert(const global::Color &k_d) : albedo_(k_d) {
+Lambert::Lambert(global::Color k_d) : albedo_(std::move(k_d)) {
     texture_ = nullptr;
 }
 
@@ -74,7 +74,5 @@ std::ostream &operator<<(std::ostream &os, const Lambert &lambert) {
 }
 
 global::Color Lambert::Albedo() const {
-    if (albedo_ != global::kBlack) {
-        return albedo_;
-    }
+    return albedo_;
 }

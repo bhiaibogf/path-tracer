@@ -18,6 +18,8 @@ public:
 
     MaterialType Type() const override { return kMix; }
 
+    global::Color Albedo() const override;
+
     global::Color Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const override;
 
     global::Color Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal,
@@ -30,8 +32,7 @@ public:
     friend std::ostream &operator<<(std::ostream &os, const Mix &mix);
 
 private:
-    Material *material_1_;
-    Material *material_2_;
+    Material *material_1_, *material_2_;
     float ratio_;
 
 };

@@ -40,3 +40,7 @@ std::ostream &operator<<(std::ostream &os, const Mix &mix) {
        << "\n   ratio = " << mix.ratio_;
     return os;
 }
+
+global::Color Mix::Albedo() const {
+    return material_1_->Albedo() * ratio_ + material_2_->Albedo() * (1.f - ratio_);
+}

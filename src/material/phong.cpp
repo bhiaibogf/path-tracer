@@ -4,8 +4,7 @@
 
 #include "phong.h"
 
-Phong::Phong(const global::Color &k_s, float n_s)
-        : k_s_(k_s), n_s_(n_s) {}
+Phong::Phong(global::Color k_s, float n_s) : k_s_(std::move(k_s)), n_s_(n_s) {}
 
 global::Color Phong::Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const {
     if (normal.dot(wo) > 0 && normal.dot(wi) > 0) {
@@ -46,7 +45,7 @@ float Phong::Pdf(const global::Vector &wo, const global::Vector &wi, const globa
             return (n_s_ + 1) * global::kInvTwoPi * std::pow(alpha, n_s_);
         }
     }
-    return 0;
+    return 0.f;
 }
 
 std::ostream &operator<<(std::ostream &os, const Phong &phong) {

@@ -32,3 +32,7 @@ std::ostream &operator<<(std::ostream &os, const Material &material) {
     os << "\n\temission = " << material.emission_;
     return os;
 }
+
+global::Color Material::Albedo() const {
+    return global::kBlack;
+}
