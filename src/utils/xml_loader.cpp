@@ -6,6 +6,7 @@
 
 XmlLoader::XmlLoader(const std::string &file_name) {
     doc_.LoadFile(file_name.c_str());
+    std::cout << "Loading " << file_name << std::endl;
 }
 
 Camera *XmlLoader::LoadCamera() {
