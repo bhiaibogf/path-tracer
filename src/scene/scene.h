@@ -32,6 +32,7 @@ private:
     static const float kEpsilonPdf;
     static const float kRussianRoulette;
     static const int kMaxBounce;
+    float scale_;
 
     std::vector<Object *> objects_;
     Bvh *bvh_;

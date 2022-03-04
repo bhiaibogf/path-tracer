@@ -17,6 +17,8 @@ public:
 
     float AreaWeighted() const { return root_->area_weighted(); }
 
+    float Diagonal() const { return root_->bound().Diagonal().norm(); }
+
     bool Intersect(Ray *ray, Intersection *intersection) const;
 
     void SampleLight(Intersection *intersection, float *pdf) const;

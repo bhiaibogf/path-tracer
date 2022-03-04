@@ -5,7 +5,7 @@
 #include "scene.h"
 
 const Eigen::Vector3f Scene::kBackgroundColor = global::Color(0.2f, 0.4f, 0.8f);
-const float Scene::kEpsilonPosition = 1e-2f;
+const float Scene::kEpsilonPosition = 1e-5f;
 const float Scene::kEpsilonLight = 10.f * kEpsilonPosition;
 const float Scene::kEpsilonPdf = 1e-2f;
 const float Scene::kRussianRoulette = 0.9f;
@@ -13,10 +13,12 @@ const int Scene::kMaxBounce = 10;
 
 Scene::Scene() {
     bvh_ = nullptr;
+    alias_table_ = nullptr;
 }
 
 void Scene::BuildBvh() {
     bvh_ = new Bvh(objects_);
+    scale_ = bvh_->Diagonal();
     alias_table_ = new AliasTable(objects_);
 }
 
@@ -72,13 +74,14 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce, SampleT
         auto[direction_to_light, position_light] = SampleLight(position, &pdf_light);
         if (pdf_light > kEpsilonPdf) {
             global::Vector position_to_light =
-                    position + normal * (normal.dot(direction_to_light) > 0 ? kEpsilonPosition : -kEpsilonPosition);
+                    position +
+                    normal * scale_ * (normal.dot(direction_to_light) > 0 ? kEpsilonPosition : -kEpsilonPosition);
             Ray ray_to_light(position_to_light, direction_to_light);
             Intersection intersection_to_light;
 
             if (Intersect(&ray_to_light, &intersection_to_light)
                 // check if the light is visible
-                && (position_light - intersection_to_light.position).norm() < kEpsilonLight) {
+                && (position_light - intersection_to_light.position).norm() < scale_ * kEpsilonLight) {
                 radiance_light = global::Product(intersection_to_light.material->emission(),
                                                  material->Eval(direction, direction_to_light, normal, tex_coord))
                                  * normal.dot(direction_to_light)
@@ -103,7 +106,7 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce, SampleT
         if (pdf_bsdf > kEpsilonPdf) {
             auto position_another_light =
                     position +
-                    normal * (normal.dot(direction_another_light) > 0 ? kEpsilonPosition : -kEpsilonPosition);
+                    normal * scale_ * (normal.dot(direction_another_light) > 0 ? kEpsilonPosition : -kEpsilonPosition);
             Ray ray_another_light = Ray(position_another_light, direction_another_light);
             Intersection intersection_another_light;
 
@@ -146,7 +149,8 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce, SampleT
         return radiance_emission + radiance_direct;
     }
 
-    auto position_next = position + normal * (normal.dot(direction_next) > 0 ? kEpsilonPosition : -kEpsilonPosition);
+    auto position_next =
+            position + normal * scale_ * (normal.dot(direction_next) > 0 ? kEpsilonPosition : -kEpsilonPosition);
     Ray ray_next = Ray(position_next, direction_next);
     Intersection intersection_next;
 

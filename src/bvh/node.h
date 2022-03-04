@@ -17,6 +17,8 @@ public:
 
     auto area_weighted() const { return area_weighted_; }
 
+    auto bound() const { return bound_; }
+
     bool Intersect(Ray *ray, Intersection *intersection) const;
 
     void SampleLight(Intersection *intersection, float *pdf, float area) const;

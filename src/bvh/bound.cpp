@@ -40,8 +40,12 @@ int Bound::MaxExtent() const {
     }
 }
 
-global::Vector Bound::Centroid() {
+global::Vector Bound::Centroid() const {
     return 0.5 * min_ + 0.5 * max_;
+}
+
+global::Vector Bound::Diagonal() const {
+    return max_ - min_;
 }
 
 Bound Bound::operator|(const Bound &other) const {
@@ -62,10 +66,6 @@ Bound Bound::operator+=(const global::Vector &other) {
     min_ = Min(min_, other);
     max_ = Max(max_, other);
     return *this;
-}
-
-global::Vector Bound::Diagonal() const {
-    return max_ - min_;
 }
 
 global::Vector Bound::Min(const global::Vector &a, const global::Vector &b) {

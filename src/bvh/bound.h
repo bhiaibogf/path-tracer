@@ -20,7 +20,9 @@ public:
 
     int MaxExtent() const;
 
-    global::Vector Centroid();
+    global::Vector Centroid() const;
+
+    global::Vector Diagonal() const;
 
     Bound operator|(const Bound &other) const;
 
@@ -35,8 +37,6 @@ private:
     static const float kMaxFloat;
 
     global::Vector min_, max_;
-
-    global::Vector Diagonal() const;
 
     static global::Vector Min(const global::Vector &a, const global::Vector &b);
 
