@@ -48,6 +48,14 @@ global::Vector Bound::Diagonal() const {
     return max_ - min_;
 }
 
+float Bound::SurfaceArea() const {
+    return 2 * (Diagonal().x() * Diagonal().y() + Diagonal().x() * Diagonal().z() + Diagonal().y() * Diagonal().z());
+}
+
+bool Bound::IsPoint() const {
+    return min_ == max_;
+}
+
 Bound Bound::operator|(const Bound &other) const {
     return {Min(min_, other.min_), Max(max_, other.max_)};
 }

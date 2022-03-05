@@ -24,6 +24,10 @@ public:
 
     global::Vector Diagonal() const;
 
+    float SurfaceArea() const;
+
+    bool IsPoint() const;
+
     Bound operator|(const Bound &other) const;
 
     Bound operator|=(const Bound &other);

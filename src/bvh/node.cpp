@@ -6,8 +6,13 @@
 
 const int Node::kMaxPrimitives = 8;
 
-Node::Node(std::vector<const Primitive *> *primitives) {
-    if (primitives->size() <= kMaxPrimitives) {
+Node::Node(std::vector<const Primitive *> *primitives, SplitMethod split_method) {
+    Bound centroid_bound;
+    for (auto primitive: *primitives) {
+        centroid_bound += primitive->bound().Centroid();
+    }
+
+    if (primitives->size() <= kMaxPrimitives || centroid_bound.IsPoint()) {
         bound_ = Bound();
         area_weighted_ = 0.f;
         left_ = nullptr;
@@ -20,18 +25,52 @@ Node::Node(std::vector<const Primitive *> *primitives) {
         }
         return;
     } else {
-        Bound centroid_bound;
-        for (auto primitive: *primitives) {
-            centroid_bound += primitive->bound().Centroid();
+        int dim = centroid_bound.MaxExtent();
+
+        int split_pos = -1;
+        switch (split_method) {
+            case kMiddle:
+                split_pos = std::partition(primitives->begin(), primitives->end(),
+                                           [dim, centroid_bound](const Primitive *primitive) {
+                                               return primitive->bound().Centroid()[dim]
+                                                      < centroid_bound.Centroid()[dim];
+                                           }) - primitives->begin();
+                break;
+            case kEqualCount:
+                std::nth_element(primitives->begin(), primitives->begin() + primitives->size() / 2,
+                                 primitives->end(),
+                                 [dim](const Primitive *primitive_1, const Primitive *primitive_2) {
+                                     return primitive_1->bound().Centroid()[dim]
+                                            < primitive_2->bound().Centroid()[dim];
+                                 });
+                split_pos = primitives->size() / 2;
+                break;
+            case kSah:
+                std::sort(primitives->begin(), primitives->end(), [dim](auto primitive_1, auto primitive_2) {
+                    return primitive_1->bound().Centroid()[dim] < primitive_2->bound().Centroid()[dim];
+                });
+
+                float min_cost = global::kInf;
+                for (int i = 1; i < primitives->size(); i++) {
+                    float cost = 0.f;
+                    Bound left_bound, right_bound;
+                    for (int j = 0; j < i; j++) {
+                        left_bound |= primitives->at(j)->bound();
+                    }
+                    cost += float(i) * left_bound.SurfaceArea();
+                    for (int j = i; j < primitives->size(); j++) {
+                        right_bound |= primitives->at(j)->bound();
+                    }
+                    cost += float(primitives->size() - i) * right_bound.SurfaceArea();
+                    if (cost < min_cost) {
+                        min_cost = cost;
+                        split_pos = i;
+                    }
+                }
         }
 
-        int dim = centroid_bound.MaxExtent();
-        std::sort(primitives->begin(), primitives->end(), [&](auto primitive_1, auto primitive_2) {
-            return primitive_1->bound().Centroid()[dim] < primitive_2->bound().Centroid()[dim];
-        });
-
         auto beginning = primitives->begin();
-        auto middling = primitives->begin() + int(primitives->size()) / 2;
+        auto middling = primitives->begin() + split_pos;
         auto ending = primitives->end();
 
         auto left = new std::vector<const Primitive *>(beginning, middling);
@@ -39,8 +78,8 @@ Node::Node(std::vector<const Primitive *> *primitives) {
 
         assert(primitives->size() == (left->size() + right->size()));
 
-        left_ = new Node(left);
-        right_ = new Node(right);
+        left_ = new Node(left, split_method);
+        right_ = new Node(right, split_method);
     }
     bound_ = left_->bound_ | right_->bound_;
     area_weighted_ = left_->area_weighted_ + right_->area_weighted_;

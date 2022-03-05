@@ -4,12 +4,12 @@
 
 #include "bvh.h"
 
-Bvh::Bvh(const std::vector<Object *> &objects) {
+Bvh::Bvh(const std::vector<Object *> &objects, SplitMethod split_method) {
     auto *primitives = new std::vector<const Primitive *>();
     for (auto object: objects) {
         object->InsertTo(primitives);
     }
-    root_ = new Node(primitives);
+    root_ = new Node(primitives, split_method);
 }
 
 bool Bvh::Intersect(Ray *ray, Intersection *intersection) const {

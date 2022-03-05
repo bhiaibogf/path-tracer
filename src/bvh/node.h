@@ -9,9 +9,15 @@
 #include "bound.h"
 #include "../geometry/primitive.h"
 
+enum SplitMethod {
+    kMiddle,
+    kEqualCount,
+    kSah
+};
+
 class Node {
 public:
-    explicit Node(std::vector<const Primitive *> *primitive_1);
+    explicit Node(std::vector<const Primitive *> *primitive_1, SplitMethod primitive_2);
 
     ~Node() = default;
 
