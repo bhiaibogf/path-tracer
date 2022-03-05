@@ -10,13 +10,12 @@ global::Color
 Refraction::Albedo(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const {
     float schlick = global::Schlick(wo, normal, ior_);
 
-    if (wi == global::Refract(wo, normal, ior_)) {
-        return {1 - schlick, 1 - schlick, 1 - schlick};
-    } else if (wi == global::Reflect(wo, normal)) {
+    global::Vector refract = global::Refract(wo, normal, ior_);
+    if (refract != global::kNone) {
+        return {1.f, 1.f, 1.f};
+    } else {
         return {schlick, schlick, schlick};
     }
-
-    return global::kBlack;
 }
 
 global::Color Refraction::Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const {
@@ -25,11 +24,18 @@ global::Color Refraction::Eval(const global::Vector &wo, const global::Vector &w
 
 global::Vector Refraction::Sample(const global::Vector &wo, const global::Vector &normal, float *pdf) const {
     *pdf = global::kInf;
+
+    float schlick = global::Schlick(wo, normal, ior_);
     global::Vector refract = global::Refract(wo, normal, ior_);
+    global::Vector reflect = global::Reflect(wo, normal);
     if (refract != global::kNone) {
-        return refract;
+        if (generator::Rand() < schlick) {
+            return reflect;
+        } else {
+            return refract;
+        }
     } else {
-        return global::Reflect(wo, normal);
+        return reflect;
     }
 }
 
