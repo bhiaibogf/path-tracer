@@ -111,7 +111,8 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce, SampleT
             Intersection intersection_another_light;
 
             if (Intersect(&ray_another_light, &intersection_another_light)
-                && intersection_another_light.material->HasEmitter()) {
+                && intersection_another_light.material->HasEmitter()
+                && intersection_another_light.normal.dot(-direction_another_light) > 0) {
                 if (pdf_bsdf == global::kInf) {
                     radiance_bsdf =
                             global::Product(intersection_another_light.material->emission(),
