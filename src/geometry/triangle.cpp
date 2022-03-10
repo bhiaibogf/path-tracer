@@ -95,6 +95,7 @@ bool Triangle::Intersect(Ray *ray, Intersection *intersection) const {
     if (beta + gamma <= 1 && beta >= 0 && gamma >= 0 && ray->Update(t)) {
         intersection->position = (1 - beta - gamma) * vertices_[0] + beta * vertices_[1] + gamma * vertices_[2];;
         intersection->normal = (1 - beta - gamma) * normals_[0] + beta * normals_[1] + gamma * normals_[2];
+        intersection->normal.normalize();
         intersection->tex_coord = (1 - beta - gamma) * tex_coords_[0] + beta * tex_coords_[1] + gamma * tex_coords_[2];
         intersection->material = material();
         intersection->weight = Weight();
