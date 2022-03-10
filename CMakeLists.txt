@@ -18,7 +18,3 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 add_executable(path_tracer ${SRC})
 
 target_link_libraries(path_tracer ${OpenCV_LIBRARIES} OpenMP::OpenMP_CXX tiny_obj_loader_lib tiny_xml_lib stb_lib)
-
-#add_executable(test test/main.cpp)
-
-#add_subdirectory(Assignment7)
