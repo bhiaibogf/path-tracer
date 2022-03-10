@@ -12,13 +12,19 @@
 
 class Texture {
 public:
-    explicit Texture(const std::string &filename);
+    explicit Texture(const std::string &path);
 
     ~Texture() = default;
 
+    enum WrapMode {
+        kRepeat,
+        kMirror,
+        kClamp
+    };
+
     auto path() const { return "./" + path_; }
 
-    global::Color GetColor(const global::TexCoord &tex_coord) const;
+    global::Color GetColor(const global::TexCoord &tex_coord, WrapMode wrap_mode = kRepeat) const;
 
 private:
     std::string path_;
