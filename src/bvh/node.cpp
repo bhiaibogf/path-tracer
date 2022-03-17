@@ -4,7 +4,8 @@
 
 #include "node.h"
 
-const int Node::kMaxPrimitives = 8;
+const std::size_t Node::kMaxPrimitives = 8;
+const std::size_t Node::kUseSah = 1024;
 
 Node::Node(std::vector<const Primitive *> *primitives, SplitMethod split_method) {
     Bound centroid_bound;
@@ -29,6 +30,7 @@ Node::Node(std::vector<const Primitive *> *primitives, SplitMethod split_method)
 
         int split_pos = -1;
         switch (split_method) {
+            case kMix:
             case kMiddle:
                 split_pos = std::partition(primitives->begin(), primitives->end(),
                                            [dim, centroid_bound](const Primitive *primitive) {
@@ -78,11 +80,17 @@ Node::Node(std::vector<const Primitive *> *primitives, SplitMethod split_method)
 
         assert(primitives->size() == (left->size() + right->size()));
 
-        left_ = new Node(left, split_method);
-        right_ = new Node(right, split_method);
+        if (split_method == kMix) {
+            left_ = new Node(left, left->size() < kUseSah ? kSah : kMix);
+            right_ = new Node(right, right->size() < kUseSah ? kSah : kMix);
+        } else {
+            left_ = new Node(left, split_method);
+            right_ = new Node(right, split_method);
+        }
+
+        bound_ = left_->bound_ | right_->bound_;
+        area_weighted_ = left_->area_weighted_ + right_->area_weighted_;
     }
-    bound_ = left_->bound_ | right_->bound_;
-    area_weighted_ = left_->area_weighted_ + right_->area_weighted_;
 }
 
 bool Node::Intersect(Ray *ray, Intersection *intersection) const {

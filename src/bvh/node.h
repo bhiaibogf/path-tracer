@@ -12,7 +12,8 @@
 enum SplitMethod {
     kMiddle,
     kEqualCount,
-    kSah
+    kSah,
+    kMix
 };
 
 class Node {
@@ -30,7 +31,8 @@ public:
     void SampleLight(Intersection *intersection, float *pdf, float area) const;
 
 private:
-    static const int kMaxPrimitives;
+    static const std::size_t kMaxPrimitives;
+    static const std::size_t kUseSah;
 
     Bound bound_;
     std::vector<const Primitive *> primitives_;

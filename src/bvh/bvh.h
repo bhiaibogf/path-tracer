@@ -11,7 +11,7 @@
 
 class Bvh {
 public:
-    explicit Bvh(const std::vector<Object *> &objects, SplitMethod split_method = kMiddle);
+    explicit Bvh(const std::vector<Object *> &objects, SplitMethod split_method = kMix);
 
     ~Bvh() = default;
 
