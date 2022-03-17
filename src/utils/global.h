@@ -18,8 +18,8 @@ namespace global {
     const float kInvTwoPi = M_1_PI / 2.f;
     const float kInf = std::numeric_limits<float>::infinity();
 
-    typedef Eigen::Vector3f Color;
     typedef Eigen::Vector3f Vector;
+    typedef Vector Color;
     typedef Eigen::Vector2f TexCoord;
 
     typedef std::array<global::Vector, 3> VectorArray;
@@ -30,6 +30,11 @@ namespace global {
     std::ostream &operator<<(std::ostream &os, const Eigen::Vector2f &vector);
 
     Vector Product(const Vector &a, const Vector &b);
+
+    template<typename T>
+    T Mix(const T &a, const T &b, float ratio) {
+        return a * (1 - ratio) + b * ratio;
+    }
 
     const Color kBlack = Eigen::Vector3f(0.f, 0.f, 0.f);
     const Color kWhite = Eigen::Vector3f(1.f, 1.f, 1.f);

@@ -28,7 +28,7 @@ global::Vector global::Reflect(const global::Vector &wi, const global::Vector &n
 }
 
 global::Vector global::Product(const global::Vector &a, const global::Vector &b) {
-    return {a.x() * b.x(), a.y() * b.y(), a.z() * b.z()};
+    return (a.array() * b.array()).matrix();
 }
 
 global::Vector global::Refract(const global::Vector &wi, const global::Vector &normal, float ior) {
