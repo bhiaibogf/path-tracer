@@ -7,7 +7,7 @@
 const Eigen::Vector3f Scene::kBackgroundColor = global::Color(0.2f, 0.4f, 0.8f);
 const float Scene::kEpsilonPosition = 1e-5f;
 const float Scene::kEpsilonLight = 10.f * kEpsilonPosition;
-const float Scene::kEpsilonPdf = 1e-2f;
+const float Scene::kEpsilonPdf = 1e-6f;
 const float Scene::kRussianRoulette = 0.9f;
 const int Scene::kMaxBounce = 10;
 
