@@ -22,13 +22,16 @@ ObjLoader::ObjLoader(const std::string &model_path, const std::string &model_nam
     }
 }
 
-void ObjLoader::Load(const std::vector<global::Vector> &lights, const std::vector<Sphere *> &spheres, Scene *scene) {
+void ObjLoader::Load(const std::map<std::string, global::Vector> &lights,
+                     const std::vector<Sphere *> &spheres,
+                     Scene *scene) {
     LoadMaterials(lights, spheres);
     LoadSpheres(scene, spheres);
     LoadMeshes(scene);
 }
 
-void ObjLoader::LoadMaterials(const std::vector<global::Vector> &lights, const std::vector<Sphere *> &spheres) {
+void ObjLoader::LoadMaterials(const std::map<std::string, global::Vector> &lights,
+                              const std::vector<Sphere *> &spheres) {
     auto &materials = reader_.GetMaterials();
     for (const auto &material: materials) {
         std::string texture_path = model_path_;
@@ -58,13 +61,8 @@ void ObjLoader::LoadMaterials(const std::vector<global::Vector> &lights, const s
                         diffuse_texture.empty() ? new Lambert(k_d) : new Lambert(texture_path + diffuse_texture),
                         new Phong(k_s, n_s));
             }
-            if (material.name.find("Light") != std::string::npos) {
-                if (material.name.size() == 5) {
-                    material_->SetEmission(lights[0]);
-                } else {
-                    int light_id = std::stoi(material.name.substr(5));
-                    material_->SetEmission(lights[light_id - 1]);
-                }
+            if (lights.contains(material.name)) {
+                material_->SetEmission(lights.at(material.name));
             }
         }
         for (auto sphere: spheres) {

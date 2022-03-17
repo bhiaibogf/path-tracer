@@ -19,7 +19,7 @@ public:
 
     Camera *LoadCamera();
 
-    void LoadLights(std::vector<global::Vector> *lights) const;
+    void LoadLights(std::map<std::string, global::Vector> *lights) const;
 
     void LoadSphere(std::vector<Sphere *> *spheres) const;
 

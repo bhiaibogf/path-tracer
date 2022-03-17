@@ -24,10 +24,11 @@ Camera *XmlLoader::LoadCamera() {
     return new Camera(eye, lookat, up, fovy, width, height);
 }
 
-void XmlLoader::LoadLights(std::vector<global::Vector> *lights) const {
+void XmlLoader::LoadLights(std::map<std::string, global::Vector> *lights) const {
     for (auto light = doc_.FirstChildElement("light"); light; light = light->NextSiblingElement("light")) {
         global::Vector radiance = LoadVector(light->Attribute("radiance"));
-        lights->push_back(radiance);
+        std::string mtlname = light->Attribute("mtlname");
+        lights->insert({mtlname, radiance});
     }
 }
 

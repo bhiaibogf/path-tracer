@@ -37,7 +37,7 @@ int main() {
     XmlLoader loader(model_path + model_name + "/" + model_name + ".xml");
     Camera *camera = loader.LoadCamera();
 
-    std::vector<global::Vector> lights;
+    std::map<std::string, global::Vector> lights;
     loader.LoadLights(&lights);
 
     std::vector<Sphere *> spheres;

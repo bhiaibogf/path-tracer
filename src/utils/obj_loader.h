@@ -17,7 +17,7 @@ public:
 
     ~ObjLoader() = default;
 
-    void Load(const std::vector<global::Vector> &lights, const std::vector<Sphere *> &spheres, Scene *scene);
+    void Load(const std::map<std::string, global::Vector> &lights, const std::vector<Sphere *> &spheres, Scene *scene);
 
 private:
     std::string model_path_, filename_;
@@ -25,7 +25,7 @@ private:
 
     std::vector<Material *> materials_;
 
-    void LoadMaterials(const std::vector<global::Vector> &lights, const std::vector<Sphere *> &spheres);
+    void LoadMaterials(const std::map<std::string, global::Vector> &lights, const std::vector<Sphere *> &spheres);
 
     void LoadMeshes(Scene *scene);
 
