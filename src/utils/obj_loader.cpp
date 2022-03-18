@@ -124,7 +124,7 @@ void ObjLoader::LoadMeshes(Scene *scene) {
                         tex_coords = new std::array<global::TexCoord, 3>;
                     }
                     (*tex_coords)[idx_in_face] = global::TexCoord(attrib.texcoords[2 * idx.texcoord_index + 0],
-                                                                  1.f - attrib.texcoords[2 * idx.texcoord_index + 1]);
+                                                                  attrib.texcoords[2 * idx.texcoord_index + 1]);
                 }
             }
 

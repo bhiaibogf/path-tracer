@@ -5,6 +5,7 @@
 #include "texture.h"
 
 Texture::Texture(const std::string &path) : path_(path) {
+    stbi_set_flip_vertically_on_load(true);
     img_ = stbi_loadf(path.c_str(), &width_, &height_, &channel_, 0);
 }
 
