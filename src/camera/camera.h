@@ -24,9 +24,11 @@ public:
 
     Ray GenerateRay(int x, int y, bool antialiasing) const;
 
+    friend std::ostream &operator<<(std::ostream &os, const Camera &camera);
+
 private:
     global::Vector eye_, direction_, right_, up_;
-    float fov_;
+    float fov_y_;
     int width_, height_;
 
 };

@@ -46,6 +46,8 @@ namespace global {
 
     float Radius(float alpha);
 
+    float Degree(float alpha);
+
     Vector Reflect(const Vector &wi, const Vector &normal);
 
     Vector Refract(const Vector &wi, const Vector &normal, float ior);

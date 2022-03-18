@@ -8,6 +8,10 @@ float global::Radius(float alpha) {
     return alpha / 180.f * kPi;
 }
 
+float global::Degree(float alpha) {
+    return alpha * 180.f * kInvPi;
+}
+
 void global::UpdateProgress(float progress) {
     std::cout << "\r[";
 
