@@ -57,19 +57,15 @@ global::Vector global::Refract(const global::Vector &wi, const global::Vector &n
         float cos_theta = std::sqrt(cos_2_theta);
         float nK = (eta * cos_ni) - cos_theta;
         return -wi * eta + normal_real * nK;
-        // return 1 - fresnel_dielectric(cos_ni, eta);
     }
     return global::kNone;
 }
 
 float global::Schlick(const global::Vector &wi, const global::Vector &normal, float ior) {
     float cos_theta = normal.dot(wi);
-    if (cos_theta < 0) {
-        cos_theta = -cos_theta;
-        ior = 1.f / ior;
-    }
-    float r_0 = (1.f - ior) / (1.f + ior);
-    return r_0 + (1.f - r_0) * std::pow(1.f - cos_theta, 5.f);
+    float f_0 = (1.f - ior) / (1.f + ior);
+    f_0 *= f_0;
+    return f_0 + (1.f - f_0) * std::pow(1.f - std::abs(cos_theta), 5.f);
 }
 
 std::ostream &global::operator<<(std::ostream &os, const Eigen::Vector3f &vector) {

@@ -12,7 +12,13 @@ Refraction::Albedo(const global::Vector &wo, const global::Vector &wi, const glo
 
     global::Vector refract = global::Refract(wo, normal, ior_);
     if (refract != global::kNone) {
-        return {1.f, 1.f, 1.f};
+        if (refract == wi) {
+            float eta = normal.dot(wo) > 0 ? 1.f / ior_ : ior_;
+            float eta_2 = eta * eta;
+            return {eta_2, eta_2, eta_2};
+        } else {
+            return {1.f, 1.f, 1.f};
+        }
     } else {
         return {schlick, schlick, schlick};
     }
