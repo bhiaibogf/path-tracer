@@ -24,6 +24,8 @@ public:
 
     auto material() const { return material_; }
 
+    auto primitive() const { return primitive_; }
+
     auto AreaWeighted() const { return primitive_->AreaWeighted(); }
 
     void InsertTo(std::vector<const Primitive *> *primitives) const;

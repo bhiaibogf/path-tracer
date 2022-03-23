@@ -29,6 +29,7 @@ void Mesh::Sample(Intersection *intersection, float *pdf) const {
 void Mesh::Add(Triangle *triangle) {
     triangles_.push_back(triangle);
     area_ += triangle->area();
+    bound_ |= triangle->bound();
 }
 
 void Mesh::InsertTo(std::vector<const Primitive *> *primitives) const {

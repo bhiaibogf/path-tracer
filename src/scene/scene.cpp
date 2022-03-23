@@ -12,13 +12,16 @@ const float Scene::kRussianRoulette = 0.9f;
 const int Scene::kMaxBounce = 10;
 
 Scene::Scene() {
+    area_weighted_sum_ = 0.f;
+    scale_ = 0.f;
+    bound_ = Bound();
+
     bvh_ = nullptr;
     alias_table_ = nullptr;
 }
 
 void Scene::BuildBvh() {
     bvh_ = new Bvh(objects_);
-    scale_ = bvh_->Diagonal();
     alias_table_ = new AliasTable(objects_);
 }
 
@@ -184,21 +187,18 @@ std::pair<global::Vector, global::Vector> Scene::SampleLight(const global::Vecto
         // bvh_->SampleLight(&intersection_light, pdf);
         alias_table_->SampleLight(&intersection_light, pdf);
     } else {
-        float area_sum = 0;
+        float random_area = generator::Rand() * area_weighted_sum_;
+        float area_weighted_sum = 0;
         for (const auto &object: objects_) {
-            area_sum += object->AreaWeighted();
-        }
-
-        float random_area = generator::Rand() * area_sum;
-        area_sum = 0;
-        for (const auto &object: objects_) {
-            area_sum += object->AreaWeighted();
-            if (random_area <= area_sum) {
-                object->Sample(&intersection_light, pdf);
-                break;
+            if (object->material()->HasEmitter()) {
+                area_weighted_sum += object->AreaWeighted();
+                if (random_area <= area_weighted_sum) {
+                    object->Sample(&intersection_light, pdf);
+                    break;
+                }
             }
         }
-        (*pdf) /= area_sum;
+        (*pdf) /= area_weighted_sum_;
     }
     auto direction_light = (intersection_light.position - position).normalized();
     if (intersection_light.normal.dot(-direction_light) < 0) {
@@ -216,7 +216,7 @@ float Scene::PdfLight(const global::Vector &position, const Intersection &inters
         return (intersection_another_light.position - position).squaredNorm()
                / intersection_another_light.normal.dot(intersection_another_light.direction)
                * intersection_another_light.weight
-               / bvh_->AreaWeighted();
+               / area_weighted_sum_;
     }
     return 0.f;
 }

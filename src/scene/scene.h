@@ -15,7 +15,14 @@ public:
 
     ~Scene() = default;
 
-    void AddObject(Object *object) { objects_.push_back(object); }
+    void AddObject(Object *object) {
+        objects_.push_back(object);
+        bound_ |= object->primitive()->bound();
+        if (object->material()->HasEmitter()) {
+            area_weighted_sum_ += object->AreaWeighted();
+        }
+        scale_ = bound_.Diagonal().norm();
+    }
 
     void BuildBvh();
 
@@ -32,11 +39,15 @@ private:
     static const float kEpsilonPdf;
     static const float kRussianRoulette;
     static const int kMaxBounce;
-    float scale_;
 
     std::vector<Object *> objects_;
+
     Bvh *bvh_;
     AliasTable *alias_table_;
+
+    Bound bound_;
+    float area_weighted_sum_;
+    float scale_;
 
     bool Intersect(Ray *ray, Intersection *intersection) const;
 
