@@ -27,13 +27,13 @@ git clone https://github.com/bhiaibogf/path-tracer.git
 ### 安装依赖
 
 ```bash
-sudo apt install libeigen3-dev libopencv-dev
+sudo apt install g++ cmake make libeigen3-dev libopencv-dev
 ```
 
 ### 编译
 
 ```bash
-cd path-tracer && mkdir build && cd build && cmake .. && make && cd ..
+cd path-tracer && mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release .. && make && cd ..
 ```
 
 ### 运行
