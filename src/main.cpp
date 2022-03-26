@@ -5,40 +5,42 @@
 #include "utils/timer.h"
 #include "utils/xml_loader.h"
 
+#include <inih/INIReader.h>
+
 int main() {
-    std::string model_path = "scenes/";
+    INIReader reader("scene.ini");
+    if (reader.ParseError() != 0) {
+        std::cout << "Can't load 'scene.ini'\n";
+        return 1;
+    }
 
-    // std::string model_name = "cornell-simple";
-    // std::string model_name = "cornell-complex";
-    // std::string model_name = "cornell-mirror";
-    // std::string model_name = "cornell-sphere";
+    std::string model_path = reader.Get("", "model_path", "scene") + "/";
+    std::string model_name = reader.Get("", "model_name", "bedroom");
 
-    // std::string model_name = "veach-mis";
-    // std::string model_name = "cornell-box";
-    std::string model_name = "bedroom";
+    int spp = int(reader.GetInteger("", "spp", 1));
 
-    // std::string model_name = "staircase";
+    bool antialiasing = reader.GetBoolean("", "antialiasing", false);
+    bool use_bvh = reader.GetBoolean("", "use_bvh", true);
 
-    int spp = 1;
-    // int spp = 16;
-    // int spp = 512;
-    // int spp = 4096;
-
-    // bool antialiasing = true;
-    bool antialiasing = false;
-
-    bool use_bvh = true;
-    // bool use_bvh = false;
-
-    // Scene::ShadingType shading_type = Scene::kUv;
-    // Scene::ShadingType shading_type = Scene::kAlbedo;
-    // Scene::ShadingType shading_type = Scene::kNormal;
-    // Scene::ShadingType shading_type = Scene::kPosition;
+    std::string shading_type_name = reader.Get("", "shading_type", "depth");
     Scene::ShadingType shading_type = Scene::kDepth;
-
-    // Scene::ShadingType shading_type = Scene::kSampleBsdf;
-    // Scene::ShadingType shading_type = Scene::kSampleLight;
-    // Scene::ShadingType shading_type = Scene::kMis;
+    if (shading_type_name == "uv") {
+        shading_type = Scene::kUv;
+    } else if (shading_type_name == "albedo") {
+        shading_type = Scene::kAlbedo;
+    } else if (shading_type_name == "normal") {
+        shading_type = Scene::kNormal;
+    } else if (shading_type_name == "position") {
+        shading_type = Scene::kPosition;
+    } else if (shading_type_name == "depth") {
+        shading_type = Scene::kDepth;
+    } else if (shading_type_name == "light") {
+        shading_type = Scene::kSampleLight;
+    } else if (shading_type_name == "bsdf") {
+        shading_type = Scene::kSampleBsdf;
+    } else if (shading_type_name == "mis") {
+        shading_type = Scene::kMis;
+    }
 
     Timer timer;
 
@@ -86,14 +88,7 @@ int main() {
                   + (spp == 1 ? "" : ("-" + std::to_string(spp)))
                   + (antialiasing ? "-antialiasing" : "")
                   + (use_bvh ? "-BVH" : "")
-                  + (shading_type == Scene::kUv ? "-uv" : "")
-                  + (shading_type == Scene::kAlbedo ? "-albedo" : "")
-                  + (shading_type == Scene::kPosition ? "-position" : "")
-                  + (shading_type == Scene::kNormal ? "-normal" : "")
-                  + (shading_type == Scene::kDepth ? "-depth" : "")
-                  + (shading_type == Scene::kSampleBsdf ? "-bsdf" : "")
-                  + (shading_type == Scene::kSampleLight ? "-light" : "")
-                  + (shading_type == Scene::kMis ? "-mis" : "")
+                  + "-" + shading_type_name
                   + ".exr");
 
     return 0;
