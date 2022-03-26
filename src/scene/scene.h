@@ -26,11 +26,19 @@ public:
 
     void BuildBvh();
 
-    enum SampleType {
-        kSampleLight, kSampleBsdf, kSampleBoth, kMis
+    enum ShadingType {
+        kUv,
+        kAlbedo,
+        kNormal,
+        kPosition,
+        kDepth,
+
+        kSampleLight,
+        kSampleBsdf,
+        kMis
     };
 
-    global::Color Trace(Ray *ray, SampleType sample_type) const;
+    global::Color Trace(Ray *ray, ShadingType shading_type) const;
 
 private:
     static const global::Color kBackgroundColor;
@@ -51,7 +59,9 @@ private:
 
     bool Intersect(Ray *ray, Intersection *intersection) const;
 
-    global::Color Shade(const Intersection &intersection, int bounce, SampleType sample_type) const;
+    global::Color Shade(const Ray &ray, const Intersection &intersection, ShadingType g_buffer_type) const;
+
+    global::Color Shade(const Intersection &intersection, int bounce, ShadingType sample_type) const;
 
     std::pair<global::Vector, global::Vector> SampleLight(const global::Vector &position, float *pdf) const;
 

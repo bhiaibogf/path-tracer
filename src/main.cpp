@@ -10,24 +10,35 @@ int main() {
 
     // std::string model_name = "cornell-simple";
     // std::string model_name = "cornell-complex";
-    std::string model_name = "cornell-sphere";
+    // std::string model_name = "cornell-mirror";
+    // std::string model_name = "cornell-sphere";
+
     // std::string model_name = "veach-mis";
     // std::string model_name = "cornell-box";
-    // std::string model_name = "bedroom";
+    std::string model_name = "bedroom";
 
+    // std::string model_name = "staircase";
+
+    int spp = 1;
     // int spp = 16;
-    int spp = 512;
+    // int spp = 512;
+    // int spp = 4096;
 
-    bool antialiasing = true;
-    // bool antialiasing = false;
+    // bool antialiasing = true;
+    bool antialiasing = false;
 
     bool use_bvh = true;
     // bool use_bvh = false;
 
-    // Scene::SampleType sample_type = Scene::kSampleBoth;
-    Scene::SampleType sample_type = Scene::kSampleBsdf;
-    // Scene::SampleType sample_type = Scene::kSampleLight;
-    // Scene::SampleType sample_type = Scene::kMis;
+    // Scene::ShadingType shading_type = Scene::kUv;
+    // Scene::ShadingType shading_type = Scene::kAlbedo;
+    // Scene::ShadingType shading_type = Scene::kNormal;
+    // Scene::ShadingType shading_type = Scene::kPosition;
+    Scene::ShadingType shading_type = Scene::kDepth;
+
+    // Scene::ShadingType shading_type = Scene::kSampleBsdf;
+    // Scene::ShadingType shading_type = Scene::kSampleLight;
+    // Scene::ShadingType shading_type = Scene::kMis;
 
     Timer timer;
 
@@ -65,20 +76,24 @@ int main() {
     std::cout << "\nRendering..." << std::endl;
 
     PathTracer renderer(camera, scene);
-    renderer.Render(spp, antialiasing, sample_type);
+    renderer.Render(spp, antialiasing, shading_type);
 
     timer.StopTimer();
     std::cout << "\nRender complete, using " << timer.GetTime() << " seconds." << std::endl;
 
     renderer.Save("img/" + model_name + "/"
                   + std::to_string(camera->width()) + "X" + std::to_string(camera->height())
-                  + "-" + std::to_string(spp)
+                  + (spp == 1 ? "" : ("-" + std::to_string(spp)))
                   + (antialiasing ? "-antialiasing" : "")
                   + (use_bvh ? "-BVH" : "")
-                  + (sample_type == Scene::kSampleBsdf ? "-bsdf" : "")
-                  + (sample_type == Scene::kSampleLight ? "-light" : "")
-                  + (sample_type == Scene::kSampleBoth ? "-both" : "")
-                  + (sample_type == Scene::kMis ? "-mis" : "")
+                  + (shading_type == Scene::kUv ? "-uv" : "")
+                  + (shading_type == Scene::kAlbedo ? "-albedo" : "")
+                  + (shading_type == Scene::kPosition ? "-position" : "")
+                  + (shading_type == Scene::kNormal ? "-normal" : "")
+                  + (shading_type == Scene::kDepth ? "-depth" : "")
+                  + (shading_type == Scene::kSampleBsdf ? "-bsdf" : "")
+                  + (shading_type == Scene::kSampleLight ? "-light" : "")
+                  + (shading_type == Scene::kMis ? "-mis" : "")
                   + ".exr");
 
     return 0;

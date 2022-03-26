@@ -25,10 +25,14 @@ void Scene::BuildBvh() {
     alias_table_ = new AliasTable(objects_);
 }
 
-global::Color Scene::Trace(Ray *ray, SampleType sample_type) const {
+global::Color Scene::Trace(Ray *ray, ShadingType shading_type) const {
     Intersection intersection;
     if (Intersect(ray, &intersection)) {
-        return Shade(intersection, 0, sample_type);
+        if (shading_type < kSampleLight) {
+            return Shade(*ray, intersection, shading_type);
+        } else {
+            return Shade(intersection, 0, shading_type);
+        }
     }
 
     return kBackgroundColor;
@@ -49,7 +53,24 @@ bool Scene::Intersect(Ray *ray, Intersection *intersection) const {
     }
 }
 
-global::Color Scene::Shade(const Intersection &intersection, int bounce, SampleType sample_type) const {
+global::Color Scene::Shade(const Ray &ray, const Intersection &intersection, Scene::ShadingType g_buffer_type) const {
+    switch (g_buffer_type) {
+        case kUv:
+            return {intersection.tex_coord.x(), intersection.tex_coord.y(), 0.f};
+        case kAlbedo:
+            return intersection.material->Albedo();
+        case kNormal:
+            return intersection.normal;
+        case kPosition:
+            return intersection.position;
+        case kDepth:
+            return {ray.t(), ray.t(), ray.t()};
+        default:
+            return global::kBlack;
+    }
+}
+
+global::Color Scene::Shade(const Intersection &intersection, int bounce, ShadingType sample_type) const {
     Material *material = intersection.material;
 
     // emission

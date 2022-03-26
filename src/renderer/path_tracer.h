@@ -15,7 +15,7 @@ class PathTracer {
 public:
     PathTracer(const Camera *camera, const Scene *scene);
 
-    void Render(int spp, bool antialiasing, Scene::SampleType sample_type);
+    void Render(int spp, bool antialiasing, Scene::ShadingType shading_type);
 
     void Save(const std::string &filename);
 

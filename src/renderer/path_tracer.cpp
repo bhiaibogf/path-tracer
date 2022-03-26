@@ -9,15 +9,15 @@ PathTracer::PathTracer(const Camera *camera, const Scene *scene) : camera_(camer
     std::fill(fragment_buffer_.begin(), fragment_buffer_.end(), Eigen::Vector3f(0, 0, 0));
 }
 
-void PathTracer::Render(int spp, bool antialiasing, Scene::SampleType sample_type) {
+void PathTracer::Render(int spp, bool antialiasing, Scene::ShadingType shading_type) {
     // ThreadPool pool(std::thread::hardware_concurrency());
     for (int y = 0; y < camera_->height(); y++) {
         // std::future<Eigen::Vector3f> futures[camera_.width()][spp];
-#pragma omp parallel for default(none) shared(fragment_buffer_, y, camera_, spp, antialiasing, sample_type)
+#pragma omp parallel for default(none) shared(fragment_buffer_, y, camera_, spp, antialiasing, shading_type)
         for (int x = 0; x < camera_->width(); x++) {
             for (int k = 0; k < spp; k++) {
                 Ray ray = camera_->GenerateRay(x, y, antialiasing);
-                fragment_buffer_[camera_->GetIndex(x, y)] += scene_->Trace(&ray, sample_type);
+                fragment_buffer_[camera_->GetIndex(x, y)] += scene_->Trace(&ray, shading_type);
                 // futures[x][k] = pool.enqueue([&]() {
                 //     return scene_.Trace(&ray);
                 // });
