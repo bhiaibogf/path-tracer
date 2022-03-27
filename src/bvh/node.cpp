@@ -4,10 +4,13 @@
 
 #include "node.h"
 
+#include <ThreadPool/ThreadPool.h>
+
 const std::size_t Node::kMaxPrimitives = 8;
 const std::size_t Node::kUseSah = 1024;
+const int Node::kDepth = 4;
 
-Node::Node(std::vector<const Primitive *> *primitives, SplitMethod split_method) {
+Node::Node(std::vector<const Primitive *> *primitives, SplitMethod split_method, int depth) {
     Bound centroid_bound;
     for (auto primitive: *primitives) {
         centroid_bound += primitive->bound().Centroid();
@@ -80,12 +83,34 @@ Node::Node(std::vector<const Primitive *> *primitives, SplitMethod split_method)
 
         assert(primitives->size() == (left->size() + right->size()));
 
-        if (split_method == kMix) {
-            left_ = new Node(left, left->size() < kUseSah ? kSah : kMix);
-            right_ = new Node(right, right->size() < kUseSah ? kSah : kMix);
+        if (depth < kDepth) {
+            ThreadPool pool(std::thread::hardware_concurrency());
+            std::future<Node *> left_future, right_future;
+            if (split_method == kMix) {
+                left_future = pool.enqueue([&]() {
+                    return new Node(left, left->size() < kUseSah ? kSah : kMix, depth + 1);
+                });
+                right_future = pool.enqueue([&]() {
+                    return new Node(right, right->size() < kUseSah ? kSah : kMix, depth + 1);
+                });
+            } else {
+                left_future = pool.enqueue([&]() {
+                    return new Node(left, split_method, depth + 1);
+                });
+                right_future = pool.enqueue([&]() {
+                    return new Node(right, split_method, depth + 1);
+                });
+            }
+            left_ = left_future.get();
+            right_ = right_future.get();
         } else {
-            left_ = new Node(left, split_method);
-            right_ = new Node(right, split_method);
+            if (split_method == kMix) {
+                left_ = new Node(left, left->size() < kUseSah ? kSah : kMix, depth + 1);
+                right_ = new Node(right, right->size() < kUseSah ? kSah : kMix, depth + 1);
+            } else {
+                left_ = new Node(left, split_method, depth + 1);
+                right_ = new Node(right, split_method, depth + 1);
+            }
         }
 
         bound_ = left_->bound_ | right_->bound_;

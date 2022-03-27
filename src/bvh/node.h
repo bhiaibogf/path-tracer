@@ -18,7 +18,7 @@ enum SplitMethod {
 
 class Node {
 public:
-    explicit Node(std::vector<const Primitive *> *primitive_1, SplitMethod primitive_2);
+    explicit Node(std::vector<const Primitive *> *primitives, SplitMethod split_method, int depth = 0);
 
     ~Node() = default;
 
@@ -33,6 +33,7 @@ public:
 private:
     static const std::size_t kMaxPrimitives;
     static const std::size_t kUseSah;
+    static const int kDepth;
 
     Bound bound_;
     std::vector<const Primitive *> primitives_;
