@@ -7,6 +7,7 @@
 
 
 #include <chrono>
+#include <iostream>
 
 class Timer {
 public:
@@ -14,9 +15,9 @@ public:
 
     ~Timer() = default;
 
-    void StartTimer();
+    void StartTimer(const std::string &start_msg);
 
-    void StopTimer();
+    void StopTimer(const std::string &stop_msg);
 
     float GetTime();
 

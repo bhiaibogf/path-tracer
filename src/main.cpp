@@ -8,12 +8,14 @@
 #include <inih/INIReader.h>
 
 int main() {
+    Timer timer;
+
     INIReader reader("scene.ini");
     if (reader.ParseError() != 0) {
         std::cout << "Can't load scene.ini\n";
         return 1;
     } else {
-        std::cout << "Loading scene.ini ...\n";
+        timer.StartTimer("Loading scene.ini");
     }
 
     std::string model_path = reader.Get("model", "model_path", "scene") + "/";
@@ -43,11 +45,9 @@ int main() {
     } else if (shading_type_name == "mis") {
         shading_type = Scene::kMis;
     }
+    timer.StopTimer("scene.ini loaded");
 
-    Timer timer;
-
-    timer.StartTimer();
-    std::cout << "Loading scene..." << std::endl;
+    timer.StartTimer("\nLoading scene");
 
     XmlLoader loader(model_path + model_name + "/" + model_name + ".xml");
     Camera *camera = loader.LoadCamera();
@@ -63,27 +63,20 @@ int main() {
     auto scene = new Scene();
     obj_loader.Load(lights, spheres, scene);
 
-    timer.StopTimer();
-    std::cout << "Load complete, using " << timer.GetTime() << " seconds." << std::endl;
+    timer.StopTimer("Scene Loaded");
 
     if (use_bvh) {
-        timer.StartTimer();
-        std::cout << "\nBuilding BVH..." << std::endl;
-
+        timer.StartTimer("\nBuilding BVH");
         scene->BuildBvh();
-
-        timer.StopTimer();
-        std::cout << "BVH built, using " << timer.GetTime() << " seconds." << std::endl;
+        timer.StopTimer("BVH built");
     }
 
-    timer.StartTimer();
-    std::cout << "\nRendering..." << std::endl;
+    timer.StartTimer("\nRendering");
 
     PathTracer renderer(camera, scene);
     renderer.Render(spp, antialiasing, shading_type);
 
-    timer.StopTimer();
-    std::cout << "\nRender complete, using " << timer.GetTime() << " seconds." << std::endl;
+    timer.StopTimer("\nRendering finished");
 
     renderer.Save("img/" + model_name + "/"
                   + std::to_string(camera->width()) + "X" + std::to_string(camera->height())
