@@ -10,19 +10,21 @@
 int main() {
     INIReader reader("scene.ini");
     if (reader.ParseError() != 0) {
-        std::cout << "Can't load 'scene.ini'\n";
+        std::cout << "Can't load scene.ini\n";
         return 1;
+    } else {
+        std::cout << "Loading scene.ini ...\n";
     }
 
-    std::string model_path = reader.Get("", "model_path", "scene") + "/";
-    std::string model_name = reader.Get("", "model_name", "bedroom");
+    std::string model_path = reader.Get("model", "model_path", "scene") + "/";
+    std::string model_name = reader.Get("model", "model_name", "bedroom");
 
-    int spp = int(reader.GetInteger("", "spp", 1));
+    int spp = int(reader.GetInteger("rendering", "spp", 1));
 
-    bool antialiasing = reader.GetBoolean("", "antialiasing", false);
-    bool use_bvh = reader.GetBoolean("", "use_bvh", true);
+    bool antialiasing = reader.GetBoolean("rendering", "antialiasing", false);
+    bool use_bvh = reader.GetBoolean("rendering", "use_bvh", true);
 
-    std::string shading_type_name = reader.Get("", "shading_type", "depth");
+    std::string shading_type_name = reader.Get("rendering", "shading_type", "depth");
     Scene::ShadingType shading_type = Scene::kDepth;
     if (shading_type_name == "uv") {
         shading_type = Scene::kUv;
