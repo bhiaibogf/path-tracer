@@ -46,3 +46,7 @@ std::ostream &operator<<(std::ostream &os, const Mix &mix) {
 global::Color Mix::Albedo() const {
     return material_1_->Albedo() * ratio_ + material_2_->Albedo() * (1.f - ratio_);
 }
+
+global::Color Mix::Albedo(const global::TexCoord &tex_coord) const {
+    return material_1_->Albedo(tex_coord) * ratio_ + material_2_->Albedo(tex_coord) * (1.f - ratio_);
+}

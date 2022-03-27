@@ -58,7 +58,7 @@ global::Color Scene::Shade(const Ray &ray, const Intersection &intersection, Sce
         case kUv:
             return {intersection.tex_coord.x(), intersection.tex_coord.y(), 0.f};
         case kAlbedo:
-            return intersection.material->Albedo();
+            return intersection.material->Albedo(intersection.tex_coord);
         case kNormal:
             return intersection.normal;
         case kPosition:

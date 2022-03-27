@@ -36,3 +36,7 @@ std::ostream &operator<<(std::ostream &os, const Material &material) {
 global::Color Material::Albedo() const {
     return global::kBlack;
 }
+
+global::Color Material::Albedo(const global::TexCoord &tex_coord) const {
+    return Albedo();
+}

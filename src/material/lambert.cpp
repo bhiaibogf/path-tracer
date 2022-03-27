@@ -76,3 +76,11 @@ std::ostream &operator<<(std::ostream &os, const Lambert &lambert) {
 global::Color Lambert::Albedo() const {
     return albedo_;
 }
+
+global::Color Lambert::Albedo(const global::TexCoord &tex_coord) const {
+    if (texture_ != nullptr) {
+        return texture_->GetColor(tex_coord);
+    } else {
+        return albedo_;
+    }
+}

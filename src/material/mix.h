@@ -20,6 +20,8 @@ public:
 
     global::Color Albedo() const override;
 
+    global::Color Albedo(const global::TexCoord &tex_coord) const override;
+
     global::Color Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const override;
 
     global::Color Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal,
