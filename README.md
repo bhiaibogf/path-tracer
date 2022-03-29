@@ -219,3 +219,7 @@ cmake version 3.16.3
 增加了对球几何体的支持（包括光源和其他物体）
 
 ![cornell-sphere](img/cornell-sphere.png)
+
+### more
+
+见 [img](./img) 文件夹
