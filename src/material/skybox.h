@@ -7,7 +7,6 @@
 
 
 #include "texture.h"
-#include "../ray/ray.h"
 
 class Skybox {
 public:
@@ -15,7 +14,7 @@ public:
 
     ~Skybox() = default;
 
-    global::Color Sample(const Ray &ray) const;
+    global::Color Sample(const global::Vector &direction) const;
 
     friend std::ostream &operator<<(std::ostream &os, const Skybox &skybox);
 

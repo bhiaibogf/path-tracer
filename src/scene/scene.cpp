@@ -45,7 +45,7 @@ global::Color Scene::Trace(Ray *ray, ShadingType shading_type) const {
         }
     }
 
-    return skybox_ ? skybox_->Sample(*ray) : kBackgroundColor;
+    return skybox_ ? skybox_->Sample(ray->direction()) : kBackgroundColor;
 }
 
 bool Scene::Intersect(Ray *ray, Intersection *intersection) const {
@@ -204,10 +204,18 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce, Shading
                       / kRussianRoulette;
         }
     } else {
-        if (skybox_) {
-            radiance_indirect = skybox_->Sample(ray_next);
+        auto background_color = skybox_ ? skybox_->Sample(ray_next.direction()) : kBackgroundColor;
+        if (pdf_bsdf == global::kInf) {
+            radiance_indirect
+                    = global::Product(background_color,
+                                      ((Refraction *) material)->Albedo(direction, direction_next, normal))
+                      / kRussianRoulette;
         } else {
-            radiance_indirect = kBackgroundColor;
+            radiance_indirect
+                    = global::Product(background_color, material->Eval(direction, direction_next, normal, tex_coord))
+                      * normal.dot(direction_next)
+                      / pdf_bsdf
+                      / kRussianRoulette;
         }
     }
 
