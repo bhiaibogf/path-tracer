@@ -16,6 +16,7 @@ Scene::Scene() {
     scale_ = 0.f;
     bound_ = Bound();
 
+    skybox_ = nullptr;
     bvh_ = nullptr;
     alias_table_ = nullptr;
 }
@@ -44,7 +45,7 @@ global::Color Scene::Trace(Ray *ray, ShadingType shading_type) const {
         }
     }
 
-    return kBackgroundColor;
+    return skybox_ ? skybox_->Sample(*ray) : kBackgroundColor;
 }
 
 bool Scene::Intersect(Ray *ray, Intersection *intersection) const {
@@ -203,7 +204,11 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce, Shading
                       / kRussianRoulette;
         }
     } else {
-        radiance_indirect = kBackgroundColor;
+        if (skybox_) {
+            radiance_indirect = skybox_->Sample(ray_next);
+        } else {
+            radiance_indirect = kBackgroundColor;
+        }
     }
 
     return radiance_emission + radiance_direct + radiance_indirect;

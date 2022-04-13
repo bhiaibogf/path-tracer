@@ -8,12 +8,15 @@
 
 #include "alias_table.h"
 #include "../bvh/bvh.h"
+#include "../material/skybox.h"
 
 class Scene {
 public:
     Scene();
 
     ~Scene() = default;
+
+    void SetSkybox(Skybox *skybox) { skybox_ = skybox; }
 
     void AddObject(Object *object);
 
@@ -42,6 +45,7 @@ private:
     static const int kMaxBounce;
 
     std::vector<Object *> objects_;
+    Skybox *skybox_;
 
     Bvh *bvh_;
     AliasTable *alias_table_;

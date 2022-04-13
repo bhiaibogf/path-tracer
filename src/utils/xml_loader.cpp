@@ -5,6 +5,7 @@
 #include "xml_loader.h"
 
 XmlLoader::XmlLoader(const std::string &file_name) {
+    path_ = file_name.substr(0, file_name.find_last_of('/') + 1);
     doc_.LoadFile(file_name.c_str());
     std::cout << "Loading ./" << file_name << std::endl;
 }
@@ -22,6 +23,16 @@ Camera *XmlLoader::LoadCamera() {
     int height = camera->FirstChildElement("height")->FirstAttribute()->IntValue();
 
     return new Camera(eye, lookat, up, fovy, width, height);
+}
+
+Skybox *XmlLoader::LoadSkybox() {
+    auto skybox = doc_.FirstChildElement("skybox");
+    if (skybox) {
+        std::string filename = skybox->Attribute("path");
+        return new Skybox(path_ + filename);
+    } else {
+        return nullptr;
+    }
 }
 
 void XmlLoader::LoadLights(std::map<std::string, global::Vector> *lights) const {

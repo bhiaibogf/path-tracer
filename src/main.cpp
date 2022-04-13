@@ -62,9 +62,16 @@ int main() {
     std::vector<Sphere *> spheres;
     loader.LoadSphere(&spheres);
 
+    Skybox *skybox = loader.LoadSkybox();
+    if (skybox) {
+        std::cout << *skybox << std::endl;
+    }
+
     ObjLoader obj_loader(model_path, model_name);
     auto scene = new Scene();
     obj_loader.Load(lights, spheres, scene);
+
+    scene->SetSkybox(skybox);
 
     timer.StopTimer("Scene Loaded");
 

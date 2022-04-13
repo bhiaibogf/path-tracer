@@ -8,6 +8,7 @@
 
 #include "../camera/camera.h"
 #include "../scene/object.h"
+#include "../material/skybox.h"
 
 #include "tinyxml2/tinyxml2.h"
 
@@ -19,11 +20,14 @@ public:
 
     Camera *LoadCamera();
 
+    Skybox *LoadSkybox();
+
     void LoadLights(std::map<std::string, global::Vector> *lights) const;
 
     void LoadSphere(std::vector<Sphere *> *spheres) const;
 
 private:
+    std::string path_;
     tinyxml2::XMLDocument doc_;
 
     static global::Vector LoadVector(const tinyxml2::XMLElement *element);
