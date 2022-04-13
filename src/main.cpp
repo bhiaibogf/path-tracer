@@ -24,6 +24,9 @@ int main() {
     int spp = int(reader.GetInteger("rendering", "spp", 1));
 
     bool antialiasing = reader.GetBoolean("rendering", "antialiasing", false);
+    if (spp == 1) {
+        antialiasing = false;
+    }
     bool use_bvh = reader.GetBoolean("rendering", "use_bvh", true);
 
     std::string shading_type_name = reader.Get("rendering", "shading_type", "depth");
