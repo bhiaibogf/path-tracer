@@ -53,9 +53,10 @@ std::ostream &operator<<(std::ostream &os, const Camera &camera) {
             2.f * std::atan((0.5f * width) / (0.5f * height / std::tan(global::Radius(camera.fov_y_ / 2.f)))));
 
     using namespace global;
-    std::cout << "Camera:\n  position: " << camera.eye_ << "\n  direction: " << camera.direction_
-              << "\n  xyz Euler: [" << global::Degree(std::acos(cos_x)) << ", " << global::Degree(std::acos(cos_y))
-              << ", 180]"
+    std::cout << "Camera:\n  position: " << global::Vector{camera.eye_.x(), -camera.eye_.z(), camera.eye_.y()}
+              << "\n  direction: " << camera.direction_
+              << "\n  xyz Euler: [" << global::Degree(std::acos(cos_x)) - 90 <<
+              ", 0, " << 180 - global::Degree(std::acos(cos_y)) << "]"
               << "\n  fov: " << std::max(camera.fov_y_, fov_x)
               << "\n  size: " << width << " * " << height;
     return os;
