@@ -48,8 +48,6 @@ public:
 protected:
     global::Color emission_;
 
-    static global::Vector ToWorld(const global::Vector &local, const global::Vector &normal);
-
 };
 
 

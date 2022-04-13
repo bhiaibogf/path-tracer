@@ -61,6 +61,21 @@ global::Vector global::Refract(const global::Vector &wi, const global::Vector &n
     return global::kNone;
 }
 
+global::Vector global::ToWorld(const global::Vector &local, const global::Vector &normal) {
+    global::Vector t, b;
+    // t = global::Vector(0, 0, 1);
+    // b = normal.cross(t);
+    if (std::abs(normal.x()) > std::abs(normal.y())) {
+        float inv_len = 1.f / std::sqrt(normal.x() * normal.x() + normal.z() * normal.z());
+        b = global::Vector(normal.z() * inv_len, 0.f, -normal.x() * inv_len);
+    } else {
+        float inv_len = 1.f / std::sqrt(normal.y() * normal.y() + normal.z() * normal.z());
+        b = global::Vector(0.f, normal.z() * inv_len, -normal.y() * inv_len);
+    }
+    t = b.cross(normal);
+    return (local.x() * t + local.y() * b + local.z() * normal).normalized();
+}
+
 float global::Schlick(const global::Vector &wi, const global::Vector &normal, float ior) {
     float cos_theta = normal.dot(wi);
     float f_0 = (1.f - ior) / (1.f + ior);

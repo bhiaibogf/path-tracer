@@ -53,6 +53,8 @@ namespace global {
 
     Vector Refract(const Vector &wi, const Vector &normal, float ior);
 
+    Vector ToWorld(const Vector &local, const Vector &normal);
+
     float Luminance(const Color &color);
 
     float Schlick(const Vector &wi, const Vector &normal, float ior);

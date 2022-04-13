@@ -31,7 +31,7 @@ global::Vector Phong::Sample(const global::Vector &wo, const global::Vector &nor
 
         global::Vector local(r * cos_phi, r * sin_phi, z);
         *pdf = (n_s_ + 1) * global::kInvTwoPi * std::pow(z, n_s_);
-        return ToWorld(local, reflect);
+        return global::ToWorld(local, reflect);
     }
     *pdf = 0.f;
     return global::kNone;
