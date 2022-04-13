@@ -5,6 +5,7 @@
 #ifndef PATH_TRACER_LAMBERT_H
 #define PATH_TRACER_LAMBERT_H
 
+
 #include "material.h"
 #include "texture.h"
 

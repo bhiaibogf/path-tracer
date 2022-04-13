@@ -15,14 +15,7 @@ public:
 
     ~Scene() = default;
 
-    void AddObject(Object *object) {
-        objects_.push_back(object);
-        bound_ |= object->primitive()->bound();
-        if (object->material()->HasEmitter()) {
-            area_weighted_sum_ += object->AreaWeighted();
-        }
-        scale_ = bound_.Diagonal().norm();
-    }
+    void AddObject(Object *object);
 
     void BuildBvh();
 

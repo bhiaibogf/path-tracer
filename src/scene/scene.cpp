@@ -20,6 +20,15 @@ Scene::Scene() {
     alias_table_ = nullptr;
 }
 
+void Scene::AddObject(Object *object) {
+    objects_.push_back(object);
+    bound_ |= object->primitive()->bound();
+    if (object->material()->HasEmitter()) {
+        area_weighted_sum_ += object->AreaWeighted();
+    }
+    scale_ = bound_.Diagonal().norm();
+}
+
 void Scene::BuildBvh() {
     bvh_ = new Bvh(objects_);
     alias_table_ = new AliasTable(objects_);

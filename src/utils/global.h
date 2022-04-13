@@ -5,6 +5,7 @@
 #ifndef PATH_TRACER_GLOBAL_H
 #define PATH_TRACER_GLOBAL_H
 
+
 #include <eigen3/Eigen/Eigen>
 
 #include <cmath>
@@ -36,11 +37,11 @@ namespace global {
         return a * (1 - ratio) + b * ratio;
     }
 
-    const Color kBlack = Eigen::Vector3f(0.f, 0.f, 0.f);
-    const Color kWhite = Eigen::Vector3f(1.f, 1.f, 1.f);
+    const Color kBlack = Eigen::Vector3f::Zero();
+    const Color kWhite = Eigen::Vector3f::Ones();
 
-    const Vector kNone = Eigen::Vector3f(0.f, 0.f, 0.f);
-    const TexCoord kNoTex = Eigen::Vector2f(0.f, 0.f);
+    const Vector kNone = Eigen::Vector3f::Zero();
+    const TexCoord kNoTex = Eigen::Vector2f::Zero();
 
     void UpdateProgress(float progress);
 
