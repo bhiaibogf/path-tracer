@@ -202,6 +202,8 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce, Shading
                       / pdf_bsdf
                       / kRussianRoulette;
         }
+    } else {
+        radiance_indirect = kBackgroundColor;
     }
 
     return radiance_emission + radiance_direct + radiance_indirect;
