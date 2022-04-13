@@ -72,6 +72,10 @@ void AliasTable::CreateTable() {
 }
 
 void AliasTable::SampleLight(Intersection *intersection, float *pdf) const {
+    if (n_ == 0) {
+        *pdf = 0.f;
+        return;
+    }
     float xi = generator::Rand();
     int i = int(float(n_) * xi);
     float y = float(n_) * xi - float(i);

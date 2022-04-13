@@ -216,7 +216,14 @@ std::pair<global::Vector, global::Vector> Scene::SampleLight(const global::Vecto
     if (bvh_) {
         // bvh_->SampleLight(&intersection_light, pdf);
         alias_table_->SampleLight(&intersection_light, pdf);
+        if (*pdf == 0) {
+            return {global::kNone, global::kNone};
+        }
     } else {
+        if (area_weighted_sum_ == 0) {
+            *pdf = 0;
+            return {global::kNone, global::kNone};
+        }
         float random_area = generator::Rand() * area_weighted_sum_;
         float area_weighted_sum = 0;
         for (const auto &object: objects_) {
