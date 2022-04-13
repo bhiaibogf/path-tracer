@@ -189,34 +189,23 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce, Shading
     Ray ray_next = Ray(position_next, direction_next);
     Intersection intersection_next;
 
+    auto radiance_next = global::kBlack;;
     if (Intersect(&ray_next, &intersection_next)) {
-        if (pdf_bsdf == global::kInf) {
-            radiance_indirect
-                    = global::Product(Shade(intersection_next, bounce + 1, sample_type),
-                                      ((Refraction *) material)->Albedo(direction, direction_next, normal))
-                      / kRussianRoulette;
-        } else {
-            radiance_indirect
-                    = global::Product(Shade(intersection_next, bounce + 1, sample_type),
-                                      material->Eval(direction, direction_next, normal, tex_coord))
-                      * normal.dot(direction_next)
-                      / pdf_bsdf
-                      / kRussianRoulette;
-        }
+        radiance_next = Shade(intersection_next, bounce + 1, sample_type);
     } else {
-        auto background_color = skybox_ ? skybox_->Sample(ray_next.direction()) : kBackgroundColor;
-        if (pdf_bsdf == global::kInf) {
-            radiance_indirect
-                    = global::Product(background_color,
-                                      ((Refraction *) material)->Albedo(direction, direction_next, normal))
-                      / kRussianRoulette;
-        } else {
-            radiance_indirect
-                    = global::Product(background_color, material->Eval(direction, direction_next, normal, tex_coord))
-                      * normal.dot(direction_next)
-                      / pdf_bsdf
-                      / kRussianRoulette;
-        }
+        radiance_next = skybox_ ? skybox_->Sample(ray_next.direction()) : kBackgroundColor;
+    }
+
+    if (pdf_bsdf == global::kInf) {
+        radiance_indirect =
+                global::Product(radiance_next, ((Refraction *) material)->Albedo(direction, direction_next, normal))
+                / kRussianRoulette;
+    } else {
+        radiance_indirect =
+                global::Product(radiance_next, material->Eval(direction, direction_next, normal, tex_coord))
+                * normal.dot(direction_next)
+                / pdf_bsdf
+                / kRussianRoulette;
     }
 
     return radiance_emission + radiance_direct + radiance_indirect;
