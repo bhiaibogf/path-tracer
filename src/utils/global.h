@@ -21,7 +21,8 @@ namespace global {
 
     typedef Eigen::Vector3f Vector;
     typedef Vector Color;
-    typedef Eigen::Vector2f TexCoord;
+    typedef Eigen::Vector2f Vector2;
+    typedef Vector2 TexCoord;
 
     typedef std::array<global::Vector, 3> VectorArray;
     typedef std::array<global::TexCoord, 3> TexCoordArray;
@@ -37,10 +38,13 @@ namespace global {
         return a * (1 - ratio) + b * ratio;
     }
 
-    const Color kBlack = Eigen::Vector3f::Zero();
-    const Color kWhite = Eigen::Vector3f::Ones();
+    const Vector kZero = Eigen::Vector3f::Zero();
+    const Vector kOnes = Eigen::Vector3f::Ones();
 
-    const Vector kNone = Eigen::Vector3f::Zero();
+    const Color kBlack = kZero;
+    const Color kWhite = kOnes;
+
+    const Vector kNone = kZero;
     const TexCoord kNoTex = Eigen::Vector2f::Zero();
 
     void UpdateProgress(float progress);

@@ -22,7 +22,7 @@ Camera *XmlLoader::LoadCamera() {
     int width = camera->FirstChildElement("width")->FirstAttribute()->IntValue();
     int height = camera->FirstChildElement("height")->FirstAttribute()->IntValue();
 
-    return new Camera(eye, lookat, up, fovy, width, height);
+    return new PinholeCamera(eye, lookat, up, fovy, width, height);
 }
 
 Skybox *XmlLoader::LoadSkybox() {

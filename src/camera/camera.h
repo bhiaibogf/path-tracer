@@ -12,9 +12,9 @@
 class Camera {
 public:
     Camera(Eigen::Vector3f eye, const Eigen::Vector3f &look_at, const Eigen::Vector3f &up,
-           float fov, int width, int height);
+           float fov_y, int width, int height);
 
-    ~Camera() = default;
+    virtual ~Camera() = default;
 
     auto width() const { return width_; }
 
@@ -22,14 +22,20 @@ public:
 
     int GetIndex(int x, int y) const;
 
-    Ray GenerateRay(int x, int y, bool antialiasing) const;
+    virtual Ray GenerateRay(int x, int y, bool antialiasing) const = 0;
 
     friend std::ostream &operator<<(std::ostream &os, const Camera &camera);
 
-private:
+protected:
+    global::Vector2 SampleFilm(int x, int y, bool antialiasing) const;
+
     global::Vector eye_, direction_, right_, up_;
+
+    float aspect_;
     float fov_y_;
+
     int width_, height_;
+    float width_f_, height_f_;
 
 };
 

@@ -6,6 +6,8 @@
 #define PATH_TRACER_GENERATOR_H
 
 
+#include "global.h"
+
 #include <random>
 
 namespace generator {
@@ -19,6 +21,8 @@ namespace generator {
     float Rand();
 
     float RandN();
+
+    global::Vector2 SampleDisk();
 
 }
 

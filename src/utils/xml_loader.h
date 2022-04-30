@@ -6,7 +6,8 @@
 #define PATH_TRACER_XML_LOADER_H
 
 
-#include "../camera/camera.h"
+#include "../camera/pinhole_camera.h"
+#include "../camera/thin_lens_camera.h"
 #include "../scene/object.h"
 #include "../material/skybox.h"
 
