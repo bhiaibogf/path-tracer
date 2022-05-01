@@ -10,9 +10,8 @@
 
 class Lambert : public Material {
 public:
-    // TODO
     template<class T>
-    explicit Lambert(const T &k_d) : albedo_(Parameter<global::Color>(k_d)) {}
+    explicit Lambert(const T &k_d);
 
     ~Lambert() override = default;
 

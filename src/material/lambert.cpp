@@ -4,6 +4,16 @@
 
 #include "lambert.h"
 
+// TODO
+template
+Lambert::Lambert<std::string>(const std::string &k_d);
+
+template
+Lambert::Lambert<global::Color>(const global::Color &k_d);
+
+template<class T>
+Lambert::Lambert(const T &k_d) : albedo_(Parameter<global::Color>(k_d)) {}
+
 global::Color Lambert::Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const {
     if (normal.dot(wo) > 0 && normal.dot(wi) > 0) {
         return albedo_.GetValue() * global::kInvPi;
