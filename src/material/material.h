@@ -5,6 +5,7 @@
 #ifndef PATH_TRACER_MATERIAL_H
 #define PATH_TRACER_MATERIAL_H
 
+#include "parameter.h"
 
 #include "../utils/generator.h"
 #include "../utils/global.h"
@@ -16,7 +17,7 @@ public:
     virtual ~Material() = default;
 
     enum MaterialType {
-        kLambert, kPhong, kRefraction, kMix
+        kLambert, kPhong, kRefraction, kGgx, kMix
     };
 
     virtual MaterialType Type() const = 0;

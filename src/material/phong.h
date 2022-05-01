@@ -10,13 +10,21 @@
 
 class Phong : public Material {
 public:
-    Phong(global::Color k_s, float n_s);
+    template<class T1, class T2>
+    Phong(T1 k_s, T2 n_s):k_s_(Parameter<global::Color>(k_s)), n_s_(Parameter<float>(n_s)) {}
+
+    ~Phong() override = default;
 
     MaterialType Type() const override { return MaterialType::kPhong; }
 
     global::Color Albedo() const override;
 
+    global::Color Albedo(const global::TexCoord &tex_coord) const override;
+
     global::Color Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const override;
+
+    global::Color Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal,
+                       const global::TexCoord &tex_coord) const override;
 
     global::Vector Sample(const global::Vector &wo, const global::Vector &normal, float *pdf) const override;
 
@@ -25,8 +33,8 @@ public:
     friend std::ostream &operator<<(std::ostream &os, const Phong &phong);
 
 private:
-    global::Color k_s_;
-    float n_s_;
+    Parameter<global::Color> k_s_;
+    Parameter<float> n_s_;
 
 };
 
