@@ -7,13 +7,14 @@
 
 
 #include "material.h"
-#include "texture.h"
 
 class Lambert : public Material {
 public:
-    explicit Lambert(global::Color k_d);
+    // TODO
+    template<class T>
+    explicit Lambert(const T &k_d) : albedo_(Parameter<global::Color>(k_d)) {}
 
-    explicit Lambert(const std::string &texture_name);
+    ~Lambert() override = default;
 
     MaterialType Type() const override { return MaterialType::kLambert; }
 
@@ -33,8 +34,7 @@ public:
     friend std::ostream &operator<<(std::ostream &os, const Lambert &lambert);
 
 private:
-    global::Color albedo_;
-    Texture<global::Color> *texture_;
+    Parameter<global::Color> albedo_;
 
 };
 

@@ -4,24 +4,9 @@
 
 #include "lambert.h"
 
-Lambert::Lambert(global::Color k_d) : albedo_(std::move(k_d)) {
-    texture_ = nullptr;
-}
-
-Lambert::Lambert(const std::string &texture_name) {
-    texture_ = new Texture<global::Color>(texture_name);
-    global::Color sum = global::kBlack;
-    for (int i = 0; i < 100; ++i) {
-        for (int j = 0; j < 100; j++) {
-            sum += texture_->GetColor(global::TexCoord(float(i) / 100.f, float(j) / 100.f));
-        }
-    }
-    albedo_ = sum / 1e4;
-}
-
 global::Color Lambert::Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const {
     if (normal.dot(wo) > 0 && normal.dot(wi) > 0) {
-        return albedo_ * global::kInvPi;
+        return albedo_.GetValue() * global::kInvPi;
     }
     return global::kBlack;
 }
@@ -29,11 +14,7 @@ global::Color Lambert::Eval(const global::Vector &wo, const global::Vector &wi, 
 global::Color Lambert::Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal,
                             const global::TexCoord &tex_coord) const {
     if (normal.dot(wo) > 0 && normal.dot(wi) > 0) {
-        if (texture_ != nullptr) {
-            return texture_->GetColor(tex_coord) * global::kInvPi;
-        } else {
-            return albedo_ * global::kInvPi;
-        }
+        return albedo_.GetValue(tex_coord) * global::kInvPi;
     }
     return global::kBlack;
 }
@@ -62,11 +43,7 @@ float Lambert::Pdf(const global::Vector &wo, const global::Vector &wi, const glo
 
 std::ostream &operator<<(std::ostream &os, const Lambert &lambert) {
     using namespace global;
-    if (lambert.texture_) {
-        os << "Lambert:\n\tkd = " << lambert.texture_->path();
-    } else {
-        os << "Lambert:\n\tkd = " << lambert.albedo_;
-    }
+    os << "Lambert:\n\tkd = " << lambert.albedo_;
     if (lambert.HasEmitter()) {
         os << *((Material *) &lambert);
     }
@@ -74,13 +51,9 @@ std::ostream &operator<<(std::ostream &os, const Lambert &lambert) {
 }
 
 global::Color Lambert::Albedo() const {
-    return albedo_;
+    return albedo_.GetValue();
 }
 
 global::Color Lambert::Albedo(const global::TexCoord &tex_coord) const {
-    if (texture_ != nullptr) {
-        return texture_->GetColor(tex_coord);
-    } else {
-        return albedo_;
-    }
+    return albedo_.GetValue(tex_coord);
 }
