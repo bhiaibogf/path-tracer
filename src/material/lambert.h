@@ -34,7 +34,7 @@ public:
 
 private:
     global::Color albedo_;
-    Texture *texture_;
+    Texture<global::Color> *texture_;
 
 };
 

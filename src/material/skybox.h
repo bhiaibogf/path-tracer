@@ -19,7 +19,7 @@ public:
     friend std::ostream &operator<<(std::ostream &os, const Skybox &skybox);
 
 private:
-    Texture *texture_;
+    Texture<global::Color> *texture_;
 
 };
 

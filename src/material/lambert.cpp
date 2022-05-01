@@ -9,7 +9,7 @@ Lambert::Lambert(global::Color k_d) : albedo_(std::move(k_d)) {
 }
 
 Lambert::Lambert(const std::string &texture_name) {
-    texture_ = new Texture(texture_name);
+    texture_ = new Texture<global::Color>(texture_name);
     global::Color sum = global::kBlack;
     for (int i = 0; i < 100; ++i) {
         for (int j = 0; j < 100; j++) {

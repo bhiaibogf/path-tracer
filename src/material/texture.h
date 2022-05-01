@@ -10,6 +10,7 @@
 
 #include "stb/stb_image.h"
 
+template<class T>
 class Texture {
 public:
     explicit Texture(const std::string &path);
@@ -24,7 +25,7 @@ public:
 
     auto path() const { return "./" + path_; }
 
-    global::Color GetColor(const global::TexCoord &tex_coord, WrapMode wrap_mode = kRepeat) const;
+    T GetColor(const global::TexCoord &tex_coord, WrapMode wrap_mode = kRepeat) const;
 
 private:
     std::string path_;

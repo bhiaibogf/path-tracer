@@ -4,12 +4,20 @@
 
 #include "texture.h"
 
-Texture::Texture(const std::string &path) : path_(path) {
+template
+class Texture<float>;
+
+template
+class Texture<global::Color>;
+
+template<class T>
+Texture<T>::Texture(const std::string &path):path_(path) {
     stbi_set_flip_vertically_on_load(true);
     img_ = stbi_loadf(path.c_str(), &width_, &height_, &channel_, 0);
 }
 
-global::Color Texture::GetColor(const global::TexCoord &tex_coord, WrapMode wrap_mode) const {
+template<class T>
+T Texture<T>::GetColor(const global::TexCoord &tex_coord, Texture::WrapMode wrap_mode) const {
     float u = tex_coord.x(), v = tex_coord.y();
 
     switch (wrap_mode) {
@@ -38,6 +46,11 @@ global::Color Texture::GetColor(const global::TexCoord &tex_coord, WrapMode wrap
 
     int x = int(u * float(width_ - 1)), y = int(v * float(height_ - 1));
     int index = (x + y * width_) * channel_;
-    global::Color color = global::Color(img_[index], img_[index + 1], img_[index + 2]);
-    return color;
+    if constexpr (std::is_same<T, float>::value) {
+        return img_[index];
+    } else if constexpr (std::is_same<T, global::Color>::value) {
+        return {img_[index], img_[index + 1], img_[index + 2]};
+    } else {
+        std::cout << "Wrong type" << std::endl;
+    }
 }

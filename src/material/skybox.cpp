@@ -5,7 +5,7 @@
 #include "skybox.h"
 
 Skybox::Skybox(const std::string &path) {
-    texture_ = new Texture(path);
+    texture_ = new Texture<global::Color>(path);
 }
 
 global::Color Skybox::Sample(const global::Vector &direction) const {
