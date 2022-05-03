@@ -9,6 +9,12 @@
 #include "texture.h"
 
 template<class T>
+class Parameter;
+
+template<class T>
+std::ostream &operator<<(std::ostream &os, const Parameter<T> &parameter);
+
+template<class T>
 class Parameter {
 public:
     explicit Parameter(const T &value);
@@ -21,16 +27,7 @@ public:
 
     T GetValue(global::TexCoord uv) const;
 
-    // TODO
-    friend std::ostream &operator<<(std::ostream &os, const Parameter<T> &parameter) {
-        if (parameter.texture_) {
-            os << parameter.texture_->path();
-        } else {
-            using namespace global;
-            os << parameter.value_;
-        }
-        return os;
-    }
+    friend std::ostream &operator<<<>(std::ostream &os, const Parameter &parameter);
 
 private:
     T value_;

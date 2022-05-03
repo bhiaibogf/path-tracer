@@ -11,7 +11,7 @@
 class Phong : public Material {
 public:
     template<class T1, class T2>
-    Phong(T1 k_s, T2 n_s):k_s_(Parameter<global::Color>(k_s)), n_s_(Parameter<float>(n_s)) {}
+    Phong(T1 k_s, T2 n_s):k_s_(k_s), n_s_(n_s) {}
 
     ~Phong() override = default;
 

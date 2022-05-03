@@ -46,3 +46,20 @@ T Parameter<T>::GetValue(global::TexCoord uv) const {
         return GetValue();
     }
 }
+
+template
+std::ostream &operator<<(std::ostream &os, const Parameter<float> &parameter);
+
+template
+std::ostream &operator<<(std::ostream &os, const Parameter<global::Color> &parameter);
+
+template<class T>
+std::ostream &operator<<(std::ostream &os, const Parameter<T> &parameter) {
+    if (parameter.texture_) {
+        os << parameter.texture_->path();
+    } else {
+        using namespace global;
+        os << parameter.value_;
+    }
+    return os;
+}
