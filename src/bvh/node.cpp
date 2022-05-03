@@ -4,7 +4,7 @@
 
 #include "node.h"
 
-#include <ThreadPool/ThreadPool.h>
+#include <thread-pool/thread_pool.hpp>
 
 const std::size_t Node::kMaxPrimitives = 8;
 const std::size_t Node::kUseSah = 1024;
@@ -84,20 +84,20 @@ Node::Node(std::vector<const Primitive *> *primitives, SplitMethod split_method,
         assert(primitives->size() == (left->size() + right->size()));
 
         if (depth < kDepth) {
-            ThreadPool pool(std::thread::hardware_concurrency());
+            thread_pool pool(std::thread::hardware_concurrency());
             std::future<Node *> left_future, right_future;
             if (split_method == kMix) {
-                left_future = pool.enqueue([&]() {
+                left_future = pool.submit([&]() {
                     return new Node(left, left->size() < kUseSah ? kSah : kMix, depth + 1);
                 });
-                right_future = pool.enqueue([&]() {
+                right_future = pool.submit([&]() {
                     return new Node(right, right->size() < kUseSah ? kSah : kMix, depth + 1);
                 });
             } else {
-                left_future = pool.enqueue([&]() {
+                left_future = pool.submit([&]() {
                     return new Node(left, split_method, depth + 1);
                 });
-                right_future = pool.enqueue([&]() {
+                right_future = pool.submit([&]() {
                     return new Node(right, split_method, depth + 1);
                 });
             }

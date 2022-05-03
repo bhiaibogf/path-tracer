@@ -10,7 +10,7 @@
 
 [`stb`](https://github.com/nothings/stb)：读入材质贴图
 
-[`ThreadPool`](https://github.com/progschj/ThreadPool)：多线程库，用于构建 BVH
+[`thread-pool`](https://github.com/bshoshany/thread-pool)：多线程库，用于构建 BVH
 
 #### 项目外
 
