@@ -9,7 +9,7 @@
 #include "../camera/camera.h"
 #include "../scene/scene.h"
 
-#include <opencv2/opencv.hpp>
+#include <tinyexr/tinyexr.h>
 
 class PathTracer {
 public:

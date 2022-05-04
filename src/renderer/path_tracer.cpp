@@ -38,9 +38,12 @@ void PathTracer::Render(int spp, bool antialiasing, Scene::ShadingType shading_t
 }
 
 void PathTracer::Save(const std::string &filename) {
-    auto fragment_mat_ = new cv::Mat(camera_->height(), camera_->width(), CV_32FC3, fragment_buffer_.data());
-    cv::cvtColor(*fragment_mat_, *fragment_mat_, cv::COLOR_BGR2RGB);
-    // fragment_mat_->convertTo(*fragment_mat_, CV_8UC3, 255.0f);
-    cv::imwrite(filename, *fragment_mat_);
+    auto *buffer = new float[3 * camera_->width() * camera_->height()];
+    for (int i = 0; i < camera_->width() * camera_->height(); i++) {
+        buffer[3 * i + 0] = fragment_buffer_[i].x();
+        buffer[3 * i + 1] = fragment_buffer_[i].y();
+        buffer[3 * i + 2] = fragment_buffer_[i].z();
+    }
+    SaveEXR(buffer, camera_->width(), camera_->height(), 3, 0, filename.c_str(), nullptr);
     std::cout << "\nImage saved to ./" << filename << std::endl;
 }

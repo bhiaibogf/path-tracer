@@ -8,13 +8,13 @@
 
 [`tinyxml2`](https://github.com/leethomason/tinyxml2)：载入 xml 配置文件
 
+[`tinyexr`](https://github.com/syoyo/tinyexr)：存储渲染结果到 EXR
+
 [`stb`](https://github.com/nothings/stb)：读入材质贴图
 
 [`thread-pool`](https://github.com/bshoshany/thread-pool)：多线程库，用于构建 BVH
 
 #### 项目外
-
-`OpenCV`：存储渲染结果到 EXR
 
 `Eigen`：矩阵库，向量储存与计算
 
