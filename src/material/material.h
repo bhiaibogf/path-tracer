@@ -5,6 +5,7 @@
 #ifndef PATH_TRACER_MATERIAL_H
 #define PATH_TRACER_MATERIAL_H
 
+
 #include "parameter.h"
 
 #include "../utils/generator.h"
@@ -22,23 +23,18 @@ public:
 
     virtual MaterialType Type() const = 0;
 
-    virtual bool HasEmitter() const;
+    bool HasEmitter() const;
 
     void SetEmission(const global::Color &emission) { emission_ = emission; }
 
     auto emission() const { return emission_; }
 
-    virtual global::Color Albedo() const;
+    virtual void Prepare(const global::TexCoord &tex_coord);
 
-    virtual global::Color Albedo(const global::TexCoord &tex_coord) const;
+    virtual global::Color Albedo() const;
 
     virtual global::Color
     Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const = 0;
-
-    virtual global::Color Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal,
-                               const global::TexCoord &tex_coord) const {
-        return Eval(wo, wi, normal);
-    }
 
     virtual global::Vector Sample(const global::Vector &wo, const global::Vector &normal, float *pdf) const = 0;
 

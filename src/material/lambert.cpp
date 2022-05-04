@@ -13,17 +13,17 @@ Lambert::Lambert(const global::Color &k_d);
 template<class T>
 Lambert::Lambert(const T &k_d) : albedo_(k_d) {}
 
-global::Color Lambert::Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const {
-    if (normal.dot(wo) > 0 && normal.dot(wi) > 0) {
-        return albedo_.GetValue() * global::kInvPi;
-    }
-    return global::kBlack;
+void Lambert::Prepare(const global::TexCoord &tex_coord) {
+    albedo_.Prepare(tex_coord);
 }
 
-global::Color Lambert::Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal,
-                            const global::TexCoord &tex_coord) const {
+global::Color Lambert::Albedo() const {
+    return albedo_.value();
+}
+
+global::Color Lambert::Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const {
     if (normal.dot(wo) > 0 && normal.dot(wi) > 0) {
-        return albedo_.GetValue(tex_coord) * global::kInvPi;
+        return albedo_.value() * global::kInvPi;
     }
     return global::kBlack;
 }
@@ -56,12 +56,4 @@ std::ostream &operator<<(std::ostream &os, const Lambert &lambert) {
         os << *((Material *) &lambert);
     }
     return os;
-}
-
-global::Color Lambert::Albedo() const {
-    return albedo_.GetValue();
-}
-
-global::Color Lambert::Albedo(const global::TexCoord &tex_coord) const {
-    return albedo_.GetValue(tex_coord);
 }

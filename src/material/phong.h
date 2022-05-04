@@ -17,14 +17,11 @@ public:
 
     MaterialType Type() const override { return MaterialType::kPhong; }
 
+    void Prepare(const global::TexCoord &tex_coord) override;
+
     global::Color Albedo() const override;
 
-    global::Color Albedo(const global::TexCoord &tex_coord) const override;
-
     global::Color Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const override;
-
-    global::Color Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal,
-                       const global::TexCoord &tex_coord) const override;
 
     global::Vector Sample(const global::Vector &wo, const global::Vector &normal, float *pdf) const override;
 

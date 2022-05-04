@@ -34,16 +34,16 @@ Parameter<T>::Parameter(const std::string &path) {
 }
 
 template<class T>
-T Parameter<T>::GetValue() const {
-    return value_;
+void Parameter<T>::Prepare(const global::TexCoord &tex_coord) {
+    value_ = GetValue(tex_coord);
 }
 
 template<class T>
-T Parameter<T>::GetValue(global::TexCoord uv) const {
+T Parameter<T>::GetValue(const global::TexCoord &tex_coord) const {
     if (texture_) {
-        return texture_->GetColor(uv);
+        return texture_->GetColor(tex_coord);
     } else {
-        return GetValue();
+        return value();
     }
 }
 

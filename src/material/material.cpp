@@ -12,6 +12,8 @@ bool Material::HasEmitter() const {
     return emission_ != global::kBlack;
 }
 
+void Material::Prepare(const global::TexCoord &tex_coord) {}
+
 std::ostream &operator<<(std::ostream &os, const Material &material) {
     using namespace global;
     os << "\n\temission = " << material.emission_;
@@ -20,8 +22,4 @@ std::ostream &operator<<(std::ostream &os, const Material &material) {
 
 global::Color Material::Albedo() const {
     return global::kBlack;
-}
-
-global::Color Material::Albedo(const global::TexCoord &tex_coord) const {
-    return Albedo();
 }

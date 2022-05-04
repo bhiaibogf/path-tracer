@@ -23,15 +23,17 @@ public:
 
     ~Parameter() = default;
 
-    T GetValue() const;
+    void Prepare(const global::TexCoord &tex_coord);
 
-    T GetValue(global::TexCoord uv) const;
+    auto value() const { return value_; }
 
-    friend std::ostream &operator<<<>(std::ostream &os, const Parameter &parameter);
+    friend std::ostream &operator<< <>(std::ostream &os, const Parameter &parameter);
 
 private:
     T value_;
     Texture<T> *texture_ = nullptr;
+
+    T GetValue(const global::TexCoord &tex_coord) const;
 
 };
 
