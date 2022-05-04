@@ -129,15 +129,12 @@ bool Node::Intersect(Ray *ray, Intersection *intersection) const {
         return has_intersection;
     }
 
-    // 计算包围盒中心到光源的距离
+    // calculate the distance from the bounding box center to the light source
     auto left_dis = left_->bound_.Centroid() - ray->origin(),
             right_dis = right_->bound_.Centroid() - ray->origin();
     bool left_is_nearer = left_dis.squaredNorm() < right_dis.squaredNorm();
 
-    // 由于场景过于空旷，上面的计算可能反而带来很大的开销
-    // bool flag = true;
-
-    // 优先判断离光源近的包围盒
+    // handle closer aabb first
     auto near = left_is_nearer ? left_ : right_,
             far = left_is_nearer ? right_ : left_;
 

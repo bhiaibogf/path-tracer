@@ -15,6 +15,9 @@ target_link_libraries(tiny_exr_lib tiny_exr_miniz_lib)
 
 add_library(stb_lib third_party/stb/stb.c)
 
+if (MSVC)
+    add_compile_definitions(_USE_MATH_DEFINES)
+endif ()
 file(GLOB_RECURSE SRC src/*.cpp)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})

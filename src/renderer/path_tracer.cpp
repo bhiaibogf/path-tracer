@@ -13,7 +13,11 @@ void PathTracer::Render(int spp, bool antialiasing, Scene::ShadingType shading_t
     // ThreadPool pool(std::thread::hardware_concurrency());
     for (int y = 0; y < camera_->height(); y++) {
         // std::future<Eigen::Vector3f> futures[camera_.width()][spp];
+#ifdef _MSC_VER
+#pragma omp parallel for
+#else
 #pragma omp parallel for default(none) shared(fragment_buffer_, y, camera_, spp, antialiasing, shading_type)
+#endif
         for (int x = 0; x < camera_->width(); x++) {
             for (int k = 0; k < spp; k++) {
                 Ray ray = camera_->GenerateRay(x, y, antialiasing);

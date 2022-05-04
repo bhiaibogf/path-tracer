@@ -4,4 +4,9 @@
 /cmake-build-*/
 path_tracer
 
+*.exe
+*.ilk
+*.dll
+*.pdb
+
 *.exr

@@ -6,8 +6,9 @@
 #define PATH_TRACER_GLOBAL_H
 
 
-#include <eigen3/Eigen/Eigen>
+#include <Eigen/Eigen>
 
+#include <array>
 #include <cmath>
 #include <iostream>
 #include <utility>
