@@ -121,3 +121,7 @@ float global::PowerHeuristic(float pdf_sample, float pdf_other, float beta) {
 float global::Luminance(const global::Color &color) {
     return 0.212671f * color.x() + 0.715160f * color.y() + 0.072169f * color.z();
 }
+
+float global::Sqr(float x) {
+    return x * x;
+}

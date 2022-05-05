@@ -4,6 +4,8 @@
 
 #include "obj_loader.h"
 
+#include "../material/microfacet_reflection.h"
+
 ObjLoader::ObjLoader(const std::string &model_path, const std::string &model_name) {
     model_path_ = model_path + model_name + "/";
     filename_ = model_path_ + model_name + ".obj";
@@ -55,11 +57,11 @@ void ObjLoader::LoadMaterials(const std::map<std::string, global::Vector> &light
                     material_ = new Lambert(k_d);
                 }
             } else if (k_d == global::kBlack && diffuse_texture.empty()) {
-                material_ = new Phong(k_s, n_s);
+                material_ = new MicrofacetReflection(n_s, k_s);
             } else {
                 material_ = new Mix(
                         diffuse_texture.empty() ? new Lambert(k_d) : new Lambert(texture_path + diffuse_texture),
-                        new Phong(k_s, n_s));
+                        new MicrofacetReflection(n_s, k_s));
             }
             if (lights.contains(material.name)) {
                 material_->SetEmission(lights.at(material.name));

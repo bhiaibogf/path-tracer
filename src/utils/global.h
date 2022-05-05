@@ -66,6 +66,8 @@ namespace global {
 
     float PowerHeuristic(float pdf_sample, float pdf_other, float beta = 2.f);
 
+    float Sqr(float x);
+
 }
 
 
