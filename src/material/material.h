@@ -31,6 +31,19 @@ public:
 
     virtual void Prepare(const global::TexCoord &tex_coord);
 
+    global::Color Albedo(const global::TexCoord &tex_coord);
+
+    global::Color Eval(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal,
+                       const global::TexCoord &tex_coord);
+
+    global::Vector Sample(const global::Vector &wo, const global::Vector &normal, float *pdf,
+                          const global::TexCoord &tex_coord);
+
+    float Pdf(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal,
+              const global::TexCoord &tex_coord);
+
+    friend std::ostream &operator<<(std::ostream &os, const Material &material);
+
     virtual global::Color Albedo() const;
 
     virtual global::Color
@@ -39,8 +52,6 @@ public:
     virtual global::Vector Sample(const global::Vector &wo, const global::Vector &normal, float *pdf) const = 0;
 
     virtual float Pdf(const global::Vector &wo, const global::Vector &wi, const global::Vector &normal) const = 0;
-
-    friend std::ostream &operator<<(std::ostream &os, const Material &material);
 
 protected:
     global::Color emission_;

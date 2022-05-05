@@ -4,7 +4,7 @@
 
 #include "scene.h"
 
-const Eigen::Vector3f Scene::kBackgroundColor = global::Color(0.2f, 0.4f, 0.8f);
+const global::Color Scene::kBackgroundColor = global::Color(0.2f, 0.4f, 0.8f);
 const float Scene::kEpsilonPosition = 1e-5f;
 const float Scene::kEpsilonLight = 10.f * kEpsilonPosition;
 const float Scene::kEpsilonPdf = 1e-6f;
@@ -105,7 +105,7 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce, Shading
         global::Color radiance_light = global::kBlack;
 
         float pdf_light;
-        auto[direction_to_light, position_light] = SampleLight(position, &pdf_light);
+        auto [direction_to_light, position_light] = SampleLight(position, &pdf_light);
         if (pdf_light > kEpsilonPdf) {
             global::Vector position_to_light =
                     position +
@@ -121,7 +121,7 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce, Shading
                                  * normal.dot(direction_to_light)
                                  / pdf_light;
                 if (sample_type == kMis) {
-                    float pdf_bsdf = material->Pdf(direction, direction_to_light, normal);
+                    float pdf_bsdf = material->Pdf(direction, direction_to_light, normal, tex_coord);
                     float mis_wight = global::PowerHeuristic(pdf_light, pdf_bsdf);
                     radiance_light *= mis_wight;
                 }
@@ -136,7 +136,7 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce, Shading
         global::Color radiance_bsdf = global::kBlack;
 
         float pdf_bsdf;
-        auto direction_another_light = material->Sample(direction, normal, &pdf_bsdf);
+        auto direction_another_light = material->Sample(direction, normal, &pdf_bsdf, tex_coord);
         if (pdf_bsdf > kEpsilonPdf) {
             auto position_another_light =
                     position +
@@ -179,7 +179,7 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce, Shading
     global::Color radiance_indirect = global::kBlack;
 
     float pdf_bsdf;
-    auto direction_next = material->Sample(direction, normal, &pdf_bsdf);
+    auto direction_next = material->Sample(direction, normal, &pdf_bsdf, tex_coord);
     if (pdf_bsdf < kEpsilonPdf) {
         return radiance_emission + radiance_direct;
     }
@@ -189,7 +189,7 @@ global::Color Scene::Shade(const Intersection &intersection, int bounce, Shading
     Ray ray_next = Ray(position_next, direction_next);
     Intersection intersection_next;
 
-    auto radiance_next = global::kBlack;;
+    auto radiance_next = global::kBlack;
     if (Intersect(&ray_next, &intersection_next)) {
         radiance_next = Shade(intersection_next, bounce + 1, sample_type);
     } else {
